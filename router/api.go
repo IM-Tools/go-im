@@ -5,7 +5,10 @@
 **/
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"go_im/bin/service"
+)
 
 var router *gin.Engine
 
@@ -15,4 +18,10 @@ func RegisterApiRoutes(router *gin.Engine)  {
 			"message": "hello world!!!",
 		})
 	})
+	//将该连接升级为ws
+	ws := new(service.WsServe)
+	router.GET("/ws-con",ws.WsConn)
+
+
+
 }
