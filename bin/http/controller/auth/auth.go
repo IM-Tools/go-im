@@ -26,22 +26,26 @@ import (
 type AuthController struct{}
 type WeiBo struct{}
 
-//type UserInfo struct {
-//	Name string
-//	Email string
-//	Avatar string
-//	OauthId string
-//	BoundOauth int
-//}
-
 //登录并返回用户信息与token
-func (*AuthController)Login(c *gin.Context)  {
+func (*AuthController)Me(c *gin.Context)  {
+	claims := c.MustGet("claims").(*jwt.CustomClaims)
+
+	c.JSON(http.StatusForbidden,map[string]interface{}{
+		"code":200,
+		"msg":"success",
+		"data": map[string]interface{}{
+			"id":claims.ID,
+			"name":claims.Name,
+			"avatar":claims.Avatar,
+			"email":claims.Email,
+		},
+	})
 
 }
+
 //微博授权接口
 func (*WeiBo)WeiBoCallBack (c *gin.Context)  {
 	code := c.Query("code")
-
 	if len(code) ==0 {
 		c.JSON(http.StatusForbidden,map[string]interface{}{
 			"msg": "参数不正确～",
@@ -55,8 +59,6 @@ func (*WeiBo)WeiBoCallBack (c *gin.Context)  {
 	users :=userModel.Users{}
 
 	isThere := model.DB.Where("oauth_id = ?",gjson.Get(UserInfo,"id").Raw).First(&users)
-
-
 	//用户未授权
 	if isThere.Error != nil {
 
@@ -87,8 +89,8 @@ func (*WeiBo)WeiBoCallBack (c *gin.Context)  {
 	}
 }
 
-// 给用户颁发token
 
+// 给用户颁发token
 func generateToken(c *gin.Context,user *userModel.Users) {
 
 	fmt.Println("测试users",user)
@@ -122,12 +124,16 @@ func generateToken(c *gin.Context,user *userModel.Users) {
 		return
 	} else {
 		data := map[string]interface{}{
-			"token":token,
-			"id":user.ID,
-			"name":user.Name,
-			"avatar":user.Avatar,
-			"email":user.Email,
-			"expiration_time":expiration_time,
+			"code":200,
+			"msg":"登录成功",
+			"data": map[string]interface{}{
+				"token":token,
+				"id":user.ID,
+				"name":user.Name,
+				"avatar":user.Avatar,
+				"email":user.Email,
+				"expiration_time":expiration_time,
+			},
 		}
 		c.JSON(http.StatusOK, map[string]interface{}{
 			"code":200,

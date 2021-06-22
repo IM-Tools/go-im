@@ -23,6 +23,7 @@ var access_token_url = "https://api.weibo.com/oauth2/access_token"
 var user_info_url = "https://api.weibo.com/2/users/show.json"
 var get_token_info="https://api.weibo.com/oauth2/get_token_info"
 
+
 // Result represents a json value that is returned from GetUserInfo().
 
 type UserInfo struct {
@@ -32,6 +33,8 @@ type UserInfo struct {
 	OauthId string
 	BoundOauth int
 }
+
+
 
 // GetAccessToken function string returns an string access_token.str
 func GetAccessToken(code *string) string  {
