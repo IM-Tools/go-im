@@ -18,11 +18,7 @@ func init()  {
 }
 
 
-
 func main()  {
-
-
-
 	app := gin.Default()
 	//加载连接池
 	bin.SetupDB()

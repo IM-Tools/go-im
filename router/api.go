@@ -7,6 +7,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	Auth "go_im/bin/http/controller/auth"
 	"go_im/bin/service"
 )
 
@@ -18,6 +19,9 @@ func RegisterApiRoutes(router *gin.Engine)  {
 			"message": "hello world!!!",
 		})
 	})
+	weibo := new(Auth.WeiBo)
+	router.GET("/api/WeiBoCallBack",weibo.WeiBoCallBack)
+
 	//将该连接升级为ws
 	ws := new(service.WsServe)
 	router.GET("/ws-con",ws.WsConn)

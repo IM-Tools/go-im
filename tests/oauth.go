@@ -8,6 +8,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/tidwall/gjson"
 	"go_im/pkg/helpler"
 	"io/ioutil"
 	"net/http"
@@ -17,8 +18,17 @@ import (
 
 func main()  {
 
+
+	//keys := httpReuqet();
+	//fmt.Println(keys)
+
+}
+
+
+func httpReuqet() string  {
+
 	urls :="http://adminapi.test/api/captcha"
-	data := url.Values{"app_id":{"238b2213-a8ca-42d8-8eab-1f1db3c50ed6"}, "mobile_tel":{"13794227450"}}
+	data := url.Values{"app_id":{""}, "mobile_tel":{""}}
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
 
@@ -30,14 +40,14 @@ func main()  {
 
 	bodyC, _ := ioutil.ReadAll(resp.Body)
 
+
 	jsonMap := helpler.JsonToMap(bodyC)
 
 	err = json.Unmarshal(bodyC, &jsonMap)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	datas := jsonMap["data"]
-	fmt.Println(datas)
 
+	bodyS := string(bodyC);
+
+	keys := gjson.Get(bodyS,"data.captcha.key")
+
+	return keys.Str
 }

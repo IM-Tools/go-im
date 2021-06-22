@@ -17,6 +17,11 @@ func init() {
 		// 当前环境，用以区分多环境
 		"env": config.Env("APP_ENV", "production"),
 		"port": config.Env("HTTP_PORT", "8000"),
-		"jwt_secret": config.Env("APP_JWT_KEY", ""),
+		//jwt 授权登录
+		"jwt": map[string]interface{}{
+			"sign_key":config.Env("JWT_SIGN_KEY"),
+			"expiration_time":config.Env("JWT_EXPIRATION_TIME"),
+		},
+		"base64":config.Env("BASE64_ENCRYPT"),
 	})
 }
