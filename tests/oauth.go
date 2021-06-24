@@ -8,8 +8,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tidwall/gjson"
-	"go_im/pkg/helpler"
+	//"github.com/tidwall/gjson"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -19,9 +18,25 @@ import (
 func main()  {
 
 
-	//keys := httpReuqet();
-	//fmt.Println(keys)
+	keys := httpReuqet();
+	fmt.Println(keys)
 
+}
+
+type Response struct {
+	// Code    int    `json:"code"`
+	// Message string `json:"message"`
+	Data    Data   `json:"data"`
+}
+
+type Data struct {
+	Captcha Captcha `json:"captcha"`
+}
+
+type Captcha struct {
+	Key       string `json:"key"`
+	// Img       string `json:"img"`
+	// Sensitive bool   `json:"senstive"`
 }
 
 
@@ -35,19 +50,24 @@ func httpReuqet() string  {
 	if err!=nil{
 		fmt.Println(err)
 	}
-
 	defer resp.Body.Close()
 
+	response := new(Response)
+
+	if err != nil {
+		fmt.Printf("err:%s\n", err.Error())
+	}
 	bodyC, _ := ioutil.ReadAll(resp.Body)
 
+	err = json.Unmarshal(bodyC, response)
 
-	jsonMap := helpler.JsonToMap(bodyC)
+	if err != nil {
+		fmt.Printf("err:%s\n", err.Error())
+	}
+	return response.Data.Captcha.Key
+	//bodyS := string(bodyC);
+	//
+	//keys := gjson.Get(bodyS,"data.captcha.key")
 
-	err = json.Unmarshal(bodyC, &jsonMap)
-
-	bodyS := string(bodyC);
-
-	keys := gjson.Get(bodyS,"data.captcha.key")
-
-	return keys.Str
+	//return keys.Str
 }

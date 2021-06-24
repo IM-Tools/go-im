@@ -28,6 +28,7 @@ func RegisterApiRoutes(router *gin.Engine)  {
 	api := router.Group("/api").Use(middleware.Auth())
 	{
 		api.POST("/me",auth.Me)
+		api.POST("/refresh",auth.Refresh)
 		//将该连接升级为ws
 		ws := new(service.WsServe)
 		api.GET("/ws-con",ws.WsConn)
