@@ -15,7 +15,6 @@ import (
 var router *gin.Engine
 
 func RegisterApiRoutes(router *gin.Engine)  {
-
 	//允许跨域
 	router.Use(middleware.CrosHandler())
 
@@ -26,14 +25,15 @@ func RegisterApiRoutes(router *gin.Engine)  {
 	})
 	weibo := new(Auth.WeiBoController)
 	auth := new(Auth.AuthController)
+	users := new(Auth.UsersController)
 	router.GET("/api/WeiBoCallBack",weibo.WeiBoCallBack)
 	router.GET("/api/giteeCallBack",auth.GiteeCallBack)
-
 
 	api := router.Group("/api").Use(middleware.Auth())
 	{
 		api.POST("/me",auth.Me)
 		api.POST("/refresh",auth.Refresh)
+		api.GET("/usersList",users.GetUsersList)
 		//将该连接升级为ws
 
 	}
