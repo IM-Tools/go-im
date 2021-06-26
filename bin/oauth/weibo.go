@@ -16,9 +16,9 @@ import (
 	"strings"
 )
 
-var client_id = config.GetString("oauth.client_id")
-var client_secret = config.GetString("oauth.client_secret")
-var redirect_uri = config.GetString("oauth.redirect_uri")
+var client_id = config.GetString("oauth.wb_client_id")
+var client_secret = config.GetString("oauth.wb_client_secret")
+var redirect_uri = config.GetString("oauth.wb_redirect_uri")
 var access_token_url = "https://api.weibo.com/oauth2/access_token"
 var user_info_url = "https://api.weibo.com/2/users/show.json"
 var get_token_info="https://api.weibo.com/oauth2/get_token_info"
@@ -37,7 +37,7 @@ type UserInfo struct {
 
 
 // GetAccessToken function string returns an string access_token.str
-func GetAccessToken(code *string) string  {
+func GetWeiBoAccessToken(code *string) string  {
 	queryData :=url.Values{"client_id":{client_id},
 		"code":{*code},
 		"client_secret":{client_secret},
@@ -64,7 +64,7 @@ func GetAccessToken(code *string) string  {
 
 // GetUserInfo function  returns an UserInfo
 
-func GetUserInfo(access_token *string) string {
+func GetWeiBoUserInfo(access_token *string) string {
 
 	uid :=getUid(&*access_token)
 

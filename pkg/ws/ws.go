@@ -7,8 +7,11 @@ package ws
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/websocket"
 )
+
+
 
 type ClientManager struct {
 	Clients map[*Client]bool
@@ -68,7 +71,9 @@ func (manager *ClientManager) Start() {
 
 // 发送消息到客户端
 func (manager *ClientManager) Send(message []byte, ignore *Client) {
+
 	for conn := range manager.Clients {
+
 		if conn != ignore {
 			conn.Send <- message
 		}
@@ -84,12 +89,14 @@ func (c *Client) Read() {
 
 	for {
 		_, message, err := c.Socket.ReadMessage()
+
 		if err != nil {
 			Manager.Unregister <- c
 			c.Socket.Close()
 			break
 		}
 		jsonMessage, _ := json.Marshal(&Message{Sender: c.ID, Content: string(message)})
+		fmt.Println(jsonMessage)
 		Manager.Broadcast <- jsonMessage
 	}
 }

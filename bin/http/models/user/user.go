@@ -8,7 +8,7 @@ package user
 import "go_im/pkg/model"
 
 type Users struct {
-	ID int64
+	ID uint64
 	Email string  `valid:"email"`
 	Password string  `valid:"password"`
 	Avatar,Name string

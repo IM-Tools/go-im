@@ -6,6 +6,7 @@
 package auth
 
 import (
+	"fmt"
 	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -22,23 +23,41 @@ import (
 
 //定义一个结构体 用户该方法的引用
 type AuthController struct{}
-type WeiBo struct{}
+type WeiBoController struct{}
+
+//定义结构数据格式
+type Me struct {
+	ID uint64 `json:"id"`
+	Name string `json:"name"`
+	Avatar string `json:"avatar"`
+	Email string `json:"email"`
+	Token string `json:"token"`
+	ExpirationTime int64 `json:"expiration_time"`
+}
+
+func (*AuthController)GiteeCallBack(c *gin.Context)  {
+	code := c.Query("code")
+	if len(code) ==0 {
+		response.FailResponse(403,"参数不正确~").ToJson(c)
+	}
+	//微博授权
+	access_token := oauth.GetGiteeAccessToken(&code)
+	fmt.Println(access_token)
+	//UserInfo := oauth.GetGiteeUserInfo(&access_token)
+
+}
 
 //登录并返回用户信息与token
 
 func (*AuthController)Me(c *gin.Context)  {
 	claims := c.MustGet("claims").(*jwt.CustomClaims)
-
 	data := map[string]interface{}{
 		"id":claims.ID,
 		"name":claims.Name,
 		"avatar":claims.Avatar,
 		"email":claims.Email,
 	}
-
 	response.SuccessResponse(data,200).ToJson(c)
-
-
 }
 
 //重新刷新用户信息
@@ -98,14 +117,14 @@ func (*AuthController)Refresh(c *gin.Context)  {
 }
 
 //微博授权接口
-func (*WeiBo)WeiBoCallBack (c *gin.Context)  {
+func (*WeiBoController)WeiBoCallBack (c *gin.Context)  {
 	code := c.Query("code")
 	if len(code) ==0 {
 		response.FailResponse(403,"参数不正确~").ToJson(c)
 	}
 	//微博授权
-	access_token := oauth.GetAccessToken(&code)
-	UserInfo := oauth.GetUserInfo(&access_token)
+	access_token := oauth.GetWeiBoAccessToken(&code)
+	UserInfo := oauth.GetWeiBoUserInfo(&access_token)
 
 	users :=userModel.Users{}
 
@@ -132,25 +151,24 @@ func (*WeiBo)WeiBoCallBack (c *gin.Context)  {
 		}
 	} else {
 		generateToken(c,&users)
-
 	}
 }
 
 // 给用户颁发token
 func generateToken(c *gin.Context,user *userModel.Users) {
 	sign_key            := config.GetString("app.jwt.sign_key")
-	expiration_time     := config.GetInt("app.jwt.expiration_time")
+	expiration_time     := config.GetInt64("app.jwt.expiration_time")
 
 	j :=&jwt.JWT{
 		[]byte(sign_key),
 	}
-	claims := jwt.CustomClaims{strconv.FormatInt(user.ID,10),
+	claims := jwt.CustomClaims{strconv.FormatUint(user.ID,10),
 		user.Name,
 		user.Avatar,
 		user.Email,
 		jwtGo.StandardClaims{
 		NotBefore: time.Now().Unix() - 1000,
-		ExpiresAt: time.Now().Unix() + int64(expiration_time),
+		ExpiresAt: time.Now().Unix() + expiration_time,
 		Issuer: sign_key,
 	}}
 	token,err := j.CreateToken(claims)
@@ -158,14 +176,13 @@ func generateToken(c *gin.Context,user *userModel.Users) {
 		response.FailResponse(403,"jwt token颁发失败~").ToJson(c)
 		return
 	} else {
-		data := map[string]interface{}{
-			"token":token,
-			"id":user.ID,
-			"name":user.Name,
-			"avatar":user.Avatar,
-			"email":user.Email,
-			"expiration_time":expiration_time,
-		}
+		data := new(Me)
+		data.ID = user.ID
+		data.Name = user.Name
+		data.Avatar = user.Avatar
+		data.Email = user.Email
+		data.Token = token
+		data.ExpirationTime = expiration_time
 		response.SuccessResponse(data,200).ToJson(c)
 		return
 	}

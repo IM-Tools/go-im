@@ -15,14 +15,19 @@ import (
 var router *gin.Engine
 
 func RegisterApiRoutes(router *gin.Engine)  {
+
+	//允许跨域
+	router.Use(middleware.CrosHandler())
+
 	router.GET("/", func(context *gin.Context) {
 		context.JSON(200, gin.H{
 			"message": "hello world!!!",
 		})
 	})
-	weibo := new(Auth.WeiBo)
+	weibo := new(Auth.WeiBoController)
 	auth := new(Auth.AuthController)
 	router.GET("/api/WeiBoCallBack",weibo.WeiBoCallBack)
+	router.GET("/api/giteeCallBack",auth.GiteeCallBack)
 
 
 	api := router.Group("/api").Use(middleware.Auth())
@@ -30,7 +35,16 @@ func RegisterApiRoutes(router *gin.Engine)  {
 		api.POST("/me",auth.Me)
 		api.POST("/refresh",auth.Refresh)
 		//将该连接升级为ws
-		ws := new(service.WsServe)
-		api.GET("/ws-con",ws.WsConn)
+
 	}
+
+	wsServe := new(service.WsServe)
+	ws := router.Group("/serve").Use(middleware.WsAuth())
+	{
+		ws.GET("/ws-con",wsServe.WsConn)
+		//将该连接升级为ws
+	}
+
+
+
 }
