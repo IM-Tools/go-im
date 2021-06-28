@@ -8,6 +8,7 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	userModel "go_im/bin/http/models/user"
+	"go_im/pkg/jwt"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
 )
@@ -29,9 +30,10 @@ var UsersModel userModel.Users
 //获取用户列表
 func (*UsersController)GetUsersList(c *gin.Context)  {
 	name := c.Query("name")
+	claims := c.MustGet("claims").(*jwt.CustomClaims)
 	var Users []UsersList
-
-	query := model.DB.Model(UsersModel)
+	//将自己信息排除掉
+	query := model.DB.Model(UsersModel).Where("id <> ?",claims.ID)
 
 	if len(name) >0 {
 		query = query.Where("name like ?","%"+name+"%")
