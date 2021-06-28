@@ -10,7 +10,6 @@ import (
 	Auth "go_im/bin/http/controller/auth"
 	"go_im/bin/http/middleware"
 	"go_im/bin/service"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,13 +42,12 @@ func RegisterApiRoutes(router *gin.Engine) {
 	router.GET("/api/WeiBoCallBack", weibo.WeiBoCallBack)
 	router.GET("/api/giteeCallBack", auth.GiteeCallBack)
 
-	api := router.Group("/api").Use(middleware.Auth(), middleware.CrosHandler())
+	api := router.Group("/api").Use(middleware.Auth())
 	{
 		api.POST("/me", auth.Me)
 		api.POST("/refresh", auth.Refresh)
 		api.GET("/UsersList", users.GetUsersList)
 		//将该连接升级为ws
-
 	}
 
 	wsServe := new(service.WsServe)
@@ -58,5 +56,4 @@ func RegisterApiRoutes(router *gin.Engine) {
 		ws.GET("/ws-con", wsServe.WsConn)
 		//将该连接升级为ws
 	}
-
 }
