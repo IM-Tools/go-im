@@ -7,9 +7,7 @@
 package middleware
 
 import (
-"github.com/gin-gonic/gin"
-	"go_im/pkg/response"
-
+	"github.com/gin-gonic/gin"
 )
 
 //跨域访问：cross  origin resource share
@@ -26,9 +24,25 @@ func CrosHandler() gin.HandlerFunc {
 		context.Set("content-type", "application/json")
 
 		if method == "OPTIONS" {
-			 response.FailResponse(401,"Options Request!").ToJson(context)
+			//response.FailResponse(401, "Options Request!").ToJson(context)
 		}
 		//处理请求
 		context.Next()
 	}
+	// return func(c *gin.Context) {
+	// 	method := c.Request.Method
+
+	// 	c.Header("Access-Control-Allow-Origin", "*")
+	// 	c.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+	// 	c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+	// 	c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+	// 	c.Header("Access-Control-Allow-Credentials", "true")
+
+	// 	//放行所有OPTIONS方法
+	// 	if method == "OPTIONS" {
+	// 		c.AbortWithStatus(403)
+	// 	}
+	// 	// 处理请求
+	// 	c.Next()
+	// }
 }

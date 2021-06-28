@@ -10,6 +10,7 @@ import (
 	"go_im/pkg/model"
 	"go_im/pkg/redis"
 	"time"
+
 )
 
 func SetupDB() {
@@ -17,7 +18,7 @@ func SetupDB() {
 	//启动mysql连接池
 	db := model.ConnectDB()
 
-	sqlDB,_ :=db.DB()
+	sqlDB, _ := db.DB()
 
 	sqlDB.SetMaxOpenConns(config.GetInt("database.mysql.max_open_connections"))
 	//设置最大空闲数
@@ -28,4 +29,3 @@ func SetupDB() {
 	//启动redis连接池
 	redis.InitClient()
 }
-
