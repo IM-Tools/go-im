@@ -33,7 +33,7 @@ type Message struct {
 	Content   string `json:"content,omitempty"`
 }
 
-// Manager define a ws server manager
+// ws服务管理器
 var Manager = ClientManager{
 	Broadcast:  make(chan []byte),
 	Register:   make(chan *Client),
