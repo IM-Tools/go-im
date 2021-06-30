@@ -48,4 +48,10 @@ func ComparePasswords(hashedPwd string, plainPwd string) bool {
 	return true
 }
 
+//生成频道
+func ProduceChannelName(f_id string,t_id string)(channel_a string,channel_b string)  {
+	channel_a =  "channel_"+f_id+"_"+t_id
+	channel_b =  "channel_"+t_id+"_"+f_id
+	return channel_a,channel_b
+}
 

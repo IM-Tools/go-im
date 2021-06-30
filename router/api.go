@@ -39,6 +39,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 		api.POST("/me", auth.Me)
 		api.POST("/refresh", auth.Refresh)
 		api.GET("/UsersList", users.GetUsersList)
+		api.GET("/InformationHistory", users.InformationHistory)
 		//将该连接升级为ws
 	}
 	wsServe := new(service.WsServe)
