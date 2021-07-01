@@ -10,6 +10,7 @@ import (
 	"go_im/bin"
 	"go_im/config"
 	conf "go_im/pkg/config"
+	"go_im/pkg/ws"
 	"go_im/router"
 )
 
@@ -22,6 +23,8 @@ func main()  {
 	app := gin.Default()
 	//加载连接池
 	bin.SetupDB()
+	//启动协程执行开始程序
+	go ws.Manager.Start()
 	//注册路由
 	router.RegisterApiRoutes(app)
 

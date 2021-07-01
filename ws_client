@@ -1,0 +1,39 @@
+/**
+  @author:panliang
+  @data:2021/7/1
+  @note
+**/
+package go_im
+
+import (
+	"flag"
+	"fmt"
+	"github.com/gorilla/websocket"
+	"net/url"
+)
+
+var addr = flag.String("addr", "localhost:9092", "http service address")
+
+func main() {
+	u := url.URL{Scheme: "ws", Host: *addr, Path: "/ws-con?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3IiwiTmFtZSI6Ikhp5Y-r5oiR5p2O6I2j5rWpIiwiQXZhdGFyIjoiaHR0cHM6Ly90dmF4Mi5zaW5haW1nLmNuL2Nyb3AuMC4wLjEwMDIuMTAwMi4xODAvMDA2cFAyTGFseThncWNqMTd3Y2U5ajMwcnUwcnUwdXAuanBnP0tJRD1pbWdiZWQsdHZhXHUwMDI2RXhwaXJlcz0xNjI0NTEzMjcxXHUwMDI2c3NpZz1sbXJOVGlEVVB5IiwiRW1haWwiOiIiLCJleHAiOjE2MjU3MjIxNzUsImlzcyI6IklKamtLTE1OTzU2N1BRWDEyUi0iLCJuYmYiOjE2MjUwMzU5NzV9.uTRyPoGK31He_Q_ObDCjuN17c03KHEvKuWjK4vAUU-U"}
+	var dialer *websocket.Dialer
+
+	//通过Dialer连接websocket服务器
+	conn, _, err := dialer.Dial(u.String(), nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	//go timeWriter(conn)
+	//打印接收到的消息或者错误
+
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			fmt.Println("read:", err)
+			return
+		}
+		fmt.Printf("received: %s\n", message)
+	}
+}

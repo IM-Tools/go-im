@@ -57,7 +57,6 @@ func (*UsersController)GetUsersList(c *gin.Context)  {
 //获取与单个用户消息列表
 
 func (*UsersController)InformationHistory(c *gin.Context)  {
-
 	to_id :=c.Query("to_id")
 	claims := c.MustGet("claims").(*jwt.CustomClaims)
 	from_id :=claims.ID

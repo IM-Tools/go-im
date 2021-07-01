@@ -7,10 +7,10 @@ package router
 
 import (
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	Auth "go_im/bin/http/controller/auth"
 	"go_im/bin/http/middleware"
 	"go_im/bin/service"
-	"github.com/gin-gonic/gin"
 )
 
 var router *gin.Engine
