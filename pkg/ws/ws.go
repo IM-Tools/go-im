@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"github.com/tidwall/gjson"
 	"strconv"
 )
 
@@ -81,49 +80,48 @@ func (manager *ClientManager) Start() {
 			}
 			//广播
 		case message := <-manager.Broadcast:
-
-			msg :=new(Msg)
-
-			msgs := gjson.Get(string(message),"msg")
-			msg.Msg = msgs.Str
-			fromid := gjson.Get(string(message),"from_id")
-			toid := gjson.Get(string(message),"to_id")
-			msg.FromId = fromid.Index
-			msg.ToId = fromid.Index
-			fid_channel := SendUuid(fromid.Num)
-			toid_channel := SendUuid(toid.Num)
-			////遍历已经连接的客户端，把消息发送给他们
+			//msg :=new(Msg)
+			//
+			//msgs := gjson.Get(string(message),"msg")
+			//msg.Msg = msgs.Str
+			//fromid := gjson.Get(string(message),"from_id")
+			//toid := gjson.Get(string(message),"to_id")
+			//msg.FromId = fromid.Index
+			//msg.ToId = fromid.Index
+			//fid_channel := SendUuid(fromid.Num)
+			//toid_channel := SendUuid(toid.Num)
+			//////遍历已经连接的客户端，把消息发送给他们
 			for conn := range manager.Clients {
-				if conn.ID == fid_channel {
-					msg.Status = 1
-					data,_ :=Encode(msg)
-					fmt.Println("字节数组",data)
-
-
-					select {
-					case
-					conn.Send <- data:
-					default:
-						close(conn.Send)
-						delete(manager.Clients, conn)
-
-					}
-
-
-				}
-				if conn.ID == toid_channel {
-					msg.Status = 0
-					data,_ :=	Encode(msg)
-					fmt.Println("字节数组",data)
-					select {
-					case
-						conn.Send <- data:
-					default:
-						close(conn.Send)
-						delete(manager.Clients, conn)
-
-					}
-				}else {
+			//	if conn.ID == fid_channel {
+			//		msg.Status = 1
+			//		data,_ :=Encode(msg)
+			//		fmt.Println("字节数组",data)
+			//
+			//
+			//		select {
+			//		case
+			//		conn.Send <- data:
+			//		default:
+			//			close(conn.Send)
+			//			delete(manager.Clients, conn)
+			//
+			//		}
+			//
+			//
+			//	}
+			//	if conn.ID == toid_channel {
+			//		msg.Status = 0
+			//		data,_ :=	Encode(msg)
+			//		fmt.Println("字节数组",data)
+			//		select {
+			//		case
+			//			conn.Send <- data:
+			//		default:
+			//			close(conn.Send)
+			//			delete(manager.Clients, conn)
+			//
+			//		}
+			//	}else {
 
 					select {
 
@@ -133,9 +131,6 @@ func (manager *ClientManager) Start() {
 						close(conn.Send)
 						delete(manager.Clients, conn)
 					}
-				}
-
-
 
 			}
 		}
