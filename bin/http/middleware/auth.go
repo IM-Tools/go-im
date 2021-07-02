@@ -6,9 +6,8 @@
 package middleware
 
 import (
-	"fmt"
-	NewJwt "go_im/pkg/jwt"
 	"github.com/gin-gonic/gin"
+	NewJwt "go_im/pkg/jwt"
 	"net/http"
 )
 
@@ -43,7 +42,7 @@ func Auth() gin.HandlerFunc {
 				c.Abort()
 				return
 			}
-			fmt.Println(claims)
+
 			c.Set("claims", claims)
 		}
 	}

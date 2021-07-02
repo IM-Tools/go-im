@@ -26,8 +26,7 @@ func (*WsServe)WsConn(c *gin.Context) {
 		return
 	}
 	claims := c.MustGet("claims").(*jwt.CustomClaims)
-	uuids := "channel_"+claims.ID
-	client := &ws.Client{ID: uuids, Socket: conn, Send: make(chan []byte)}
+	client := &ws.Client{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
 	//注册一个新链接
 	ws.Manager.Register <- client
 	//启动协程读消息

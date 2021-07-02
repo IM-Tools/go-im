@@ -24,7 +24,7 @@ const (
 
 func GetGiteeAccessToken(code *string)  string {
 
-	fmt.Println(code)
+
 	queryData :=url.Values{
 		"client_id":     {ge_client_id},
 		"redirect_uri":  {ge_redirect_uri},

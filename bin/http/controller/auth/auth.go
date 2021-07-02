@@ -6,7 +6,6 @@
 package auth
 
 import (
-	"fmt"
 	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -41,8 +40,8 @@ func (*AuthController)GiteeCallBack(c *gin.Context)  {
 		response.FailResponse(403,"参数不正确~").ToJson(c)
 	}
 	//微博授权
-	access_token := oauth.GetGiteeAccessToken(&code)
-	fmt.Println(access_token)
+	//access_token := oauth.GetGiteeAccessToken(&code)
+
 	//UserInfo := oauth.GetGiteeUserInfo(&access_token)
 
 }
