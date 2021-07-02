@@ -26,7 +26,6 @@ func WsAuth() gin.HandlerFunc {
 			jwt := NewJwt.NewJWT()
 			claims,err := jwt.ParseToken(token)
 			if err != nil {
-
 				if err == NewJwt.TokenExpired {
 					c.JSON(http.StatusOK, gin.H{
 						"status": 500,

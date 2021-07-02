@@ -14,6 +14,3 @@ type ImMessage struct {
 	Channel string `json:"channel"`
 }
 
-
-
-
