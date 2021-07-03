@@ -10,11 +10,9 @@ import (
 	"go_im/pkg/model"
 	"go_im/pkg/redis"
 	"time"
-
 )
 
 func SetupDB() {
-
 	//启动mysql连接池
 	db := model.ConnectDB()
 

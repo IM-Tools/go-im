@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	Auth "go_im/bin/http/controller/auth"
 	"go_im/bin/http/middleware"
-	"go_im/bin/service"
 )
 
 var router *gin.Engine
@@ -22,16 +21,18 @@ func RegisterApiRoutes(router *gin.Engine) {
 	users := new(Auth.UsersController)
 
 	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true //允许所有域名
-	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}//允许请求的方法
-	config.AllowHeaders = []string{"tus-resumable", "upload-length", "upload-metadata", "cache-control", "x-requested-with", "*"}//允许的Header
+	config.AllowAllOrigins = true                                                                                                 //允许所有域名
+	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}                                                                      //允许请求的方法
+	config.AllowHeaders = []string{"tus-resumable", "upload-length", "upload-metadata", "cache-control", "x-requested-with", "*"} //允许的Header
 	router.Use(cors.New(config))
+
 	//router.Use(middleware.CrosHandler())
 	router.GET("/", func(context *gin.Context) {
 		context.JSON(200, gin.H{
 			"message": "hello world!!!",
 		})
 	})
+
 	router.GET("/api/WeiBoCallBack", weibo.WeiBoCallBack)
 	router.GET("/api/giteeCallBack", auth.GiteeCallBack)
 	api := router.Group("/api").Use(middleware.Auth())
@@ -40,12 +41,5 @@ func RegisterApiRoutes(router *gin.Engine) {
 		api.POST("/refresh", auth.Refresh)
 		api.GET("/UsersList", users.GetUsersList)
 		api.GET("/InformationHistory", users.InformationHistory)
-		//将该连接升级为ws
-	}
-	wsServe := new(service.WsServe)
-	ws := router.Group("/serve").Use(middleware.WsAuth())
-	{
-		ws.GET("/ws-con", wsServe.WsConn)
-		//将该连接升级为ws
 	}
 }

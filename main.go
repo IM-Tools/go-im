@@ -14,19 +14,20 @@ import (
 	"go_im/router"
 )
 
-func init()  {
+func init() {
 	config.Initialize()
 }
 
-
-func main()  {
+func main() {
 	app := gin.Default()
 	//加载连接池
 	bin.SetupDB()
 	//启动协程执行开始程序
 	go ws.Manager.Start()
+
 	//注册路由
 	router.RegisterApiRoutes(app)
+	router.RegisterIMRouters(app)
 
-	app.Run(":"+conf.GetString("app.port"))
+	_ = app.Run(":" + conf.GetString("app.port"))
 }
