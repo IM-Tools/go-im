@@ -18,7 +18,7 @@ var (
 	err       error
 )
 
-func Hanlder(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
+func App(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
 	Webscoket, err = upgrader.Upgrade(w, r, nil)
 	return Webscoket, err
 }

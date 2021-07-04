@@ -13,7 +13,7 @@ type IMservice struct{}
 //定义一个ws服务
 func (*IMservice) Connect(c *gin.Context) {
 	// 将http请求升级为websocket协议
-	conn, err := ws.Hanlder(c.Writer, c.Request)
+	conn, err := ws.App(c.Writer, c.Request)
 
 	if err != nil {
 		http.NotFound(c.Writer, c.Request)
