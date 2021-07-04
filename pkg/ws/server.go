@@ -12,20 +12,19 @@ import (
 	"strconv"
 )
 
-
 //客户端管理
 type ClientManager struct {
-	Clients map[*Client]bool //存放ws长链接
-	Broadcast  chan []byte //收集消息分发到client
-	Register   chan *Client //新创建的长链接
-	Unregister chan *Client //注销的长链接
+	Clients    map[*Client]bool //存放ws长链接
+	Broadcast  chan []byte      //收集消息分发到client
+	Register   chan *Client     //新创建的长链接
+	Unregister chan *Client     //注销的长链接
 }
 
 //客户端
 type Client struct {
-	ID     string //客户端id
+	ID     string          //客户端id
 	Socket *websocket.Conn //长链接
-	Send   chan []byte //需要发送的消息
+	Send   chan []byte     //需要发送的消息
 }
 
 //消息结构体
@@ -37,25 +36,25 @@ type Message struct {
 
 //发送的消息
 type Msg struct {
-	Code int `json:"code,omitempty"`
-	FromId int `json:"from_id,omitempty"`
-	Msg string `json:"msg,omitempty"`
-	ToId int `json:"to_id,omitempty"`
-	Status int `json:"status,omitempty"`
+	Code   int    `json:"code,omitempty"`
+	FromId int    `json:"from_id,omitempty"`
+	Msg    string `json:"msg,omitempty"`
+	ToId   int    `json:"to_id,omitempty"`
+	Status int    `json:"status,omitempty"`
 }
 
 //离线和上线消息
 type OnlineMsg struct {
-	Code int `json:"code,omitempty"`
-	Msg string `json:"msg,omitempty"`
+	Code int    `json:"code,omitempty"`
+	Msg  string `json:"msg,omitempty"`
 }
 
 //定义的一些状态码
 
 const (
-	connOut = 5000  //断开链接
-	connOk = 1000 //连接成功
-	SendOk = 200 //发送成功
+	connOut = 5000 //断开链接
+	connOk  = 1000 //连接成功
+	SendOk  = 200  //发送成功
 )
 
 // 创建客户端管理器
@@ -76,7 +75,7 @@ func (manager *ClientManager) Start() {
 			//将客户端的链接设置为true
 			manager.Clients[conn] = true
 			//把返回链接成功的消息json格式化
-			jsonMessage, _ := json.Marshal(&OnlineMsg{Code:connOk ,Msg: "用户上线啦" })
+			jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOk, Msg: "用户上线啦"})
 			//调用客户端方法发送消息
 			manager.Send(jsonMessage, conn)
 		case conn := <-manager.Unregister:
@@ -84,21 +83,21 @@ func (manager *ClientManager) Start() {
 			if _, ok := manager.Clients[conn]; ok {
 				close(conn.Send)
 				delete(manager.Clients, conn)
-				jsonMessage, _ := json.Marshal(&OnlineMsg{Code:connOut,Msg: "用户离线了"})
+				jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了"})
 				manager.Send(jsonMessage, conn)
 			}
-	    //消息消费
+			//消息消费
 		case message := <-manager.Broadcast:
 			data := EnMessage(message)
 			fmt.Println(data.Content)
 			msg := new(Msg)
-			err := json.Unmarshal([]byte(data.Content),&msg)
+			err := json.Unmarshal([]byte(data.Content), &msg)
 			if err != nil {
 				fmt.Println(err)
 			}
-			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk,Msg: msg.Msg,FromId: msg.FromId,ToId: msg.ToId,Status: 0})
+			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg: msg.Msg, FromId: msg.FromId, ToId: msg.ToId, Status: 0})
 			for conn := range manager.Clients {
-				id,_ := strconv.Atoi(conn.ID)
+				id, _ := strconv.Atoi(conn.ID)
 				if id == msg.ToId {
 					go PutData(msg)
 					conn.Send <- jsonMessage_from
@@ -107,6 +106,7 @@ func (manager *ClientManager) Start() {
 		}
 	}
 }
+
 // 发送消息到客户端
 func (manager *ClientManager) Send(message []byte, ignore *Client) {
 	for conn := range manager.Clients {
@@ -131,7 +131,7 @@ func (c *Client) Read() {
 			c.Socket.Close()
 			break
 		}
-		if string(message) == "HeartBeat"{
+		if string(message) == "HeartBeat" {
 			c.Socket.WriteMessage(websocket.TextMessage, []byte(`{"code":0,"data":"heartbeat ok"}`))
 			continue
 		}
@@ -159,6 +159,3 @@ func (c *Client) Write() {
 		}
 	}
 }
-
-
-

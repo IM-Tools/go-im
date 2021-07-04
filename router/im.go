@@ -9,8 +9,8 @@ import (
 func RegisterIMRouters(router *gin.Engine) {
 	IMservice := new(service.IMservice)
 
-	ws := router.Group("/serve").Use(middleware.WsAuth())
+	ws := router.Group("/im").Use(middleware.WsAuth())
 	{
-		ws.GET("/ws-con", IMservice.WsConn)
+		ws.GET("/connect", IMservice.Connect)
 	}
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 	userModel "go_im/bin/http/models/user"
+	"go_im/bin/http/validates"
 	"go_im/bin/oauth"
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
@@ -58,6 +59,25 @@ func (*AuthController) Me(c *gin.Context) {
 		"email":  claims.Email,
 	}
 	response.SuccessResponse(data, 200).ToJson(c)
+}
+
+func (that *AuthController) Login(c *gin.Context) {
+	var params validates.LoginParams
+	var users userModel.Users
+	_ = c.ShouldBind(&params)
+
+	model.DB.Model(&userModel.Users{}).Where("name = ?", params.Name).Find(&users)
+	if users.ID == 0 {
+		response.FailResponse(403, "用户不存在").ToJson(c)
+		return
+	}
+
+	if !helpler.ComparePasswords(users.Password, params.Password) {
+		response.FailResponse(403, "账号或者密码错误").ToJson(c)
+		return
+	}
+
+	generateToken(c, &users)
 }
 
 //重新刷新用户信息

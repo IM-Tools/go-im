@@ -33,13 +33,19 @@ func RegisterApiRoutes(router *gin.Engine) {
 		})
 	})
 
-	router.GET("/api/WeiBoCallBack", weibo.WeiBoCallBack)
-	router.GET("/api/giteeCallBack", auth.GiteeCallBack)
-	api := router.Group("/api").Use(middleware.Auth())
+	apiRouter := router.Group("/api")
+	apiRouter.Group("")
 	{
-		api.POST("/me", auth.Me)
-		api.POST("/refresh", auth.Refresh)
-		api.GET("/UsersList", users.GetUsersList)
-		api.GET("/InformationHistory", users.InformationHistory)
+		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack)
+		apiRouter.GET("/giteeCallBack", auth.GiteeCallBack)
+		apiRouter.POST("/login", auth.Login)
+
+		apiRouter.Use(middleware.Auth())
+		{
+			apiRouter.POST("/me", auth.Me)
+			apiRouter.POST("/refresh", auth.Refresh)
+			apiRouter.GET("/UsersList", users.GetUsersList)
+			apiRouter.GET("/InformationHistory", users.InformationHistory)
+		}
 	}
 }
