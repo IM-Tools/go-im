@@ -6,6 +6,7 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	messageModel "go_im/bin/http/models/msg"
 	userModel "go_im/bin/http/models/user"
@@ -68,6 +69,7 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 	var MsgList []ImMsgList
 	//生成频道
 	channel_a, channel_b := helpler.ProduceChannelName(from_id, to_id)
+	fmt.Println(channel_b,channel_a)
 	list := model.DB.
 		Model(messageModel.ImMessage{}).
 		Where("channel = ?  or channel= ?", channel_a, channel_b).

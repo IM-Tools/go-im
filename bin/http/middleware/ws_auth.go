@@ -8,34 +8,23 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	NewJwt "go_im/pkg/jwt"
-	"net/http"
+	"go_im/pkg/response"
 )
 
 func WsAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Query("token")
 		if token == "" {
-			c.JSON(http.StatusForbidden, map[string]interface{}{
-				"code":403,
-				"msg":"token不能为空",
-			})
-			c.Abort()
-			return
+			response.FailResponse(403,"token不能为空").ToJson(c)
 		} else {
 			//开始鉴权
 			jwt := NewJwt.NewJWT()
 			claims,err := jwt.ParseToken(token)
 			if err != nil {
 				if err == NewJwt.TokenExpired {
-					c.JSON(http.StatusOK, gin.H{
-						"status": 500,
-						"msg":err.Error(),
-					})
+					response.FailResponse(500,err.Error()).ToJson(c)
 				} else {
-					c.JSON(http.StatusForbidden, map[string]interface{}{
-						"code":500,
-						"msg":err.Error(),
-					})
+					response.FailResponse(500,err.Error()).ToJson(c)
 				}
 				c.Abort()
 				return
