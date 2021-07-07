@@ -7,6 +7,7 @@ package middleware
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 	"go_im/bin/http/models/user"
@@ -24,8 +25,9 @@ var (
 //路由中间件
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token = c.GetHeader("authorization")
-		err, token = ValidateToken(token)
+		token = c.DefaultQuery("token", c.GetHeader("authorization"))
+		fmt.Println("token", token)
+		err, token = ValidatedToken(token)
 		if err != nil {
 			response.ErrorResponse(401, err.Error()).WriteTo(c)
 			c.Abort()
@@ -46,16 +48,17 @@ func Auth() gin.HandlerFunc {
 }
 
 // ValidateToken 验证token
-func ValidateToken(token string) (error, string) {
+func ValidatedToken(token string) (error, string) {
 	if len(token) == 0 {
 		return errors.New("Token 不能为空"), ""
 	}
 
 	t := strings.Split(token, "Bearer ")
-	if len(t) > 0 {
+	fmt.Println("TTTTTT", t)
+	if len(t) > 1 {
 		return nil, t[1]
 	}
-	return errors.New("Token 已失效"), ""
+	return nil, token
 }
 
 // setAuthUser 设置登录用户
