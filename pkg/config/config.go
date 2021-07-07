@@ -15,7 +15,7 @@ var Viper *viper.Viper
 
 type StrMap map[string]interface{}
 
-func init()  {
+func init() {
 	Viper = viper.New()
 
 	// 1. 初始化 Viper 库
@@ -89,4 +89,3 @@ func GetBool(path string, defaultValue ...interface{}) bool {
 	return cast.ToBool(Get(path, defaultValue...))
 
 }
-

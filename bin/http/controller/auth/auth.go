@@ -51,14 +51,8 @@ func (*AuthController) GiteeCallBack(c *gin.Context) {
 //登录并返回用户信息与token
 
 func (*AuthController) Me(c *gin.Context) {
-	claims := c.MustGet("claims").(*jwt.CustomClaims)
-	data := map[string]interface{}{
-		"id":     claims.ID,
-		"name":   claims.Name,
-		"avatar": claims.Avatar,
-		"email":  claims.Email,
-	}
-	response.SuccessResponse(data, 200).ToJson(c)
+	user := userModel.AuthUser
+	response.SuccessResponse(user, 200).ToJson(c)
 }
 
 func (that *AuthController) Login(c *gin.Context) {
