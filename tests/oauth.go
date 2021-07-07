@@ -14,12 +14,18 @@ import (
 	"net/url"
 	"strings"
 )
+type Client struct {
+	ID     string          //客户端id
+	Socket  string //长链接
+	Send   chan []byte     //需要发送的消息
+}
+
+
+type ClientManager struct {
+	Clients    map[*Client]bool //存放ws长链接
+}
 
 func main()  {
-
-
-	keys := httpReuqet();
-	fmt.Println(keys)
 
 }
 

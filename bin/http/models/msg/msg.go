@@ -12,5 +12,6 @@ type ImMessage struct {
 	FromId uint64 `json:"user_id"`
 	ToId uint64 `json:"send_id"`
 	Channel string `json:"channel"`
+	IsRead int `json:"is_read"`
 }
 

@@ -25,8 +25,13 @@ type UsersList struct {
 	Email     string `json:"email"`
 	Avatar    string `json:"avatar"`
 	Name      string `json:"name"`
-	CreatedAt string `json:"created_at"`
+	Msg       string `json:"msg"`
+	IsRead     int `json:"is_read"`
+	SendTime     string `json:"send_time"`
+	SendMsg     string `json:"send_msg"`
+	MsgTotal     int `json:"msg_total"`
 }
+
 
 type ImMsgList struct {
 	ID        uint64 `json:"id"`
@@ -45,7 +50,6 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 	var Users []UsersList
 	//将自己信息排除掉
 	query := model.DB.Model(userModel.Users{}).Where("id <> ?", claims.ID)
-
 	if len(name) > 0 {
 		query = query.Where("name like ?", "%"+name+"%")
 	}
