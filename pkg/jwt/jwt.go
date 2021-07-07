@@ -6,10 +6,10 @@
 package jwt
 
 import (
-"errors"
-"github.com/dgrijalva/jwt-go"
-"go_im/pkg/config"
-"time"
+	"errors"
+	"github.com/dgrijalva/jwt-go"
+	"go_im/pkg/config"
+	"time"
 )
 
 // JWT 签名结构
@@ -28,9 +28,9 @@ var (
 
 // 载荷，可以加一些自己需要的信息
 type CustomClaims struct {
-	ID    string `json:"userId"`
-	Name,Avatar string
-	Email string `valid:"email"`
+	ID           string `json:"userId"`
+	Name, Avatar string
+	Email        string `valid:"email"`
 	jwt.StandardClaims
 }
 
@@ -43,7 +43,6 @@ func NewJWT() *JWT {
 
 // 获取signKey
 func GetSignKey() string {
-
 	return SignKey
 
 }
@@ -87,6 +86,7 @@ func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {
 	}
 	return nil, TokenInvalid
 }
+
 //更新token
 func (j *JWT) RefreshToken(tokenString string) (string, error) {
 	jwt.TimeFunc = func() time.Time {

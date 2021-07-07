@@ -12,26 +12,17 @@ import (
 	"go_im/bin/http/middleware"
 )
 
-var router *gin.Engine
-
 func RegisterApiRoutes(router *gin.Engine) {
 	//允许跨域
-	weibo := new(Auth.WeiBoController)
-	auth := new(Auth.AuthController)
-	users := new(Auth.UsersController)
-
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true                                                                                                 //允许所有域名
 	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}                                                                      //允许请求的方法
 	config.AllowHeaders = []string{"tus-resumable", "upload-length", "upload-metadata", "cache-control", "x-requested-with", "*"} //允许的Header
 	router.Use(cors.New(config))
 
-	//router.Use(middleware.CrosHandler())
-	router.GET("/", func(context *gin.Context) {
-		context.JSON(200, gin.H{
-			"message": "hello world!!!",
-		})
-	})
+	weibo := new(Auth.WeiBoController)
+	auth := new(Auth.AuthController)
+	users := new(Auth.UsersController)
 
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")

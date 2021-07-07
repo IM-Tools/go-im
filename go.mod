@@ -15,7 +15,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/onsi/ginkgo v1.16.4 // indirect
 	github.com/onsi/gomega v1.13.0 // indirect
-	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/spf13/cast v1.3.1
 	github.com/spf13/viper v1.8.0
 	github.com/tidwall/gjson v1.8.0
@@ -25,6 +24,5 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/protobuf v1.27.0 // indirect
 	gorm.io/driver/mysql v1.1.1
-	gorm.io/driver/sqlite v1.1.4 // indirect
 	gorm.io/gorm v1.21.11
 )

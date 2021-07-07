@@ -13,8 +13,8 @@ import (
 )
 
 // json string to a map type
-func JsonToMap(str []byte) map[string]interface{}  {
-	var jsonMap  map[string]interface{}
+func JsonToMap(str []byte) map[string]interface{} {
+	var jsonMap map[string]interface{}
 	err := json.Unmarshal(str, &jsonMap)
 	if err != nil {
 		panic(err)
@@ -28,7 +28,7 @@ func HttpBuildQuery(queryData url.Values) string {
 
 //加密算法
 func HashAndSalt(pwd string) string {
-	hash,err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
 
 	if err != nil {
 		log.Println(err)
@@ -49,10 +49,8 @@ func ComparePasswords(hashedPwd string, plainPwd string) bool {
 }
 
 //生成频道
-func ProduceChannelName(f_id string,t_id string)(channel_a string,channel_b string)  {
-	channel_a =  "channel_"+f_id+"_"+t_id
-	channel_b =  "channel_"+t_id+"_"+f_id
-	return channel_a,channel_b
+func ProduceChannelName(f_id string, t_id string) (channel_a string, channel_b string) {
+	channel_a = "channel_" + f_id + "_" + t_id
+	channel_b = "channel_" + t_id + "_" + f_id
+	return channel_a, channel_b
 }
-
-

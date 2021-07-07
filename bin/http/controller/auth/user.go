@@ -8,13 +8,12 @@ package auth
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 	messageModel "go_im/bin/http/models/msg"
 	userModel "go_im/bin/http/models/user"
 	"go_im/pkg/helpler"
-	"go_im/pkg/jwt"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
-	"strconv"
 )
 
 type UsersController struct {
@@ -43,13 +42,15 @@ type ImMsgList struct {
 	Status    int    `json:"status"`
 }
 
-//获取用户列表
+// 获取用户列表
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")
-	claims := c.MustGet("claims").(*jwt.CustomClaims)
+	user := userModel.AuthUser
 	var Users []UsersList
 	//将自己信息排除掉
-	query := model.DB.Model(userModel.Users{}).Where("id <> ?", claims.ID)
+
+	query := model.DB.Model(userModel.Users{}).Where("id <> ?", user.ID)
+
 	if len(name) > 0 {
 		query = query.Where("name like ?", "%"+name+"%")
 	}
@@ -60,12 +61,11 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 	}, 200).ToJson(c)
 }
 
-//获取与单个用户消息列表
-
+// 获取与单个用户消息列表
 func (*UsersController) InformationHistory(c *gin.Context) {
 	to_id := c.Query("to_id")
-	claims := c.MustGet("claims").(*jwt.CustomClaims)
-	from_id := claims.ID
+	user := userModel.AuthUser
+	from_id := cast.ToString(user.ID)
 
 	if len(to_id) < 0 {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
@@ -84,7 +84,7 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 	if list.Error != nil {
 		return
 	}
-	from_ids, _ := strconv.ParseUint(from_id, 10, 64)
+	from_ids, _ := cast.ToUint64E(user.ID)
 
 	for key, value := range MsgList {
 		if value.FromId == from_ids {
