@@ -46,6 +46,7 @@ type ImMsgList struct {
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")
 	user := userModel.AuthUser
+
 	var Users []UsersList
 	//将自己信息排除掉
 
