@@ -13,3 +13,4 @@ type ImMessage struct {
 	ToId uint64 `json:"send_id"`
 	Channel string `json:"channel"`
 }
+

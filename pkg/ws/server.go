@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"go_im/bin/http/models/user"
 	"strconv"
 )
 
@@ -80,10 +81,18 @@ func (manager *ClientManager) Start() {
 			//把返回链接成功的消息json格式化
 			jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOk, Msg:"用户上线啦",ID: conn.ID})
 			//调用客户端方法发送消息
+			//设置用户在线状态
+			id,_ := strconv.ParseInt(conn.ID, 10, 64)
+			user.SetUserStatus(uint64(id),1);
+
+
 			manager.Send(jsonMessage, conn)
 		case conn := <-manager.Unregister:
 			//判断连接的状态，如果是true,就关闭send，删除连接client的值
 			if _, ok := manager.Clients[conn]; ok {
+				//设置用户离线状态
+				id,_ := strconv.ParseInt(conn.ID, 10, 64)
+				user.SetUserStatus(uint64(id),0);
 				close(conn.Send)
 				delete(manager.Clients, conn)
 				jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: conn.ID+"用户离线了",ID: conn.ID})

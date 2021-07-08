@@ -25,6 +25,7 @@ type UsersList struct {
 	Avatar    string `json:"avatar"`
 	Name      string `json:"name"`
 	Msg       string `json:"msg"`
+	Status       int `json:"status"`
 	IsRead     int `json:"is_read"`
 	SendTime     string `json:"send_time"`
 	SendMsg     string `json:"send_msg"`

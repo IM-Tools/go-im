@@ -37,7 +37,6 @@ func GetUsers(OauthId string) (Users, error) {
 	if err := model.DB.Where("oauth_id =?", OauthId).First(&user).Error; err != nil {
 		return user, err
 	}
-
 	return user, nil
 }
 
@@ -49,4 +48,10 @@ func GetUserList() (Users, error) {
 		fmt.Println(err)
 	}
 	return user, nil
+}
+
+//设置用户上下线状态
+func SetUserStatus(id uint64 ,status int )  {
+
+	model.DB.Model(&Users{}).Where("id=?",id).Update("status",status)
 }
