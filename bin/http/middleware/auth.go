@@ -26,7 +26,6 @@ var (
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token = c.DefaultQuery("token", c.GetHeader("authorization"))
-		fmt.Println("token", token)
 		err, token = ValidatedToken(token)
 		if err != nil {
 			response.ErrorResponse(401, err.Error()).WriteTo(c)
