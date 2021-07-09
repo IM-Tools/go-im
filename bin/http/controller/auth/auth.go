@@ -6,7 +6,6 @@
 package auth
 
 import (
-	"fmt"
 	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -141,11 +140,8 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 	UserInfo := oauth.GetWeiBoUserInfo(&access_token)
 
 	users := userModel.Users{}
-	//oauth_id := gjson.Get(UserInfo,"id").Raw
-	oauth_id := "5878370732"
-
+	oauth_id := gjson.Get(UserInfo,"id").Raw
 	isThere := model.DB.Where("oauth_id = ?", oauth_id).First(&users)
-	fmt.Println(users)
 	//用户未授权
 	if isThere.Error != nil {
 
