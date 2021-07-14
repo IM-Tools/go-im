@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"go_im/bin/http/models/user"
+	"go_im/pkg/model"
 	"strconv"
 )
 
@@ -42,9 +43,19 @@ type Msg struct {
 	Msg    string `json:"msg,omitempty"`
 	ToId   int    `json:"to_id,omitempty"`
 	Status int    `json:"status,omitempty"`
-	//IsRead     int `json:"is_read"`
-	//SendTime     int `json:"send_time"`
 }
+
+
+type ImMessage struct {
+	ID        uint64 `json:"id"`
+	Msg       string `json:"msg"`
+	CreatedAt string `json:"created_at"`
+	FromId int `json:"user_id"`
+	ToId int `json:"send_id"`
+	Channel string `json:"channel"`
+	IsRead     int `json:"is_read"`
+}
+
 
 //离线和上线消息
 type OnlineMsg struct {
@@ -69,6 +80,8 @@ var Manager = ClientManager{
 	Clients:    make(map[*Client]bool),
 }
 
+
+
 //启动websocket
 func (manager *ClientManager) Start() {
 
@@ -85,8 +98,22 @@ func (manager *ClientManager) Start() {
 			id,_ := strconv.ParseInt(conn.ID, 10, 64)
 			user.SetUserStatus(uint64(id),1);
 
-
 			manager.Send(jsonMessage, conn)
+
+			//启动一个协程开始消费离线消息
+			go func() {
+				var msgList []ImMessage
+				list := model.DB.Where("to_id=? and is_read=?",id,0).Find(&msgList)
+				if list.Error != nil {
+					fmt.Println(list.Error)
+				}
+				for key,val := range msgList {
+					data, _ := json.Marshal(&Msg{Code: SendOk,Msg:msgList[key].Msg,FromId:msgList[key].FromId, ToId:msgList[key].ToId,Status:0})
+					fmt.Println("消费-",val,"connid",conn.ID)
+					conn.Send <- data
+				}
+			}()
+
 		case conn := <-manager.Unregister:
 			//判断连接的状态，如果是true,就关闭send，删除连接client的值
 			if _, ok := manager.Clients[conn]; ok {
@@ -100,6 +127,7 @@ func (manager *ClientManager) Start() {
 			}
 			//消息消费
 		case message := <-manager.Broadcast:
+			fmt.Println("断线",message)
 			data := EnMessage(message)
 			fmt.Println(data.Content)
 			msg := new(Msg)
@@ -108,14 +136,20 @@ func (manager *ClientManager) Start() {
 				fmt.Println(err)
 			}
 			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg: msg.Msg, FromId: msg.FromId, ToId: msg.ToId, Status: 0})
-
+			identity := 0
 			for conn,key := range manager.Clients {
 				fmt.Println("key:",key)
 				id, _ := strconv.Atoi(conn.ID)
 				if id == msg.ToId {
-					go PutData(msg)
+					go PutData(msg,1)
 					conn.Send <- jsonMessage_from
+					identity = 1
+					continue
 				}
+			}
+			//离线消息入库
+			if identity == 0 {
+				go PutData(msg,0)
 			}
 		}
 	}

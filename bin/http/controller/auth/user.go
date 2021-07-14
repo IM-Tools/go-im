@@ -5,15 +5,19 @@
 **/
 package auth
 
+import "C"
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 	messageModel "go_im/bin/http/models/msg"
 	userModel "go_im/bin/http/models/user"
+	"go_im/bin/http/validates"
+	"go_im/bin/utils"
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
+	"strconv"
 )
 
 type UsersController struct {
@@ -31,8 +35,6 @@ type UsersList struct {
 	SendMsg     string `json:"send_msg"`
 	MsgTotal     int `json:"msg_total"`
 }
-
-
 type ImMsgList struct {
 	ID        uint64 `json:"id"`
 	Msg       string `json:"msg"`
@@ -42,22 +44,17 @@ type ImMsgList struct {
 	Channel   string `json:"channel"`
 	Status    int    `json:"status"`
 }
-
 // 获取用户列表
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")
 	user := userModel.AuthUser
-
 	var Users []UsersList
 	//将自己信息排除掉
-
 	query := model.DB.Model(userModel.Users{}).Where("id <> ?", user.ID)
-
 	if len(name) > 0 {
 		query = query.Where("name like ?", "%"+name+"%")
 	}
 	query = query.Select("id", "name", "avatar", "status", "created_at").Find(&Users)
-
 	response.SuccessResponse(map[string]interface{}{
 		"list": Users,
 	}, 200).ToJson(c)
@@ -97,3 +94,20 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 	}
 	response.SuccessResponse(MsgList, 200).ToJson(c)
 }
+
+func (*UsersController) Uploads(C *gin.Context)  {
+	var params validates.Upload
+	fmt.Println(params)
+	body:=utils.Upload(params.Content,params.Path,params.Message)
+	fmt.Println(body)
+}
+
+func (*UsersController) ReadMessage(c *gin.Context) {
+	user := userModel.AuthUser
+	channel_a, channel_b := helpler.ProduceChannelName(strconv.Itoa(int(user.ID)), c.Query("to_id"))
+
+
+	messageModel.ReadMsg(channel_a,channel_b)
+	response.SuccessResponse(gin.H{}, 200).ToJson(c)
+}
+

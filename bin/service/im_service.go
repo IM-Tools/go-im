@@ -31,3 +31,9 @@ func (*IMservice) Connect(c *gin.Context) {
 	//启动协程写消息
 	go client.Write()
 }
+
+
+//离线消息推送
+//func PushOfflineMessage() {
+//
+//}

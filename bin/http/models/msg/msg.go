@@ -5,6 +5,11 @@
 **/
 package msg
 
+import (
+	"fmt"
+	"go_im/pkg/model"
+)
+
 type ImMessage struct {
 	ID        uint64 `json:"id"`
 	Msg       string `json:"msg"`
@@ -12,5 +17,19 @@ type ImMessage struct {
 	FromId uint64 `json:"user_id"`
 	ToId uint64 `json:"send_id"`
 	Channel string `json:"channel"`
+	IsRead     int `json:"is_read"`
 }
 
+// 获取离线消息列表
+
+func GetOfflineMessage(id uint64) (msg *[]ImMessage)  {
+	list := model.DB.Where("id=?",id).Find(&msg)
+	if list.Error != nil {
+		fmt.Println(list.Error)
+	}
+	return msg
+}
+
+func ReadMsg(channel_a string,channel_b string)  {
+	model.DB.Model(&ImMessage{}).Where("channel = ?  or channel= ?", channel_a, channel_b).Update("is_read",1)
+}

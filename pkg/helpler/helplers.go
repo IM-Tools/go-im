@@ -11,7 +11,6 @@ import (
 	"log"
 	"net/url"
 )
-
 // json string to a map type
 func JsonToMap(str []byte) map[string]interface{} {
 	var jsonMap map[string]interface{}
@@ -21,11 +20,9 @@ func JsonToMap(str []byte) map[string]interface{} {
 	}
 	return jsonMap
 }
-
 func HttpBuildQuery(queryData url.Values) string {
 	return queryData.Encode()
 }
-
 //加密算法
 func HashAndSalt(pwd string) string {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
@@ -35,7 +32,6 @@ func HashAndSalt(pwd string) string {
 	}
 	return string(hash)
 }
-
 //解密算法
 func ComparePasswords(hashedPwd string, plainPwd string) bool {
 	byteHash := []byte(hashedPwd)
@@ -47,10 +43,11 @@ func ComparePasswords(hashedPwd string, plainPwd string) bool {
 	}
 	return true
 }
-
 //生成频道
 func ProduceChannelName(f_id string, t_id string) (channel_a string, channel_b string) {
 	channel_a = "channel_" + f_id + "_" + t_id
 	channel_b = "channel_" + t_id + "_" + f_id
 	return channel_a, channel_b
 }
+
+

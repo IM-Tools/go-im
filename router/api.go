@@ -37,6 +37,8 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/refresh", auth.Refresh)
 			apiRouter.GET("/UsersList", users.GetUsersList)
 			apiRouter.GET("/InformationHistory", users.InformationHistory)
+			apiRouter.GET("/uploads", users.Uploads)
+			apiRouter.GET("/ReadMessage", users.ReadMessage)
 		}
 	}
 }

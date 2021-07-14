@@ -23,20 +23,19 @@ func EnMessage(message []byte) (msg *Message) {
 	return
 }
 //消息数据入库
-func PutData(msg *Msg) {
+func PutData(msg *Msg,is_read int) {
 	channel_a,_ := helpler.ProduceChannelName( strconv.Itoa(msg.FromId), strconv.Itoa(msg.ToId))
-
 	fid := uint64(msg.FromId)
 	tid := uint64(msg.ToId)
-
 	user := messageModel.ImMessage{FromId:fid,
 		ToId: tid,
 		Msg: msg.Msg,
 		CreatedAt: time.Unix(time.Now().Unix(), 0,).Format("2006-01-02 15:04:05"),
-		Channel: channel_a}
+		Channel: channel_a,IsRead: is_read}
 	model.DB.Create(&user)
 
 	return
 }
+
 
 
