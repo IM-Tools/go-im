@@ -40,7 +40,7 @@ func (*AuthController) GiteeCallBack(c *gin.Context) {
 	if len(code) == 0 {
 		response.FailResponse(403, "参数不正确~").ToJson(c)
 	}
-	//微博授权
+
 	//access_token := oauth.GetGiteeAccessToken(&code)
 
 	//UserInfo := oauth.GetGiteeUserInfo(&access_token)

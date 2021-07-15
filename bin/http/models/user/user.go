@@ -20,6 +20,7 @@ type Users struct {
 	OauthId         string
 	CreatedAt       string `json:"created_at"`
 	PasswordComfirm string ` gorm:"-" valid:"password_comfirm"`
+	Bio string `json:"bio"`
 }
 
 // 当前登录用户

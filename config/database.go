@@ -17,7 +17,7 @@ func init()  {
 			"username": config.Env("DB_USERNAME", ""),
 			"password": config.Env("DB_PASSWORD", ""),
 			"charset":  "utf8mb4",
-
+			"loc":  config.Env("DB_LOC", "Asia/Shanghai"),
 			// 连接池配置
 			"max_idle_connections": config.Env("DB_MAX_IDLE_CONNECTIONS", 100),
 			"max_open_connections": config.Env("DB_MAX_OPEN_CONNECTIONS", 25),

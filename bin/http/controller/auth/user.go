@@ -43,6 +43,7 @@ type ImMsgList struct {
 	ToId      uint64 `json:"to_id"`
 	Channel   string `json:"channel"`
 	Status    int    `json:"status"`
+
 }
 // 获取用户列表
 func (*UsersController) GetUsersList(c *gin.Context) {
@@ -80,6 +81,7 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 		Select("id,msg,created_at,from_id,to_id,channel").
 		Find(&MsgList)
 
+	fmt.Println(MsgList)
 	if list.Error != nil {
 		return
 	}
@@ -95,7 +97,7 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 	response.SuccessResponse(MsgList, 200).ToJson(c)
 }
 
-func (*UsersController) Uploads(C *gin.Context)  {
+func (*UsersController) Uploads(c *gin.Context)  {
 	var params validates.Upload
 	fmt.Println(params)
 	body:=utils.Upload(params.Content,params.Path,params.Message)
@@ -105,8 +107,6 @@ func (*UsersController) Uploads(C *gin.Context)  {
 func (*UsersController) ReadMessage(c *gin.Context) {
 	user := userModel.AuthUser
 	channel_a, channel_b := helpler.ProduceChannelName(strconv.Itoa(int(user.ID)), c.Query("to_id"))
-
-
 	messageModel.ReadMsg(channel_a,channel_b)
 	response.SuccessResponse(gin.H{}, 200).ToJson(c)
 }

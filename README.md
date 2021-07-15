@@ -1,7 +1,10 @@
 ## GoIm
 
-> 这是一个由golang+vue编写的web IM应用服务端 📦📦📦
+<p align="center">
+<a href=""><img src="https://img.shields.io/badge/license-MIT-green" /></a> 
+</p>
 
+> 这是一个由golang+vue编写的web IM应用服务端 📦📦📦
 
 
 #### 简单的功能

@@ -13,7 +13,6 @@ import (
 	"go_im/pkg/model"
 	"strconv"
 )
-
 //客户端管理
 type ClientManager struct {
 	Clients    map[*Client]bool //存放ws长链接
@@ -21,21 +20,18 @@ type ClientManager struct {
 	Register   chan *Client     //新创建的长链接
 	Unregister chan *Client     //注销的长链接
 }
-
 //客户端
 type Client struct {
 	ID     string          //客户端id
 	Socket *websocket.Conn //长链接
 	Send   chan []byte     //需要发送的消息
 }
-
 //消息结构体
 type Message struct {
 	Sender    string `json:"sender,omitempty"`
 	Recipient string `json:"recipient,omitempty"`
 	Content   string `json:"content,omitempty"`
 }
-
 //发送的消息
 type Msg struct {
 	Code   int    `json:"code,omitempty"`
@@ -44,8 +40,6 @@ type Msg struct {
 	ToId   int    `json:"to_id,omitempty"`
 	Status int    `json:"status,omitempty"`
 }
-
-
 type ImMessage struct {
 	ID        uint64 `json:"id"`
 	Msg       string `json:"msg"`
@@ -55,15 +49,12 @@ type ImMessage struct {
 	Channel string `json:"channel"`
 	IsRead     int `json:"is_read"`
 }
-
-
 //离线和上线消息
 type OnlineMsg struct {
 	Code int    `json:"code,omitempty"`
 	Msg  string `json:"msg,omitempty"`
 	ID string  `json:"id,omitempty"`
 }
-
 //定义的一些状态码
 
 const (
@@ -79,8 +70,6 @@ var Manager = ClientManager{
 	Unregister: make(chan *Client),
 	Clients:    make(map[*Client]bool),
 }
-
-
 
 //启动websocket
 func (manager *ClientManager) Start() {
@@ -127,7 +116,6 @@ func (manager *ClientManager) Start() {
 			}
 			//消息消费
 		case message := <-manager.Broadcast:
-			fmt.Println("断线",message)
 			data := EnMessage(message)
 			fmt.Println(data.Content)
 			msg := new(Msg)
@@ -137,8 +125,7 @@ func (manager *ClientManager) Start() {
 			}
 			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg: msg.Msg, FromId: msg.FromId, ToId: msg.ToId, Status: 0})
 			identity := 0
-			for conn,key := range manager.Clients {
-				fmt.Println("key:",key)
+			for conn,_ := range manager.Clients {
 				id, _ := strconv.Atoi(conn.ID)
 				if id == msg.ToId {
 					go PutData(msg,1)
