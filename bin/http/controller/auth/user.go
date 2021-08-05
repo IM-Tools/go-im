@@ -76,6 +76,7 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 	fmt.Println(channel_b,channel_a)
 	list := model.DB.
 		Model(messageModel.ImMessage{}).
+		Order("created_at").
 		Where("channel = ?  or channel= ?", channel_a, channel_b).
 		Limit(20).
 		Select("id,msg,created_at,from_id,to_id,channel").
