@@ -6,6 +6,7 @@
 package auth
 
 import (
+	"fmt"
 	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
@@ -60,6 +61,7 @@ func (that *AuthController) Login(c *gin.Context) {
 	_ = c.ShouldBind(&params)
 
 	model.DB.Model(&userModel.Users{}).Where("name = ?", params.Name).Find(&users)
+	fmt.Println(users)
 	if users.ID == 0 {
 		response.FailResponse(403, "用户不存在").ToJson(c)
 		return

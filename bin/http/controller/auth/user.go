@@ -17,6 +17,7 @@ import (
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
+	"sort"
 	"strconv"
 )
 
@@ -76,13 +77,11 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 	fmt.Println(channel_b,channel_a)
 	list := model.DB.
 		Model(messageModel.ImMessage{}).
-		Order("created_at").
 		Where("channel = ?  or channel= ?", channel_a, channel_b).
-		Limit(20).
+		Limit(40).
 		Select("id,msg,created_at,from_id,to_id,channel").
 		Find(&MsgList)
 
-	fmt.Println(MsgList)
 	if list.Error != nil {
 		return
 	}
@@ -95,7 +94,21 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 			MsgList[key].Status = 1
 		}
 	}
-	response.SuccessResponse(MsgList, 200).ToJson(c)
+	SortByAge(MsgList)
+	response.SuccessResponse( MsgList, 200).ToJson(c)
+}
+
+
+func SortByAge(list []ImMsgList)  {
+
+	//sort.Slice(u, func(i, j int) bool { // desc
+	//	return u[i].ID > u[j].ID
+	//})
+	//fmt.Printf("按Age降序：%+v\n", u)
+
+	sort.Slice(list, func(i, j int) bool { // asc
+		return list[i].ID < list[j].ID
+	})
 }
 
 func (*UsersController) Uploads(c *gin.Context)  {

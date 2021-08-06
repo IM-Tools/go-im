@@ -40,7 +40,7 @@ func (resp *JsonResponse) ToJson(ctx *gin.Context) {
 //失败响应
 func FailResponse(code int, message string) *JsonResponse {
 	return &JsonResponse{
-		Code:    StatusError,
+		Code:    code,
 		Message: message,
 		Data:    nil,
 	}
