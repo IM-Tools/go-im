@@ -44,6 +44,7 @@ type ImMsgList struct {
 	ToId      uint64 `json:"to_id"`
 	Channel   string `json:"channel"`
 	Status    int    `json:"status"`
+	MsgType   int `json:"msg_type"`
 
 }
 // 获取用户列表
@@ -77,9 +78,9 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 	fmt.Println(channel_b,channel_a)
 	list := model.DB.
 		Model(messageModel.ImMessage{}).
-		Where("channel = ?  or channel= ?", channel_a, channel_b).
+		Where("channel = ?  or channel= ?  order by created_at desc", channel_a, channel_b).
 		Limit(40).
-		Select("id,msg,created_at,from_id,to_id,channel").
+		Select("id,msg,created_at,from_id,to_id,channel,msg_type").
 		Find(&MsgList)
 
 	if list.Error != nil {

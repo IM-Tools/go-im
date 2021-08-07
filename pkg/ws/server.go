@@ -39,6 +39,7 @@ type Msg struct {
 	Msg    string `json:"msg,omitempty"`
 	ToId   int    `json:"to_id,omitempty"`
 	Status int    `json:"status,omitempty"`
+	MsgType int    `json:"msg_type,omitempty"`
 }
 type ImMessage struct {
 	ID        uint64 `json:"id"`
@@ -48,6 +49,7 @@ type ImMessage struct {
 	ToId int `json:"send_id"`
 	Channel string `json:"channel"`
 	IsRead     int `json:"is_read"`
+	MsgType int `json:"msg_type"`
 }
 //离线和上线消息
 type OnlineMsg struct {
@@ -96,9 +98,10 @@ func (manager *ClientManager) Start() {
 				if list.Error != nil {
 					fmt.Println(list.Error)
 				}
-				for key,val := range msgList {
-					data, _ := json.Marshal(&Msg{Code: SendOk,Msg:msgList[key].Msg,FromId:msgList[key].FromId, ToId:msgList[key].ToId,Status:0})
-					fmt.Println("消费-",val,"connid",conn.ID)
+				for key,_ := range msgList {
+					data, _ := json.Marshal(&Msg{Code: SendOk,Msg:msgList[key].Msg,
+						FromId:msgList[key].FromId, ToId:msgList[key].ToId,
+						Status:0,MsgType: msgList[key].MsgType})
 					conn.Send <- data
 				}
 			}()
@@ -117,13 +120,15 @@ func (manager *ClientManager) Start() {
 			//消息消费
 		case message := <-manager.Broadcast:
 			data := EnMessage(message)
-			fmt.Println(data.Content)
+
 			msg := new(Msg)
 			err := json.Unmarshal([]byte(data.Content), &msg)
 			if err != nil {
 				fmt.Println(err)
 			}
-			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg: msg.Msg, FromId: msg.FromId, ToId: msg.ToId, Status: 0})
+			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg: msg.Msg,
+				FromId: msg.FromId,
+				ToId: msg.ToId, Status: 0,MsgType:msg.MsgType})
 			identity := 0
 			for conn,_ := range manager.Clients {
 				id, _ := strconv.Atoi(conn.ID)

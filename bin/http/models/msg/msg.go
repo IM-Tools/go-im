@@ -18,6 +18,7 @@ type ImMessage struct {
 	ToId uint64 `json:"send_id"`
 	Channel string `json:"channel"`
 	IsRead     int `json:"is_read"`
+	MsgType int `json:"msg_type"`
 }
 // 获取离线消息列表
 func GetOfflineMessage(id uint64) (msg *[]ImMessage)  {

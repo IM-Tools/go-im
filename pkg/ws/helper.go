@@ -31,7 +31,7 @@ func PutData(msg *Msg,is_read int) {
 		ToId: tid,
 		Msg: msg.Msg,
 		CreatedAt: time.Unix(time.Now().Unix(), 0,).Format("2006-01-02 15:04:05"),
-		Channel: channel_a,IsRead: is_read}
+		Channel: channel_a,IsRead: is_read,MsgType: msg.MsgType}
 	model.DB.Create(&user)
 
 	return

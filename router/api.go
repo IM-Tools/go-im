@@ -21,7 +21,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 	router.Use(cors.New(config))
 
 	weibo := new(Auth.WeiBoController)
-	auth := new(Auth.AuthController)
+	auth  := new(Auth.AuthController)
 	users := new(Auth.UsersController)
 
 	apiRouter := router.Group("/api")
