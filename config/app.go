@@ -23,5 +23,8 @@ func init() {
 			"expiration_time":config.Env("JWT_EXPIRATION_TIME"),
 		},
 		"base64":config.Env("BASE64_ENCRYPT"),
+		//https://doc.sm.ms/#api-User-Get_Token 参考文档
+		"sm_name":config.Env("SM_NAME"),
+		"sm_password":config.Env("SM_PASSWORD"),
 	})
 }

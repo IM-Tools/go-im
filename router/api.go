@@ -9,6 +9,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	Auth "go_im/bin/http/controller/auth"
+	"go_im/bin/http/controller/im"
 	"go_im/bin/http/middleware"
 )
 
@@ -23,12 +24,14 @@ func RegisterApiRoutes(router *gin.Engine) {
 	weibo := new(Auth.WeiBoController)
 	auth  := new(Auth.AuthController)
 	users := new(Auth.UsersController)
+	sm := new(im.SmApiController)
 
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")
 	{
 		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack)
 		apiRouter.GET("/giteeCallBack", auth.GiteeCallBack)
+		apiRouter.GET("/getApiToken", sm.GetApiToken)
 		apiRouter.POST("/login", auth.Login)
 
 		apiRouter.Use(middleware.Auth())

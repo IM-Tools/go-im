@@ -15,7 +15,7 @@
    - [ ] 创建群聊
    - [ ] 群聊消息推送
    - [x] 消息提醒功能
-   - [x] 好看舒适的前端界面
+   - [x] 响应式的前端界面支持pc与h5
    
 #### 效果图
   * 聊天
@@ -33,5 +33,10 @@
 ```shell script
 cp .env.example .env
 go run main.go 或者 air
+```
+
+#### 图床
+```shell script
+https://sm.ms/register
 ```
 

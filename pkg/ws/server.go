@@ -91,7 +91,7 @@ func (manager *ClientManager) Start() {
 
 			manager.Send(jsonMessage, conn)
 
-			//启动一个协程开始消费离线消息
+			//用户上线 就启动一个协程开始推送离线消息
 			go func() {
 				var msgList []ImMessage
 				list := model.DB.Where("to_id=? and is_read=?",id,0).Find(&msgList)

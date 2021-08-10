@@ -12,8 +12,6 @@ import (
 	"github.com/spf13/cast"
 	messageModel "go_im/bin/http/models/msg"
 	userModel "go_im/bin/http/models/user"
-	"go_im/bin/http/validates"
-	"go_im/bin/utils"
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
@@ -73,7 +71,7 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
 	}
 	var MsgList []ImMsgList
-	//生成频道
+	//生成频道标识符号 用户查询用户信息
 	channel_a, channel_b := helpler.ProduceChannelName(from_id, to_id)
 	fmt.Println(channel_b,channel_a)
 	list := model.DB.
@@ -87,7 +85,6 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 		return
 	}
 	from_ids, _ := cast.ToUint64E(user.ID)
-
 	for key, value := range MsgList {
 		if value.FromId == from_ids {
 			MsgList[key].Status = 0
@@ -113,10 +110,10 @@ func SortByAge(list []ImMsgList)  {
 }
 
 func (*UsersController) Uploads(c *gin.Context)  {
-	var params validates.Upload
-	fmt.Println(params)
-	body:=utils.Upload(params.Content,params.Path,params.Message)
-	fmt.Println(body)
+	//var params validates.Upload
+	//fmt.Println(params)
+	//body:=utils.Upload()
+	//fmt.Println(body)
 }
 
 func (*UsersController) ReadMessage(c *gin.Context) {
