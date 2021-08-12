@@ -30,8 +30,9 @@ func RegisterApiRoutes(router *gin.Engine) {
 	apiRouter.Group("")
 	{
 		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack)
-		apiRouter.GET("/giteeCallBack", auth.GiteeCallBack)
+		apiRouter.GET("/GiteeCallBack", auth.GiteeCallBack)
 		apiRouter.GET("/getApiToken", sm.GetApiToken)
+		apiRouter.POST("/UploadImg", sm.UploadImg)
 		apiRouter.POST("/login", auth.Login)
 
 		apiRouter.Use(middleware.Auth())
@@ -40,7 +41,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/refresh", auth.Refresh)
 			apiRouter.GET("/UsersList", users.GetUsersList)
 			apiRouter.GET("/InformationHistory", users.InformationHistory)
-			apiRouter.GET("/uploads", users.Uploads)
+
 			apiRouter.GET("/ReadMessage", users.ReadMessage)
 		}
 	}

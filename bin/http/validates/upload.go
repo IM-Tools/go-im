@@ -6,9 +6,6 @@
 package validates
 
 type Upload struct {
-	Repo     string `json:"repo" validate:"required"`
-	Path string `json:"path" validate:"required"`
-	Content string `json:"content" validate:"required"`
-	Message string `json:"message" validate:"required"`
+	Smfile string
 }
 

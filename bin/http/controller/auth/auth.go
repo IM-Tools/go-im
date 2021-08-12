@@ -146,7 +146,6 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 	isThere := model.DB.Where("oauth_id = ?", oauth_id).First(&users)
 	//用户未授权
 	if isThere.Error != nil {
-
 		userData := userModel.Users{
 			Email:           gjson.Get(UserInfo, "email").Str,
 			Password:        helpler.HashAndSalt("123456"),

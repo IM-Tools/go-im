@@ -109,12 +109,6 @@ func SortByAge(list []ImMsgList)  {
 	})
 }
 
-func (*UsersController) Uploads(c *gin.Context)  {
-	//var params validates.Upload
-	//fmt.Println(params)
-	//body:=utils.Upload()
-	//fmt.Println(body)
-}
 
 func (*UsersController) ReadMessage(c *gin.Context) {
 	user := userModel.AuthUser

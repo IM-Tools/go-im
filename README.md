@@ -11,6 +11,7 @@
 
    - [x] 支持微博登录
    - [x] 端对端消息推送
+   - [x] 图片发送
    - [x] 支持离线消息推送
    - [ ] 创建群聊
    - [ ] 群聊消息推送
@@ -19,13 +20,13 @@
    
 #### 效果图
   * 聊天
-![emioj](public/WechatIMG431.png)
+![emioj](docs/WechatIMG431.png)
   * 登录页
-![im-login](public/WechatIMG430.png)
+![im-login](docs/WechatIMG430.png)
   * 主页面
-![im](public/WechatIMG432.png)
+![im](docs/WechatIMG432.png)
   * 主页面
-![im](public/WechatIMG433.png)
+![im](docs/WechatIMG433.png)
 
 #### [前端源码](https://github.com/pl1998/web-im-app)
 

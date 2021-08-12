@@ -7,7 +7,6 @@ package middleware
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 	"go_im/bin/http/models/user"
@@ -53,7 +52,6 @@ func ValidatedToken(token string) (error, string) {
 	}
 
 	t := strings.Split(token, "Bearer ")
-	fmt.Println("TTTTTT", t)
 	if len(t) > 1 {
 		return nil, t[1]
 	}

@@ -26,5 +26,6 @@ func init() {
 		//https://doc.sm.ms/#api-User-Get_Token 参考文档
 		"sm_name":config.Env("SM_NAME"),
 		"sm_password":config.Env("SM_PASSWORD"),
+		"sm_token":config.Env("SM_TOKEN"),
 	})
 }
