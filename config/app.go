@@ -27,5 +27,9 @@ func init() {
 		"sm_name":config.Env("SM_NAME"),
 		"sm_password":config.Env("SM_PASSWORD"),
 		"sm_token":config.Env("SM_TOKEN"),
+		"app_yp_id":config.Env("APP_YP_ID"),
+		"app_yp_key":config.Env("APP_YP_KEY"),
+		"app_yp_secret_key":config.Env("APP_YP_SECRET_KEY"),
+		"app_yp_sign_key":config.Env("APP_YP_SIGN_KEY"),
 	})
 }

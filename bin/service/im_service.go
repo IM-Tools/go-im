@@ -32,8 +32,3 @@ func (*IMservice) Connect(c *gin.Context) {
 	go client.Write()
 }
 
-
-//离线消息推送
-//func PushOfflineMessage() {
-//
-//}

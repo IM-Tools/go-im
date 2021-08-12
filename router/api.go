@@ -25,15 +25,19 @@ func RegisterApiRoutes(router *gin.Engine) {
 	auth  := new(Auth.AuthController)
 	users := new(Auth.UsersController)
 	sm := new(im.SmApiController)
+	baidu := new(im.BaiduController)
 
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")
 	{
+		apiRouter.POST("/login", auth.Login)
 		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack)
 		apiRouter.GET("/GiteeCallBack", auth.GiteeCallBack)
+
 		apiRouter.GET("/getApiToken", sm.GetApiToken)
 		apiRouter.POST("/UploadImg", sm.UploadImg)
-		apiRouter.POST("/login", auth.Login)
+		apiRouter.Any("/UploadVoiceFile", baidu.UploadVoiceFile)
+
 
 		apiRouter.Use(middleware.Auth())
 		{
