@@ -20,7 +20,7 @@ func (*BaiduController) UploadVoiceFile(c *gin.Context)  {
 	path :="/www/wwwroot/qc_admin.pltrue.top/public/voice/"+voice.Filename
 	 c.SaveUploadedFile(voice, path)
 	response.SuccessResponse(map[string]interface{}{
-		"url":"http://voice.pltrue.top/voice/"+voice.Filename,
+		"url":"http://qc_admin.pltrue.top/voice/"+voice.Filename,
 	},200).ToJson(c)
 	return
 }
