@@ -13,8 +13,10 @@ func init() {
 	config.Add("app", config.StrMap{
 		// 应用名称，暂时没有使用到
 		"name": config.Env("APP_NAME", "GoIm"),
+		"ym": config.Env("APP_YM"),
 		// 当前环境，用以区分多环境
 		"env": config.Env("APP_ENV", "production"),
+		"file_disk": config.Env("FILE_DISK", "file"),
 		"port": config.Env("HTTP_PORT", "8000"),
 		"gitee_api_key": config.Env("GITEE_API_KEY", "8000"),
 		//jwt 授权登录

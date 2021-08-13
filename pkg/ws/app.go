@@ -14,11 +14,11 @@ var upgrader = websocket.Upgrader{
 }
 
 var (
-	Webscoket *websocket.Conn
+	Websocket *websocket.Conn
 	err       error
 )
 
 func App(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
-	Webscoket, err = upgrader.Upgrade(w, r, nil)
-	return Webscoket, err
+	Websocket, err = upgrader.Upgrade(w, r, nil)
+	return Websocket, err
 }

@@ -9,7 +9,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
-	"go_im/bin/http/models/user"
+	"go_im/im/http/models/user"
 	NewJwt "go_im/pkg/jwt"
 	"go_im/pkg/response"
 	"strings"

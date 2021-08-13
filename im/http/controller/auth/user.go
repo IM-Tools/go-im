@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
-	messageModel "go_im/bin/http/models/msg"
-	userModel "go_im/bin/http/models/user"
+	messageModel "go_im/im/http/models/msg"
+	userModel "go_im/im/http/models/user"
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
@@ -96,19 +96,11 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 	response.SuccessResponse( MsgList, 200).ToJson(c)
 }
 
-
 func SortByAge(list []ImMsgList)  {
-
-	//sort.Slice(u, func(i, j int) bool { // desc
-	//	return u[i].ID > u[j].ID
-	//})
-	//fmt.Printf("按Age降序：%+v\n", u)
-
-	sort.Slice(list, func(i, j int) bool { // asc
+	sort.Slice(list, func(i, j int) bool {
 		return list[i].ID < list[j].ID
 	})
 }
-
 
 func (*UsersController) ReadMessage(c *gin.Context) {
 	user := userModel.AuthUser

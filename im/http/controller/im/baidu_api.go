@@ -8,13 +8,15 @@ package im
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go_im/bin/utils"
+	"go_im/im/utils"
+	"go_im/pkg/config"
 	"go_im/pkg/response"
 )
 
 type BaiduController struct {
 
 }
+var ym = config.GetString("app.ym")
 func (*BaiduController) UploadVoiceFile(c *gin.Context)  {
 	voice, _ := c.FormFile("voice")
 	dir := utils.GetCurrentDirectory()
@@ -23,7 +25,7 @@ func (*BaiduController) UploadVoiceFile(c *gin.Context)  {
 	fmt.Println(path)
 	 c.SaveUploadedFile(voice, path)
 	response.SuccessResponse(map[string]interface{}{
-		"url":"https://im.pltrue.top/voice/"+voice.Filename,
+		"url":ym+"voice/"+voice.Filename,
 	},200).ToJson(c)
 	return
 }

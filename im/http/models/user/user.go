@@ -6,7 +6,6 @@
 package user
 
 import (
-	"fmt"
 	"go_im/pkg/model"
 )
 
@@ -31,24 +30,6 @@ func (a Users) GetAvatar() string {
 		return "https://learnku.com/users/27407"
 	}
 	return a.Avatar
-}
-
-func GetUsers(OauthId string) (Users, error) {
-	var user Users
-	if err := model.DB.Where("oauth_id =?", OauthId).First(&user).Error; err != nil {
-		return user, err
-	}
-	return user, nil
-}
-
-//获取用户列表
-func GetUserList() (Users, error) {
-	var user Users
-	err := model.DB.Select("id", "name", "avatar", "status", "created_at").Find(&user)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return user, nil
 }
 
 //设置用户上下线状态

@@ -66,7 +66,6 @@ func PostFile(filename string, target_url string, headers *Header) (*http.Respon
 	return http.DefaultClient.Do(req)
 }
 
-
 func GetCurrentDirectory() string {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
@@ -74,3 +73,5 @@ func GetCurrentDirectory() string {
 	}
 	return dir
 }
+
+

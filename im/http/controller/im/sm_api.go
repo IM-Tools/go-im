@@ -9,14 +9,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go_im/bin/utils"
+	"go_im/im/utils"
 	"go_im/pkg/config"
 	"go_im/pkg/redis"
 	"go_im/pkg/response"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strings"
 	"time"
 )
 
@@ -37,7 +36,6 @@ type Data struct {
 	Token string `json:"token"`
 }
 
-//前端直传使用该接口获取token
 func (*SmApiController) GetApiToken(c *gin.Context) {
 	stringCmd := redis.RedisDB.Get("sm_token")
 	if len(stringCmd.Val()) != 0 {
@@ -89,10 +87,8 @@ type DataSuccess struct {
 	Page      string `json:"page"`
 }
 
-//前端跨域问题解决后端上传图片
 func (*SmApiController) UploadImg(c *gin.Context) {
 	file, _ := c.FormFile("smfile")
-
 	dir := utils.GetCurrentDirectory()
 	path :=dir+"/docs/"+file.Filename
 	err := c.SaveUploadedFile(file, path)
@@ -102,6 +98,7 @@ func (*SmApiController) UploadImg(c *gin.Context) {
 	header := new(utils.Header)
 	header.Authorization = "Authorization"
 	header.Token = sm_token
+	fmt.Println(sm_token)
 	resp, err := utils.PostFile(path, "https://sm.ms/api/v2/upload", header)
 	if err != nil {
 		fmt.Println(err)
@@ -110,17 +107,5 @@ func (*SmApiController) UploadImg(c *gin.Context) {
 	data := new(ResponseUploadData)
 	json.Unmarshal(bodyC, data)
 	c.JSON(200, data)
-}
-
-func substr(s string, pos, length int) string {
-	runes := []rune(s)
-	l := length + pos
-	if l > len(runes) {
-		l = len(runes)
-	}
-	return string(runes[pos:l])
-}
-func getParentDirectory(dirctory string) string {
-	return substr(dirctory, 0, strings.LastIndex(dirctory, "/"))
 }
 

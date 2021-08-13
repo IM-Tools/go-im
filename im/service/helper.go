@@ -3,12 +3,12 @@
   @data:2021/7/2
   @note
 **/
-package ws
+package service
 
 import (
 	"encoding/json"
 	"fmt"
-	messageModel "go_im/bin/http/models/msg"
+	messageModel "go_im/im/http/models/msg"
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
 	"strconv"
