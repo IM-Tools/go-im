@@ -1,7 +1,14 @@
-package service
+/**
+  @author:panliang
+  @data:2021/8/13
+  @note
+**/
+package im
+
 
 import (
 	"github.com/gin-gonic/gin"
+	"go_im/im/service"
 	"go_im/pkg/jwt"
 	"go_im/pkg/ws"
 	"net/http"
@@ -16,10 +23,8 @@ func (*IMService) Connect(c *gin.Context) {
 	}
 	claims := c.MustGet("claims").(*jwt.CustomClaims)
 	//client := &ws.Client{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
-	client := &ImClient{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
-	ImManager.Register <- client
+	client := &service.ImClient{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
+	service.ImManager.Register <- client
 	go client.ImRead()
 	go client.ImWrite()
 }
-
-
