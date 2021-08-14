@@ -37,11 +37,14 @@ type Header struct {
 func PostFile(filename string, target_url string, headers *Header) (*http.Response, error) {
 	body_buf := bytes.NewBufferString("")
 	body_writer := multipart.NewWriter(body_buf)
+
 	_, err := body_writer.CreateFormFile("smfile", filename)
 	if err != nil {
 		fmt.Println("error writing to buffer")
 		return nil, err
 	}
+
+
 	fh, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("error opening file")
@@ -60,8 +63,10 @@ func PostFile(filename string, target_url string, headers *Header) (*http.Respon
 	if err != nil {
 		return nil, err
 	}
+
 	req.Header.Add(headers.Authorization, headers.Token)
-	req.Header.Add("Content-Type", boundary+"multipart/form-data; boundary=")
+
+	req.Header.Add("Content-Type", "multipart/form-data; boundary="+boundary)
 	req.ContentLength = int64(close_buf.Len()) + (int64(body_buf.Len()) + fi.Size())
 	return http.DefaultClient.Do(req)
 }

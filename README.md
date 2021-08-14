@@ -26,7 +26,7 @@
   * h5
 ![im](docs/WechatIMG493.png)
 
-#### [前端源码](https://github.com/pl1998/web-im-app)
+#### [前端源码](https://github.com/pl1998/web-im-app)cd .
 
 #### 简单部署
 ```shell script

@@ -50,9 +50,7 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 	}
 	data := url.Values{"username": {username}, "password": {password}}
 	j, err := http.PostForm("https://sm.ms/api/v2/token", data)
-	if err != nil {
-		fmt.Println(err)
-	}
+	utils.LogError(err)
 	defer j.Body.Close()
 	bodyC, _ := ioutil.ReadAll(j.Body)
 	resp := new(ResponseData)
@@ -88,21 +86,16 @@ type DataSuccess struct {
 }
 
 func (*SmApiController) UploadImg(c *gin.Context) {
-	file, _ := c.FormFile("smfile")
+	file, _ := c.FormFile("Smfile")
 	dir := utils.GetCurrentDirectory()
 	path :=dir+"/docs/"+file.Filename
 	err := c.SaveUploadedFile(file, path)
-	if err != nil {
-		fmt.Println(err)
-	}
+	utils.LogError(err)
 	header := new(utils.Header)
 	header.Authorization = "Authorization"
 	header.Token = sm_token
-	fmt.Println(sm_token)
 	resp, err := utils.PostFile(path, "https://sm.ms/api/v2/upload", header)
-	if err != nil {
-		fmt.Println(err)
-	}
+	utils.LogError(err)
 	bodyC, _ := ioutil.ReadAll(resp.Body)
 	data := new(ResponseUploadData)
 	json.Unmarshal(bodyC, data)
