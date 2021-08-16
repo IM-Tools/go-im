@@ -8,7 +8,6 @@
 > 这是一个由golang+vue编写的web IM应用服务端 📦📦📦
 
 #### 简单的功能
-
    - [x] 支持微博登录
    - [x] 端对端消息推送、图片发送、表情包
    - [x] 语音功能
@@ -16,18 +15,19 @@
    - [x] 支持离线消息推送
    - [ ] 创建群聊
    - [ ] 群聊消息推送
-   - [x] 离线消息推送功能
    - [x] 响应式的前端界面支持pc与h5
-   
 #### 效果图
-  * 登录页
-![emioj](docs/WechatIMG492.png)
-  * 聊天
-![im](docs/WechatIMG491.png)
-  * h5
-![im](docs/WechatIMG493.png)
+![golang+vue3开发的一个im应用](https://cdn.learnku.com/uploads/images/202108/14/32593/aajXTvR3GF.png!large)
 
-#### [前端源码](https://github.com/pl1998/web-im-app)cd .
+![golang+vue3开发的一个im应用](https://cdn.learnku.com/uploads/images/202108/14/32593/2tVT1ndyTS.png!large)
+
+![golang+vue3开发的一个im应用](https://cdn.learnku.com/uploads/images/202108/14/32593/3Gg8G6wca9.png!large)
+
+ ![](https://cdn.learnku.com/uploads/images/202108/14/32593/XnIO6j3QEr.jpg!large)
+ 
+![golang+vue3开发的一个im应用](https://cdn.learnku.com/uploads/images/202108/14/32593/8p1uALKM18.png!large)
+
+#### [前端源码](https://github.com/pl1998/web-im-app)
 
 #### 简单部署
 ```shell script
@@ -72,11 +72,9 @@ server
         set $root_path /www/wwwroot/im.pltrue.top/dist;
     }
    //访问语音文件
-
      if ( $request_uri ~* /voice ) {
         set $root_path /www/wwwroot/go-im;
     }
-  
   #location /im {
   #  proxy_pass http://127.0.0.1:9502;
    # proxy_http_version 1.1;
