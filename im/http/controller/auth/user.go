@@ -9,6 +9,7 @@ import "C"
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-module/carbon"
 	"github.com/spf13/cast"
 	messageModel "go_im/im/http/models/msg"
 	userModel "go_im/im/http/models/user"
@@ -85,7 +86,11 @@ func (*UsersController) InformationHistory(c *gin.Context) {
 		return
 	}
 	from_ids, _ := cast.ToUint64E(user.ID)
+
+
 	for key, value := range MsgList {
+
+		MsgList[key].CreatedAt = carbon.Parse(value.CreatedAt).SetLocale("zh-CN").DiffForHumans()
 		if value.FromId == from_ids {
 			MsgList[key].Status = 0
 		} else {

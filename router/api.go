@@ -31,7 +31,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 	{
 		apiRouter.POST("/login", auth.Login)
 		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack)
-		apiRouter.GET("/getApiToken", sm.GetApiToken)
+		apiRouter.GET("/getApiToken",  sm.GetApiToken)
 		apiRouter.Use(middleware.Auth())
 		{
 			apiRouter.GET("/GroupList", group.List)

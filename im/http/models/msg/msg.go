@@ -7,6 +7,7 @@ package msg
 
 import (
 	"fmt"
+	"github.com/golang-module/carbon"
 	"go_im/pkg/model"
 
 )
@@ -30,6 +31,11 @@ func GetOfflineMessage(id uint64) (msg *[]ImMessage)  {
 }
 func ReadMsg(channel_a string,channel_b string)  {
 	model.DB.Model(&ImMessage{}).Where("channel = ?  or channel= ?", channel_a, channel_b).Update("is_read",1)
+}
+
+func GetCreatedAt() string  {
+
+	return carbon.Parse("2020-07-05 13:14:15").SetLocale("zh-CN").DiffForHumans()
 }
 
 
