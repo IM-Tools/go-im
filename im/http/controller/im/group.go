@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go_im/im/http/models/group"
 	userModel "go_im/im/http/models/user"
+	"go_im/im/log"
 	"go_im/im/utils"
 	"go_im/pkg/response"
 )
@@ -17,9 +18,10 @@ type GroupController struct {}
 
 func (*GroupController) List(c *gin.Context){
 	user :=userModel.AuthUser
-	list,err :=group.GetGroupList(user.ID)
+	list,err :=group.GetGroupUserList(user.ID)
 	if err != nil {
 		utils.LogError(err)
+		log.Warning(err.Error())
 		response.FailResponse(500,"服务器错误")
 		return
 	}

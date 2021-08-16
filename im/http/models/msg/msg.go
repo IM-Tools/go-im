@@ -7,9 +7,7 @@ package msg
 
 import (
 	"fmt"
-	"github.com/golang-module/carbon"
 	"go_im/pkg/model"
-
 )
 type ImMessage struct {
 	ID        uint64 `json:"id"`
@@ -21,6 +19,11 @@ type ImMessage struct {
 	IsRead     int `json:"is_read"`
 	MsgType int `json:"msg_type"`
 }
+
+func (ImMessage) TableName() string {
+	return "im_messages"
+}
+
 // 获取离线消息列表
 func GetOfflineMessage(id uint64) (msg *[]ImMessage)  {
 	list := model.DB.Where("id=?",id).Find(&msg)
@@ -33,10 +36,7 @@ func ReadMsg(channel_a string,channel_b string)  {
 	model.DB.Model(&ImMessage{}).Where("channel = ?  or channel= ?", channel_a, channel_b).Update("is_read",1)
 }
 
-func GetCreatedAt() string  {
 
-	return carbon.Parse("2020-07-05 13:14:15").SetLocale("zh-CN").DiffForHumans()
-}
 
 
 

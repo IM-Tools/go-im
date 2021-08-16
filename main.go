@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go_im/config"
 	"go_im/im"
+	"go_im/im/log"
 	"go_im/im/service"
 	conf "go_im/pkg/config"
 	"go_im/router"
@@ -24,10 +25,10 @@ func main() {
 	im.SetupDB()
 	//启动协程执行开始程序
 	go service.ImManager.ImStart()
-
 	//注册路由
 	router.RegisterApiRoutes(app)
 	router.RegisterIMRouters(app)
-
+	//全局异常处理
+	app.Use(log.Recover)
 	_ = app.Run(":" + conf.GetString("app.port"))
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/tidwall/gjson"
 	userModel "go_im/im/http/models/user"
 	"go_im/im/http/validates"
+	"go_im/im/log"
 	"go_im/im/oauth"
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
@@ -81,6 +82,7 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		result := model.DB.Create(&userData)
 
 		if result.Error != nil {
+			log.Warning(result.Error.Error())
 			response.FailResponse(500, "用户微博授权失败").ToJson(c)
 		} else {
 			generateToken(c, &userData)

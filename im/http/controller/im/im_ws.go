@@ -22,7 +22,6 @@ func (*IMService) Connect(c *gin.Context) {
 		return
 	}
 	claims := c.MustGet("claims").(*jwt.CustomClaims)
-	//client := &ws.Client{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
 	client := &service.ImClient{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
 	service.ImManager.Register <- client
 	go client.ImRead()

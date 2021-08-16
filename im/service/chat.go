@@ -12,18 +12,22 @@ import (
 	"go_im/im/http/models/user"
 	"go_im/pkg/model"
 	"strconv"
+	"sync"
 )
+
+var mutexKey sync.Mutex
 
 func (manager *ImClientManager) ImStart() {
 	for  {
 		select {
 		case conn := <-ImManager.Register:
-			//将连接放入map
+			//新增锁 防止并发写
+			mutexKey.Lock()
 			manager.ImClientMap[conn.ID] = &ImClient{ID: conn.ID,Socket: conn.Socket,Send:conn.Send}
+			mutexKey.Unlock()
 			jsonMessage, _ := json.Marshal(&ImOnlineMsg{Code: connOk, Msg: "用户上线啦", ID: conn.ID})
 			id, _ := strconv.ParseInt(conn.ID, 10, 64)
 			user.SetUserStatus(uint64(id), 1)
-
 			manager.ImSend(jsonMessage, conn)
 
 			//用户上线通知
@@ -40,11 +44,12 @@ func (manager *ImClientManager) ImStart() {
 					conn.Send <- data
 				}
 			}()
-
 		case conn := <-ImManager.Unregister:
 			if _,ok :=manager.ImClientMap[conn.ID];ok {
 				id, _ := strconv.ParseInt(conn.ID, 10, 64)
 				user.SetUserStatus(uint64(id), 0)
+				//关闭连接释放资源
+				conn.Socket.Close()
 				close(conn.Send)
 				delete(manager.ImClientMap, conn.ID)
 				jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了" + conn.ID, ID: conn.ID})
@@ -52,8 +57,6 @@ func (manager *ImClientManager) ImStart() {
 			}
 		case message := <-ImManager.Broadcast:
 			data := EnMessage(message)
-
-			fmt.Println(data)
 			msg := new(Msg)
 			err := json.Unmarshal([]byte(data.Content), &msg)
 			if err != nil {
@@ -86,7 +89,6 @@ func (manager *ImClientManager) ImSend(message []byte, ignore *ImClient) {
 
 //消息投递
 func (c *ImClient) ImRead() {
-
 	//关闭客户端注册 关闭socket连接
 	defer func() {
 		ImManager.Unregister <- c

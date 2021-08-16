@@ -34,8 +34,6 @@ type UserInfo struct {
 	BoundOauth int
 }
 
-
-
 // GetAccessToken function string returns an string access_token.str
 func GetWeiBoAccessToken(code *string) string  {
 	queryData :=url.Values{"client_id":{client_id},
@@ -46,7 +44,7 @@ func GetWeiBoAccessToken(code *string) string  {
 
 	urls :=access_token_url+"?"+helpler.HttpBuildQuery(queryData)
 
-	data := url.Values{"app_id":{"xxx"}}
+	data := url.Values{}
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
 	if err!=nil{
@@ -82,12 +80,10 @@ func GetWeiBoUserInfo(access_token *string) string {
 }
 // get uid
 func getUid(access_token *string) string  {
-
 	urls := get_token_info+"?access_token="+*access_token
-	data := url.Values{"app_id":{"xxx"}}
+	data := url.Values{}
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
-
 	if err!=nil{
 		fmt.Println(err)
 	}

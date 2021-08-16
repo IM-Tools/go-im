@@ -34,7 +34,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 		apiRouter.GET("/getApiToken",  sm.GetApiToken)
 		apiRouter.Use(middleware.Auth())
 		{
-			apiRouter.GET("/GroupList", group.List)
+			apiRouter.GET("/GetGroupList", group.List)
 			apiRouter.POST("/me", auth.Me)
 			apiRouter.GET("/UsersList", users.GetUsersList)
 			apiRouter.GET("/InformationHistory", users.InformationHistory)

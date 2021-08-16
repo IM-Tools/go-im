@@ -22,6 +22,11 @@ type Users struct {
 	Bio string `json:"bio"`
 }
 
+func (Users) TableName() string {
+	return "users"
+}
+
+
 // 当前登录用户
 var AuthUser *Users
 
@@ -34,6 +39,5 @@ func (a Users) GetAvatar() string {
 
 //设置用户上下线状态
 func SetUserStatus(id uint64 ,status int )  {
-
 	model.DB.Model(&Users{}).Where("id=?",id).Update("status",status)
 }
