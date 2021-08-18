@@ -24,8 +24,9 @@ func RegisterApiRoutes(router *gin.Engine) {
 	auth  := new(Auth.AuthController)
 	users := new(Auth.UsersController)
 	sm    := new(im.SmApiController)
-	baidu := new(im.BaiduController)
+	uploads := new(im.UploadController)
 	group := new(im.GroupController)
+	im := new(im.MessageController)
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")
 	{
@@ -37,9 +38,9 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.GET("/GetGroupList", group.List)
 			apiRouter.POST("/me", auth.Me)
 			apiRouter.GET("/UsersList", users.GetUsersList)
-			apiRouter.GET("/InformationHistory", users.InformationHistory)
+			apiRouter.GET("/InformationHistory", im.InformationHistory)
 			apiRouter.POST("/UploadImg", sm.UploadImg)
-			apiRouter.POST("/UploadVoiceFile", baidu.UploadVoiceFile)
+			apiRouter.POST("/UploadVoiceFile", uploads.UploadVoiceFile)
 			apiRouter.GET("/ReadMessage", users.ReadMessage)
 		}
 	}

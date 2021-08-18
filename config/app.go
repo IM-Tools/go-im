@@ -14,6 +14,8 @@ func init() {
 		// 应用名称，暂时没有使用到
 		"name": config.Env("APP_NAME", "GoIm"),
 		"ym": config.Env("APP_YM"),
+		//协程池数
+		"go_coroutines": config.Env("APP_GO_COROUTINES"),
 		// 当前环境，用以区分多环境
 		"env": config.Env("APP_ENV", "production"),
 		"file_disk": config.Env("FILE_DISK", "file"),

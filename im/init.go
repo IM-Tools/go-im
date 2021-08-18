@@ -8,6 +8,7 @@ package im
 import (
 	"go_im/pkg/config"
 	"go_im/pkg/model"
+	"go_im/pkg/pool"
 	"go_im/pkg/redis"
 	"time"
 )
@@ -23,4 +24,6 @@ func SetupDB() {
 	sqlDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 	//启动redis连接池
 	redis.InitClient()
+	//启动协程池
+	pool.ConnectPool()
 }

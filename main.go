@@ -9,9 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"go_im/config"
 	"go_im/im"
-	"go_im/im/log"
 	"go_im/im/service"
 	conf "go_im/pkg/config"
+	log2 "go_im/pkg/log"
+	"go_im/pkg/pool"
 	"go_im/router"
 )
 
@@ -21,14 +22,19 @@ func init() {
 
 func main() {
 	app := gin.Default()
-	//加载连接池
+
+	//初始化连接池
 	im.SetupDB()
-	//启动协程执行开始程序
-	go service.ImManager.ImStart()
+
+	//启动协程执行ws程序
+	pool.AntsPool.Submit(func() {
+		service.ImManager.ImStart()
+	})
+
 	//注册路由
 	router.RegisterApiRoutes(app)
 	router.RegisterIMRouters(app)
 	//全局异常处理
-	app.Use(log.Recover)
+	app.Use(log2.Recover)
 	_ = app.Run(":" + conf.GetString("app.port"))
 }

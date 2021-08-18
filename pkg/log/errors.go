@@ -37,7 +37,7 @@ func Warning(str string)  {
 		functionName = filepath.Ext(functionName)
 		functionName = strings.TrimPrefix(functionName, ".")
 	}
-	var msg =  ErrorInfo {
+	var msg =  ErrorInfo{
 		Time: timeString,
 	    FileName:fileName,
 	    ErrorMessage: str,
@@ -67,5 +67,10 @@ func Warning(str string)  {
 	}else {
 		defer file.Close()
 		file.Write([]byte(errorJson))
+	}
+}
+func LogError(err error) {
+	if err != nil {
+		Warning(err.Error())
 	}
 }

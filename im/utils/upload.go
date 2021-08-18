@@ -9,7 +9,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -48,6 +47,8 @@ func PostFile(filename string, target_url string, headers *Header) (*http.Respon
 	fh, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("error opening file")
+
+
 		return nil, err
 	}
 	boundary := body_writer.Boundary()
@@ -74,7 +75,8 @@ func PostFile(filename string, target_url string, headers *Header) (*http.Respon
 func GetCurrentDirectory() string {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+
 	}
 	return dir
 }

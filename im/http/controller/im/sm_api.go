@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go_im/im/utils"
 	"go_im/pkg/config"
+	log2 "go_im/pkg/log"
 	"go_im/pkg/redis"
 	"go_im/pkg/response"
 	"io/ioutil"
@@ -50,7 +51,7 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 	}
 	data := url.Values{"username": {username}, "password": {password}}
 	j, err := http.PostForm("https://sm.ms/api/v2/token", data)
-	utils.LogError(err)
+	log2.Warning(err.Error())
 	defer j.Body.Close()
 	bodyC, _ := ioutil.ReadAll(j.Body)
 	resp := new(ResponseData)
@@ -90,12 +91,12 @@ func (*SmApiController) UploadImg(c *gin.Context) {
 	dir := utils.GetCurrentDirectory()
 	path :=dir+"/docs/"+file.Filename
 	err := c.SaveUploadedFile(file, path)
-	utils.LogError(err)
+	log2.LogError(err)
 	header := new(utils.Header)
 	header.Authorization = "Authorization"
 	header.Token = sm_token
 	resp, err := utils.PostFile(path, "https://sm.ms/api/v2/upload", header)
-	utils.LogError(err)
+	log2.LogError(err)
 	bodyC, _ := ioutil.ReadAll(resp.Body)
 	data := new(ResponseUploadData)
 	json.Unmarshal(bodyC, data)

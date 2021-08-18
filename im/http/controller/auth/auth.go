@@ -12,11 +12,11 @@ import (
 	"github.com/tidwall/gjson"
 	userModel "go_im/im/http/models/user"
 	"go_im/im/http/validates"
-	"go_im/im/log"
 	"go_im/im/oauth"
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
 	"go_im/pkg/jwt"
+	log2 "go_im/pkg/log"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
 	"strconv"
@@ -82,7 +82,7 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		result := model.DB.Create(&userData)
 
 		if result.Error != nil {
-			log.Warning(result.Error.Error())
+			log2.Warning(result.Error.Error())
 			response.FailResponse(500, "用户微博授权失败").ToJson(c)
 		} else {
 			generateToken(c, &userData)
@@ -91,6 +91,7 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		generateToken(c, &users)
 	}
 }
+
 
 func generateToken(c *gin.Context, user *userModel.Users) {
 	sign_key := config.GetString("app.jwt.sign_key")

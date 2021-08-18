@@ -6,10 +6,10 @@
 package oauth
 
 import (
-	"fmt"
 	"github.com/tidwall/gjson"
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
+	log2 "go_im/pkg/log"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -35,6 +35,7 @@ type UserInfo struct {
 }
 
 // GetAccessToken function string returns an string access_token.str
+
 func GetWeiBoAccessToken(code *string) string  {
 	queryData :=url.Values{"client_id":{client_id},
 		"code":{*code},
@@ -48,7 +49,7 @@ func GetWeiBoAccessToken(code *string) string  {
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
 	if err!=nil{
-		fmt.Println(err)
+		log2.Warning(err.Error())
 	}
 	defer resp.Body.Close()
 
@@ -69,7 +70,7 @@ func GetWeiBoUserInfo(access_token *string) string {
 	urls := user_info_url+"?uid="+ uid+"&access_token="+*access_token
 	resp,err := http.Get(urls)
 	if err!=nil{
-		fmt.Println(err)
+		log2.Warning(err.Error())
 	}
 	defer resp.Body.Close()
 
@@ -85,9 +86,8 @@ func getUid(access_token *string) string  {
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
 	if err!=nil{
-		fmt.Println(err)
+		log2.Warning(err.Error())
 	}
-
 	defer resp.Body.Close()
 
 	bodyC, _ := ioutil.ReadAll(resp.Body)

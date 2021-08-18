@@ -8,7 +8,6 @@ package log
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-
 	"runtime/debug"
 )
 //全局异常处理
@@ -16,7 +15,7 @@ func Recover(c *gin.Context)  {
 	defer func() {
 		if r:=recover();r!=nil {
 			debug.PrintStack()
-			errors :=errorToString(r)
+			errors := errorToString(r)
 			//写入日志
 			Warning(errors)
 			c.JSON(http.StatusInternalServerError, gin.H{

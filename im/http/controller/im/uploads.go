@@ -12,9 +12,9 @@ import (
 	"go_im/pkg/response"
 )
 
-type BaiduController struct {}
+type UploadController struct {}
 var ym = config.GetString("app.ym")
-func (*BaiduController) UploadVoiceFile(c *gin.Context)  {
+func (*UploadController) UploadVoiceFile(c *gin.Context)  {
 	voice, _ := c.FormFile("voice")
 	dir := utils.GetCurrentDirectory()
 	// 上传文件至指定目录 没找到第三方免费的第三方存储 先用自己的吧

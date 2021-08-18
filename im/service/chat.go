@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/websocket"
 	"go_im/im/http/models/user"
 	"go_im/pkg/model"
+	"go_im/pkg/pool"
 	"strconv"
 	"sync"
 )
@@ -31,29 +32,33 @@ func (manager *ImClientManager) ImStart() {
 			manager.ImSend(jsonMessage, conn)
 
 			//用户上线通知
-			go func() {
-				var msgList []ImMessage
-				list := model.DB.Where("to_id=? and is_read=?", id, 0).Find(&msgList)
-				if list.Error != nil {
-					fmt.Println(list.Error)
-				}
-				for key, _ := range msgList {
-					data, _ := json.Marshal(&Msg{Code: SendOk, Msg: msgList[key].Msg,
-						FromId: msgList[key].FromId, ToId: msgList[key].ToId,
-						Status: 0, MsgType: msgList[key].MsgType})
-					conn.Send <- data
-				}
-			}()
+			pool.AntsPool.Submit(func() {
+				func() {
+					var msgList []ImMessage
+					list := model.DB.Where("to_id=? and is_read=?", id, 0).Find(&msgList)
+					if list.Error != nil {
+						fmt.Println(list.Error)
+					}
+					for key, _ := range msgList {
+						data, _ := json.Marshal(&Msg{Code: SendOk, Msg: msgList[key].Msg,
+							FromId: msgList[key].FromId, ToId: msgList[key].ToId,
+							Status: 0, MsgType: msgList[key].MsgType})
+						conn.Send <- data
+					}
+				}()
+			})
+
 		case conn := <-ImManager.Unregister:
+			//这一块用户离线应该只做好友推送
 			if _,ok :=manager.ImClientMap[conn.ID];ok {
 				id, _ := strconv.ParseInt(conn.ID, 10, 64)
 				user.SetUserStatus(uint64(id), 0)
 				//关闭连接释放资源
+				jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了" + conn.ID, ID: conn.ID})
+				manager.ImSend(jsonMessage, conn)
 				conn.Socket.Close()
 				close(conn.Send)
 				delete(manager.ImClientMap, conn.ID)
-				jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了" + conn.ID, ID: conn.ID})
-				manager.ImSend(jsonMessage, conn)
 			}
 		case message := <-ImManager.Broadcast:
 			data := EnMessage(message)
