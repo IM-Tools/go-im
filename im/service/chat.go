@@ -73,10 +73,15 @@ func (manager *ImClientManager) ImStart() {
 			conn_id := strconv.Itoa(msg.ToId)
 
 			if data,ok :=manager.ImClientMap[conn_id];ok {
-				go PutData(msg, 1)
+
+				pool.AntsPool.Submit(func() {
+					PutData(msg, 1)
+				})
 				data.Send <- jsonMessage_from
 			} else {
-				go PutData(msg, 0)
+				pool.AntsPool.Submit(func() {
+					PutData(msg, 0)
+				})
 			}
 		}
 	}
