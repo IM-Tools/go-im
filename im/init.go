@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func SetupDB() {
+func SetupPool() {
 	//启动mysql连接池
 	db := model.ConnectDB()
 	sqlDB, _ := db.DB()

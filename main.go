@@ -24,7 +24,7 @@ func main() {
 	app := gin.Default()
 
 	//初始化连接池
-	im.SetupDB()
+	im.SetupPool()
 
 	//启动协程执行ws程序
 	pool.AntsPool.Submit(func() {
