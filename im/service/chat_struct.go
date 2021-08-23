@@ -32,6 +32,7 @@ type ImOnlineMsg struct {
 	Code int    `json:"code,omitempty"`
 	Msg  string `json:"msg,omitempty"`
 	ID   string `json:"id,omitempty"`
+	ChannelType   int   `json:"channel_type"` //1 私聊 2 群聊 3 广播
 }
 
 //消息结构体
@@ -49,6 +50,7 @@ type Msg struct {
 	ToId    int    `json:"to_id,omitempty"`
 	Status  int    `json:"status,omitempty"`
 	MsgType int    `json:"msg_type,omitempty"`
+	ChannelType   int   `json:"channel_type"`
 }
 type ImMessage struct {
 	ID        uint64 `json:"id"`
@@ -59,6 +61,7 @@ type ImMessage struct {
 	Channel   string `json:"channel"`
 	IsRead    int    `json:"is_read"`
 	MsgType   int    `json:"msg_type"`
+	ChannelType   int   `json:"channel_type"`
 }
 
 //离线和上线消息
@@ -66,6 +69,7 @@ type OnlineMsg struct {
 	Code int    `json:"code,omitempty"`
 	Msg  string `json:"msg,omitempty"`
 	ID   string `json:"id,omitempty"`
+	ChannelType   int   `json:"channel_type"`
 }
 
 //定义的一些状态码
@@ -75,4 +79,15 @@ const (
 	connOk  = 1000 //连接成功
 	SendOk  = 200  //发送成功
 )
+
+//存储房间号
+type GroupId struct {
+	UserId string `json:"user_id"`
+}
+
+//根据房间号
+type GroupMap struct {
+	GroupIds map[int]*GroupId
+}
+
 

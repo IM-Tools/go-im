@@ -14,11 +14,11 @@ import (
 )
 
 func RegisterApiRoutes(router *gin.Engine) {
-	//允许跨域
+
 	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true                                                                                                 //允许所有域名
-	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}                                                                      //允许请求的方法
-	config.AllowHeaders = []string{"tus-resumable", "upload-length", "upload-metadata", "cache-control", "x-requested-with", "*"} //允许的Header
+	config.AllowAllOrigins = true
+	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}
+	config.AllowHeaders = []string{"tus-resumable", "upload-length", "upload-metadata", "cache-control", "x-requested-with", "*"}
 	router.Use(cors.New(config))
 	weibo := new(Auth.WeiBoController)
 	auth  := new(Auth.AuthController)
@@ -27,21 +27,29 @@ func RegisterApiRoutes(router *gin.Engine) {
 	uploads := new(im.UploadController)
 	group := new(im.GroupController)
 	im := new(im.MessageController)
+
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")
 	{
-		apiRouter.POST("/login", auth.Login)
-		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack)
-		apiRouter.GET("/getApiToken",  sm.GetApiToken)
+		apiRouter.POST("/login", auth.Login)                 // account  login
+		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack) // weibo auth
+		apiRouter.GET("/getApiToken",  sm.GetApiToken)       // get sm token
 		apiRouter.Use(middleware.Auth())
 		{
-			apiRouter.GET("/GetGroupList", group.List)
-			apiRouter.POST("/me", auth.Me)
-			apiRouter.GET("/UsersList", users.GetUsersList)
-			apiRouter.GET("/InformationHistory", im.InformationHistory)
-			apiRouter.POST("/UploadImg", sm.UploadImg)
-			apiRouter.POST("/UploadVoiceFile", uploads.UploadVoiceFile)
-			apiRouter.GET("/ReadMessage", users.ReadMessage)
+
+			apiRouter.POST("/me", auth.Me)                  // get user info
+			apiRouter.GET("/UsersList", users.GetUsersList) // get user list
+
+			apiRouter.GET("/InformationHistory", im.InformationHistory) //get message list
+			apiRouter.GET("/GetGroupMessageList", im.GetGroupMessageList) //get message list
+			apiRouter.POST("/UploadImg", sm.UploadImg)                  //upload img
+			apiRouter.POST("/UploadVoiceFile", uploads.UploadVoiceFile) //upload voice file
+			apiRouter.GET("/ReadMessage", users.ReadMessage)            //read message
+
+			apiRouter.GET("/GetGroupList", group.List)                  //get group list
+			apiRouter.POST("/CreateGroup", group.Create)                //add group
+
+
 		}
 	}
 }
