@@ -25,7 +25,7 @@ func (ImGroups) TableName() string {
 }
 func GetGroupUserList(group_id []string) ([]ImGroups,error) {
 	var group []ImGroups
-	 err := model.DB.Preload("Users").Where("id=(?)",group_id).Find(&group).Error;
+	 err := model.DB.Preload("Users").Where("id in (?)",group_id).Find(&group).Error;
 	 if err!=nil{
 		 return group,err
 	 }

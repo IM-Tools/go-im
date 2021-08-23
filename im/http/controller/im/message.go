@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon"
 	"github.com/spf13/cast"
-	messageModel "go_im/im/http/models/msg"
 	userModel "go_im/im/http/models/user"
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
@@ -18,35 +17,37 @@ import (
 	"sort"
 )
 
-type ImMsgList struct {
-	ID        uint64 `json:"id"`
-	Msg       string `json:"msg"`
-	CreatedAt string `json:"created_at"`
-	FromId    uint64 `json:"from_id"`
-	ToId      uint64 `json:"to_id"`
-	Channel   string `json:"channel"`
-	Status    int    `json:"status"`
-	MsgType   int `json:"msg_type"`
+//type ImMsgList struct {
+//	ID        uint64 `json:"id"`
+//	Msg       string `json:"msg"`
+//	CreatedAt string `json:"created_at"`
+//	FromId    uint64 `json:"from_id"`
+//	ToId      uint64 `json:"to_id"`
+//	Channel   string `json:"channel"`
+//	Status    int    `json:"status"`
+//	MsgType   int `json:"msg_type"`
+//	Users []userModel.Users `json:"users" gorm:"foreignKey:ID;references:FromId"`
+//}
 
-}
+
 
 type MessageController struct {}
 
 func (*MessageController) InformationHistory(c *gin.Context) {
 	to_id := c.Query("to_id")
+	channel_type := c.DefaultQuery("channel_type","1")
 	user := userModel.AuthUser
 	from_id := cast.ToString(user.ID)
-
 	if len(to_id) < 0 {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
 	}
-	var MsgList []ImMsgList
+	var MsgList []ImMessage
 	//生成频道标识符号 用户查询用户信息
 	channel_a, channel_b := helpler.ProduceChannelName(from_id, to_id)
 	fmt.Println(channel_b,channel_a)
 	list := model.DB.
-		Model(messageModel.ImMessage{}).
-		Where("channel = ?  or channel= ?  order by created_at desc", channel_a, channel_b).
+		Model(ImMessage{}).
+		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b,channel_type).
 		Limit(40).
 		Select("id,msg,created_at,from_id,to_id,channel,msg_type").
 		Find(&MsgList)
@@ -55,10 +56,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 		return
 	}
 	from_ids, _ := cast.ToUint64E(user.ID)
-
-
 	for key, value := range MsgList {
-
 		MsgList[key].CreatedAt = carbon.Parse(value.CreatedAt).SetLocale("zh-CN").DiffForHumans()
 		if value.FromId == from_ids {
 			MsgList[key].Status = 0
@@ -70,8 +68,60 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	response.SuccessResponse( MsgList, 200).ToJson(c)
 }
 
-func SortByAge(list []ImMsgList)  {
+func SortByAge(list []ImMessage)  {
 	sort.Slice(list, func(i, j int) bool {
 		return list[i].ID < list[j].ID
 	})
 }
+
+type ImMessage struct {
+	ID        uint64 `json:"id"`
+	Msg       string `json:"msg"`
+	CreatedAt string  `json:"created_at"`
+	FromId uint64 `json:"user_id"`
+	ToId uint64 `json:"send_id"`
+	Channel string `json:"channel"`
+	Status int `json:"status"`
+	IsRead     int `json:"is_read"`
+	MsgType int `json:"msg_type"`
+	ChannelType int  `json:"channel_type"`
+	Users userModel.Users `json:"users" gorm:"foreignKey:FromId;references:ID"`
+}
+
+func (*MessageController)GetGroupMessageList(c *gin.Context)  {
+	to_id := c.Query("to_id")
+	channel_type := c.DefaultQuery("channel_type","1")
+	user := userModel.AuthUser
+
+	if len(to_id) < 0 {
+		response.FailResponse(500, "用户id不能为空").ToJson(c)
+	}
+	var MsgList []ImMessage
+	//生成频道标识符号 用户查询用户信息
+	channel_a := helpler.ProduceChannelGroupName(to_id)
+
+	list := model.DB.
+		Preload("Users").
+		Where("channel =? and channel_type=?    order by created_at desc", channel_a,channel_type).
+		Limit(40).
+		Select("id,msg,created_at,from_id,to_id,channel,msg_type").
+		Find(&MsgList)
+
+	if list.Error != nil {
+		return
+	}
+	from_ids, _ := cast.ToUint64E(user.ID)
+	for key, value := range MsgList {
+
+		MsgList[key].CreatedAt = carbon.Parse(value.CreatedAt).SetLocale("zh-CN").DiffForHumans()
+
+		if value.FromId == from_ids {
+			MsgList[key].Status = 0
+		} else {
+			MsgList[key].Status = 1
+		}
+	}
+	SortByAge(MsgList)
+	response.SuccessResponse( MsgList, 200).ToJson(c)
+}
+
