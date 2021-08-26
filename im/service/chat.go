@@ -132,8 +132,6 @@ func (c *ImClient) ImRead() {
 		if err !=nil {
 			fmt.Println(err)
 		}
-
-
 		if wordsfilter.MsgFilter(msg.Msg) {
 			c.Socket.WriteMessage(websocket.TextMessage, []byte(`{"code":401,"data":"禁止发送敏感词！"}`))
 			continue
@@ -146,8 +144,6 @@ func (c *ImClient) ImRead() {
 			}
 
 		}
-
-
 		if string(message) == "HeartBeat" {
 			c.Socket.WriteMessage(websocket.TextMessage, []byte(`{"code":0,"data":"heartbeat ok"}`))
 			continue
