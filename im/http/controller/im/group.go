@@ -106,7 +106,8 @@ func (*GroupController) RemoveGroup(c *gin.Context){
 	response.SuccessResponse().ToJson(c)
 	return
 }
-func (*GroupController) Delete(){
+
+func (*GroupController) DeleteUser(c *gin.Context){
 
 }
 

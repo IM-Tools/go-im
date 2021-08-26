@@ -13,11 +13,14 @@ import (
 	conf "go_im/pkg/config"
 	log2 "go_im/pkg/log"
 	"go_im/pkg/pool"
+	"go_im/pkg/wordsfilter"
 	"go_im/router"
 )
 
 func init() {
 	config.Initialize()
+	//加载敏感词库
+	wordsfilter.SetTexts()
 }
 
 func main() {

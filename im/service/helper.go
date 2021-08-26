@@ -58,13 +58,6 @@ fid := uint64(msg.FromId)
 	return
 }
 
-func getRoot(group_id int) string {
-	root_str := strconv.Itoa(group_id)
-	return "root_"+root_str
-}
-
-
-
 //拿到群聊里面的用户id
 func GetGroupUid(group_id int) ([]GroupId,error) {
 	var groups [] GroupId

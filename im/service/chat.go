@@ -12,6 +12,7 @@ import (
 	"go_im/im/http/models/user"
 	"go_im/pkg/model"
 	"go_im/pkg/pool"
+	"go_im/pkg/wordsfilter"
 	"strconv"
 	"sync"
 )
@@ -120,11 +121,33 @@ func (c *ImClient) ImRead() {
 	}()
 	for {
 		_, message, err := c.Socket.ReadMessage()
+
 		if err != nil {
 			ImManager.Unregister <- c
 			c.Socket.Close()
 			break
 		}
+		msg := new(Msg)
+		err = json.Unmarshal(message, &msg)
+		if err !=nil {
+			fmt.Println(err)
+		}
+
+
+		if wordsfilter.MsgFilter(msg.Msg) {
+			c.Socket.WriteMessage(websocket.TextMessage, []byte(`{"code":401,"data":"禁止发送敏感词！"}`))
+			continue
+		} else {
+			if msg.ChannelType == 1 {
+				data := fmt.Sprintf(`{"code":200,"msg":"%s","from_id":%v,"to_id":%v,"status":"0","msg_type":%v,"channel_type":%v}`,
+					msg.Msg, msg.FromId,msg.ToId,msg.MsgType,msg.ChannelType)
+
+				c.Socket.WriteMessage(websocket.TextMessage, []byte(data))
+			}
+
+		}
+
+
 		if string(message) == "HeartBeat" {
 			c.Socket.WriteMessage(websocket.TextMessage, []byte(`{"code":0,"data":"heartbeat ok"}`))
 			continue
