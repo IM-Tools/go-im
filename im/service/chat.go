@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"go_im/im/http/models/user"
-	"go_im/pkg/model"
 	"go_im/pkg/pool"
 	"go_im/pkg/wordsfilter"
 	"strconv"
@@ -22,9 +21,7 @@ var mutexKey sync.Mutex
 func (manager *ImClientManager) ImStart() {
 	for  {
 		select {
-
 		case conn := <-ImManager.Register:
-
 			//新增锁 防止并发写
 			mutexKey.Lock()
 			manager.ImClientMap[conn.ID] = &ImClient{ID: conn.ID,Socket: conn.Socket,Send:conn.Send}
@@ -36,33 +33,11 @@ func (manager *ImClientManager) ImStart() {
 
 			//用户上线通知
 			pool.AntsPool.Submit(func() {
-				func() {
-					var msgList []ImMessage
-					list := model.DB.Where("to_id=? and is_read=?", id, 0).Find(&msgList)
-					if list.Error != nil {
-						fmt.Println(list.Error)
-					}
-					for key, _ := range msgList {
-						data, _ := json.Marshal(&Msg{Code: SendOk, Msg: msgList[key].Msg,
-							FromId: msgList[key].FromId, ToId: msgList[key].ToId,
-							Status: 0, MsgType: msgList[key].MsgType,ChannelType: msgList[key].ChannelType})
-						conn.Send <- data
-					}
-				}()
+				PushUserOnlineNotification(conn,id)
 			})
 
 		case conn := <-ImManager.Unregister:
-
-			if _,ok :=manager.ImClientMap[conn.ID];ok {
-				id, _ := strconv.ParseInt(conn.ID, 10, 64)
-				user.SetUserStatus(uint64(id), 0)
-				jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了" + conn.ID, ID: conn.ID,ChannelType: 3})
-				manager.ImSend(jsonMessage, conn)
-				conn.Socket.Close()
-				close(conn.Send)
-				delete(manager.ImClientMap, conn.ID)
-
-			}
+			PushUserOfflineNotification(manager,conn)
 		case message := <-ImManager.Broadcast:
 			data := EnMessage(message)
 			msg := new(Msg)
@@ -72,7 +47,7 @@ func (manager *ImClientManager) ImStart() {
 			}
 			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg: msg.Msg,
 				FromId: msg.FromId,
-				ToId:   msg.ToId, Status: 0, MsgType: msg.MsgType,ChannelType: msg.ChannelType})
+				ToId:   msg.ToId, Status:1, MsgType: msg.MsgType,ChannelType: msg.ChannelType})
 
 
 			if msg.ChannelType == 1 {
@@ -132,6 +107,7 @@ func (c *ImClient) ImRead() {
 		if err !=nil {
 			fmt.Println(err)
 		}
+
 		if wordsfilter.MsgFilter(msg.Msg) {
 			c.Socket.WriteMessage(websocket.TextMessage, []byte(`{"code":401,"data":"禁止发送敏感词！"}`))
 			continue

@@ -6,17 +6,15 @@
 package auth
 
 import (
-	"fmt"
 	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 	userModel "go_im/im/http/models/user"
 	"go_im/im/http/validates"
-	"go_im/im/oauth"
+	"go_im/im/utils"
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
 	"go_im/pkg/jwt"
-	log2 "go_im/pkg/log"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
 	"strconv"
@@ -46,7 +44,7 @@ func (that *AuthController) Login(c *gin.Context) {
 	_ = c.ShouldBind(&params)
 
 	model.DB.Model(&userModel.Users{}).Where("name = ?", params.Name).Find(&users)
-	fmt.Println(users)
+
 	if users.ID == 0 {
 		response.FailResponse(403, "用户不存在").ToJson(c)
 		return
@@ -63,8 +61,8 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 	if len(code) == 0 {
 		response.FailResponse(403, "参数不正确~").ToJson(c)
 	}
-	access_token := oauth.GetWeiBoAccessToken(&code)
-	UserInfo := oauth.GetWeiBoUserInfo(&access_token)
+	access_token := utils.GetWeiBoAccessToken(&code)
+	UserInfo := utils.GetWeiBoUserInfo(&access_token)
 	users := userModel.Users{}
 	oauth_id := gjson.Get(UserInfo,"id").Raw
 	isThere := model.DB.Where("oauth_id = ?", oauth_id).First(&users)
@@ -82,7 +80,6 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		result := model.DB.Create(&userData)
 
 		if result.Error != nil {
-			log2.Warning(result.Error.Error())
 			response.FailResponse(500, "用户微博授权失败").ToJson(c)
 		} else {
 			generateToken(c, &userData)

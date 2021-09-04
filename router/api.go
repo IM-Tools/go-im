@@ -26,7 +26,8 @@ func RegisterApiRoutes(router *gin.Engine) {
 	sm    := new(im.SmApiController)
 	uploads := new(im.UploadController)
 	group := new(im.GroupController)
-	im := new(im.MessageController)
+	message := new(im.MessageController)
+	friends := new(im.FriendController)
 
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")
@@ -40,8 +41,8 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/me", auth.Me)                  // get user info
 			apiRouter.GET("/UsersList", users.GetUsersList) // get user list
 
-			apiRouter.GET("/InformationHistory", im.InformationHistory) //get message list
-			apiRouter.GET("/GetGroupMessageList", im.GetGroupMessageList) //get message list
+			apiRouter.GET("/InformationHistory", message.InformationHistory) //get message list
+			apiRouter.GET("/GetGroupMessageList", message.GetGroupMessageList) //get message list
 			apiRouter.POST("/UploadImg", sm.UploadImg)                  //upload img
 			apiRouter.POST("/UploadVoiceFile", uploads.UploadVoiceFile) //upload voice file
 			apiRouter.GET("/ReadMessage", users.ReadMessage)            //read message
@@ -49,7 +50,10 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.GET("/GetGroupList", group.List)                  //get group list
 			apiRouter.POST("/CreateGroup", group.Create)                //add group
 
-
+			apiRouter.GET("/GetFriendsList", friends.GetList)
+			apiRouter.GET("/GetFriendForRecord", friends.GetFriendForRecord)
+			apiRouter.POST("/SendFriendRequest", friends.SendFriendRequest)
+			apiRouter.POST("/ByFriendRequest", friends.ByFriendRequest)
 		}
 	}
 }

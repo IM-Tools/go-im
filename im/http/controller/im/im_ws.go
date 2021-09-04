@@ -16,6 +16,7 @@ import (
 )
 
 type IMService struct{}
+
 func (*IMService) Connect(c *gin.Context) {
 	conn, err := ws.App(c.Writer, c.Request)
 	if err != nil {
@@ -35,3 +36,7 @@ func (*IMService) Connect(c *gin.Context) {
 		client.ImWrite()
 	})
 }
+
+
+
+

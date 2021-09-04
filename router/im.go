@@ -10,5 +10,6 @@ func RegisterIMRouters(router *gin.Engine) {
 	ws := router.Group("/im").Use(middleware.Auth())
 	{
 		ws.GET("/connect", IMService.Connect)
+
 	}
 }

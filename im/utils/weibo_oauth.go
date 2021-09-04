@@ -1,15 +1,15 @@
 /**
   @author:panliang
-  @data:2021/6/21
+  @data:2021/9/4
   @note
 **/
-package oauth
+package utils
 
 import (
 	"github.com/tidwall/gjson"
+	"go_im/im/helper"
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
-	log2 "go_im/pkg/log"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -49,14 +49,13 @@ func GetWeiBoAccessToken(code *string) string  {
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
 	if err!=nil{
-		log2.Warning(err.Error())
+		helper.Error("获取code失败",err)
 	}
 	defer resp.Body.Close()
 
 	bodyC, _ := ioutil.ReadAll(resp.Body)
 
 	access_token := gjson.Get(string(bodyC),"access_token")
-
 
 	return access_token.Str
 }
@@ -70,7 +69,7 @@ func GetWeiBoUserInfo(access_token *string) string {
 	urls := user_info_url+"?uid="+ uid+"&access_token="+*access_token
 	resp,err := http.Get(urls)
 	if err!=nil{
-		log2.Warning(err.Error())
+		helper.Error("请求微博获取access_token失败",err)
 	}
 	defer resp.Body.Close()
 
@@ -86,7 +85,7 @@ func getUid(access_token *string) string  {
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
 	if err!=nil{
-		log2.Warning(err.Error())
+		helper.Error("请求微博获取uid失败",err)
 	}
 	defer resp.Body.Close()
 
@@ -96,4 +95,3 @@ func getUid(access_token *string) string  {
 
 	return uid.Raw
 }
-

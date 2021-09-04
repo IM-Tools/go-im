@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
+	"go.uber.org/zap"
 	"go_im/im/http/models/group"
 	"go_im/im/http/models/group_user"
 	userModel "go_im/im/http/models/user"
@@ -44,7 +45,7 @@ func (*GroupController) List(c *gin.Context){
 	}
 	list,err :=group.GetGroupUserList(group_slice)
 	if err != nil {
-		log2.Warning(err.Error())
+		log2.Logger.Error("获取群聊列表异常",zap.Error(err))
 		response.FailResponse(http.StatusInternalServerError,"服务器错误")
 		return
 	}
@@ -72,6 +73,7 @@ func (*GroupController) Create(c *gin.Context){
 	errs := govalidator.New(opts).ValidateStruct()
 
 	if len(errs) >0 {
+
 		data, _ := json.MarshalIndent(errs, "", "  ")
 		var  result =  helpler.JsonToMap(data)
 		response.ErrorResponse(http.StatusInternalServerError,"参数不合格",result).ToJson(c)
@@ -82,12 +84,12 @@ func (*GroupController) Create(c *gin.Context){
 	}
 
 	id,err :=group.Created(user.ID,_groups.GroupName);if err != nil {
-		fmt.Println("异常")
 		response.ErrorResponse(http.StatusInternalServerError,"创建异常").ToJson(c)
 		return
 	}
 	err = group_user.CreatedAll(_groups.UserId,id,user.ID)
 	if err != nil {
+		log2.Logger.Error("创建群聊异常",zap.Error(err))
 		response.ErrorResponse(http.StatusInternalServerError,"创建异常").ToJson(c)
 		return
 	}

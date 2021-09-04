@@ -16,7 +16,7 @@ import (
 )
 
 
-//将字节数组转化为结构体
+//byte -> map
 func EnMessage(message []byte) (msg *Message) {
 	err := json.Unmarshal([]byte(string(message)),&msg)
 	if err != nil {
@@ -24,12 +24,9 @@ func EnMessage(message []byte) (msg *Message) {
 	}
 	return
 }
-//消息数据入库
-
+//group message insert db
 func PutGroupData(msg *Msg,is_read int,channel_type int) {
-
 	channel_a := helpler.ProduceChannelGroupName(strconv.Itoa(msg.ToId))
-
 	fid := uint64(msg.FromId)
 	tid := uint64(msg.ToId)
 	user := messageModel.ImMessage{FromId:fid,
@@ -41,12 +38,9 @@ func PutGroupData(msg *Msg,is_read int,channel_type int) {
 	return
 }
 
-
+//The private chat insert db
 func PutData(msg *Msg,is_read int,channel_type int) {
-
 	channel_a,_ := helpler.ProduceChannelName( strconv.Itoa(msg.FromId), strconv.Itoa(msg.ToId))
-
-
 fid := uint64(msg.FromId)
 	tid := uint64(msg.ToId)
 	user := messageModel.ImMessage{FromId:fid,
@@ -58,7 +52,7 @@ fid := uint64(msg.FromId)
 	return
 }
 
-//拿到群聊里面的用户id
+//get chat group user id
 func GetGroupUid(group_id int) ([]GroupId,error) {
 	var groups [] GroupId
 	err := model.DB.Table("im_group_users").Where("group_id=?",group_id).Find(&groups).Error;if err != nil {
