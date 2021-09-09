@@ -6,6 +6,7 @@
 package im
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go_im/im/http/models/friend"
 	"go_im/im/http/models/friend_record"
@@ -22,6 +23,7 @@ func (*FriendController) GetList(c *gin.Context)  {
 		response.FailResponse(500, "获取好友列表异常").ToJson(c)
 		return
 	}
+	fmt.Println(userModel.AuthUser.ID)
 	response.SuccessResponse(list).ToJson(c)
 	return
 }

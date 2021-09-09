@@ -49,6 +49,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 
 			apiRouter.GET("/GetGroupList", group.List)                  //get group list
 			apiRouter.POST("/CreateGroup", group.Create)                //add group
+			apiRouter.POST("/RemoveGroup", group.RemoveGroup)                //add group
 
 			apiRouter.GET("/GetFriendsList", friends.GetList)
 			apiRouter.GET("/GetFriendForRecord", friends.GetFriendForRecord)

@@ -39,17 +39,22 @@ func (*AuthController) Me(c *gin.Context) {
 }
 
 func (that *AuthController) Login(c *gin.Context) {
-	var params validates.LoginParams
+	_user := userModel.Users{
+		Name: c.PostForm("name"),
+		Password: c.PostForm("password"),
+	}
+	errs := validates.ValidateLoginForm(_user)
+	if len(errs) >0 {
+		response.ErrorResponse(500,"参数错误",errs).WriteTo(c)
+		return
+	}
 	var users userModel.Users
-	_ = c.ShouldBind(&params)
-
-	model.DB.Model(&userModel.Users{}).Where("name = ?", params.Name).Find(&users)
-
+	model.DB.Model(&userModel.Users{}).Where("name = ?", _user.Name).Find(&users)
 	if users.ID == 0 {
 		response.FailResponse(403, "用户不存在").ToJson(c)
 		return
 	}
-	if !helpler.ComparePasswords(users.Password, params.Password) {
+	if !helpler.ComparePasswords(users.Password, _user.Password) {
 		response.FailResponse(403, "账号或者密码错误").ToJson(c)
 		return
 	}

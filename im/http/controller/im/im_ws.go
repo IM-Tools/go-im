@@ -8,7 +8,7 @@ package im
 
 import (
 	"github.com/gin-gonic/gin"
-	"go_im/im/service"
+	ws2 "go_im/im/ws"
 	"go_im/pkg/jwt"
 	"go_im/pkg/pool"
 	"go_im/pkg/ws"
@@ -24,8 +24,8 @@ func (*IMService) Connect(c *gin.Context) {
 		return
 	}
 	claims := c.MustGet("claims").(*jwt.CustomClaims)
-	client := &service.ImClient{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
-	service.ImManager.Register <- client
+	client := &ws2.ImClient{ID: claims.ID, Socket: conn, Send: make(chan []byte)}
+	ws2.ImManager.Register <- client
 
 	//开始投递任务
 	pool.AntsPool.Submit(func() {

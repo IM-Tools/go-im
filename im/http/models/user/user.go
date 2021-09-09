@@ -14,7 +14,7 @@ type Users struct {
 	Email           string `valid:"email" json:"email"`
 	Password        string `valid:"password"`
 	Avatar          string `json:"avatar"`
-	Name            string `json:"name"`
+	Name            string `json:"name" valid:"name"`
 	OauthType       int
 	OauthId         string
 	CreatedAt       string `json:"created_at"`

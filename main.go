@@ -1,43 +1,22 @@
-/**
-  @author:panliang
-  @data:2021/6/18
-  @note
-**/
+/*
+Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package main
 
-import (
-	"github.com/gin-gonic/gin"
-	"go_im/config"
-	"go_im/im"
-	"go_im/im/service"
-	conf "go_im/pkg/config"
-	log2 "go_im/pkg/log"
-	"go_im/pkg/pool"
-	"go_im/pkg/wordsfilter"
-	"go_im/router"
-)
-
-func init() {
-	config.Initialize()
-	//加载敏感词库
-	wordsfilter.SetTexts()
-}
+import "github.com/idoubi/tellme/cmd"
 
 func main() {
-	app := gin.Default()
-
-	//初始化连接池
-	im.SetupPool()
-
-	//启动协程执行ws程序
-	pool.AntsPool.Submit(func() {
-		service.ImManager.ImStart()
-	})
-
-	//注册路由
-	router.RegisterApiRoutes(app)
-	router.RegisterIMRouters(app)
-	//全局异常处理
-	app.Use(log2.Recover)
-	_ = app.Run(":" + conf.GetString("app.port"))
+	cmd.Execute()
 }

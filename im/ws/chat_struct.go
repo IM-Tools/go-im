@@ -3,7 +3,7 @@
   @data:2021/8/13
   @note
 **/
-package service
+package ws
 
 import "github.com/gorilla/websocket"
 
