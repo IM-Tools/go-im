@@ -15,8 +15,16 @@ limitations under the License.
 */
 package main
 
-import "github.com/idoubi/tellme/cmd"
+import (
+	"go_im/config"
+	"go_im/im"
+	"go_im/pkg/wordsfilter"
+)
 
+func init()  {
+	config.Initialize()
+	wordsfilter.SetTexts()
+}
 func main() {
-	cmd.Execute()
+	im.StartHttp()
 }

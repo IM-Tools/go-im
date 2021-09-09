@@ -5,3 +5,5 @@ tests
 .DS_Store
 .github
 main
+gin.log
+sample.txt
