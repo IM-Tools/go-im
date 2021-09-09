@@ -11,7 +11,7 @@ require (
 	github.com/golang-module/carbon v1.5.2
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/gorilla/websocket v1.4.2
-	github.com/idoubi/tellme v0.3.2 // indirect
+	github.com/idoubi/tellme v0.3.2
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
