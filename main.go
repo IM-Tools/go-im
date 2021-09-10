@@ -16,8 +16,10 @@ limitations under the License.
 package main
 
 import (
+	"flag"
 	"go_im/config"
 	"go_im/im"
+	"go_im/im/tcp"
 	"go_im/pkg/wordsfilter"
 )
 
@@ -26,5 +28,17 @@ func init()  {
 	wordsfilter.SetTexts()
 }
 func main() {
-	im.StartHttp()
+	var serve string
+	flag.StringVar(&serve, "serve", "", "选择运行的服务🚀")
+	flag.Parse()
+	switch serve {
+	case "http":
+		im.StartHttp()
+	case "tcp-serve":
+		tcp.StartTcpServe()
+	case "tcp-client":
+		tcp.StartTcpClient()
+	default:
+		im.StartHttp()
+	}
 }

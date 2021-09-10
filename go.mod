@@ -11,14 +11,12 @@ require (
 	github.com/golang-module/carbon v1.5.2
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/gorilla/websocket v1.4.2
-	github.com/idoubi/tellme v0.3.2
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/panjf2000/ants/v2 v2.4.6
 	github.com/robfig/cron/v3 v3.0.0 // indirect
 	github.com/spf13/cast v1.4.0
-	github.com/spf13/cobra v1.2.1 // indirect
 	github.com/spf13/viper v1.8.1
 	github.com/syyongx/go-wordsfilter v0.0.0-20190622081656-74232c786041
 	github.com/thedevsaddam/govalidator v1.9.10

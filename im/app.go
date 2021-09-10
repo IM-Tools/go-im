@@ -30,7 +30,5 @@ func StartHttp()  {
 	app.Use(log2.Recover)
 	_ = app.Run(":" + conf.GetString("app.port"))
 }
-//tcp服务
-func StartTcp()  {
 
-}
+

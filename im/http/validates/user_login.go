@@ -13,7 +13,7 @@ import (
 func ValidateLoginForm(data user2.Users)  map[string][]string  {
 	rules := govalidator.MapData{
 		"name":             []string{"required"},
-		"password":         []string{"required", "min:6"},
+		"password":         []string{"required", "min:5"},
 	}
 	messages := govalidator.MapData{
 		"name": []string{

@@ -19,6 +19,7 @@
    - [x] 响应式的前端界面支持pc与h5
    - [x] 严禁网络不良用语、过滤敏感词汇
    - [ ] 数据限流
+   - [ ] 支持tcp&websocket数据交互
 > 基于jwt签名验证、集成第三方登录。支持cors跨域、zap日志收集、图片、语言文件上传、垃圾词过滤、ants协程池管理、redis
  
  
@@ -144,6 +145,12 @@
 ```shell script
 cp .env.example .env
 go run main.go 或者 air
+```
+
+#### 启动tcp服务
+```shell script
+go run main.go --serve tcp-serve //启动tcp服务端
+go run main.go --serve tcp-client //启动tcp客户端
 ```
 #### 使用到的图床
 ```shell script
