@@ -21,7 +21,7 @@ var (
 	claims *NewJwt.CustomClaims
 )
 
-//路由中间件
+
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token = c.DefaultQuery("token", c.GetHeader("authorization"))

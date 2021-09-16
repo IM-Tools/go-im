@@ -18,6 +18,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.0 // indirect
 	github.com/spf13/cast v1.4.0
 	github.com/spf13/viper v1.8.1
+	github.com/streadway/amqp v1.0.0
 	github.com/syyongx/go-wordsfilter v0.0.0-20190622081656-74232c786041
 	github.com/thedevsaddam/govalidator v1.9.10
 	github.com/tidwall/gjson v1.8.0

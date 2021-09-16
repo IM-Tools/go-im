@@ -16,21 +16,22 @@ import (
 	"strconv"
 )
 
-type UsersController struct {
-}
 
-type UsersList struct {
-	ID        uint64 `json:"id"`
-	Email     string `json:"email"`
-	Avatar    string `json:"avatar"`
-	Name      string `json:"name"`
-	Msg       string `json:"msg"`
-	Status       int `json:"status"`
-	IsRead     int `json:"is_read"`
-	SendTime     string `json:"send_time"`
-	SendMsg     string `json:"send_msg"`
-	MsgTotal     int `json:"msg_total"`
-}
+type (
+	UsersController struct {}
+	UsersList struct {
+		ID        uint64 `json:"id"`
+		Email     string `json:"email"`
+		Avatar    string `json:"avatar"`
+		Name      string `json:"name"`
+		Msg       string `json:"msg"`
+		Status       int `json:"status"`
+		IsRead     int `json:"is_read"`
+		SendTime     string `json:"send_time"`
+		SendMsg     string `json:"send_msg"`
+		MsgTotal     int `json:"msg_total"`
+	}
+)
 
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")

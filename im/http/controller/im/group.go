@@ -23,10 +23,13 @@ import (
 	"reflect"
 )
 
-type GroupController struct {}
-type Groups struct {
-	GroupId string `json:"group_id"`
-}
+
+type (
+	GroupController struct {}
+	Groups struct {
+		GroupId string `json:"group_id"`
+	}
+)
 
 func (*GroupController) List(c *gin.Context){
 

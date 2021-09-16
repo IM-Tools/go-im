@@ -17,21 +17,24 @@ import (
 	"sort"
 )
 
-//type ImMsgList struct {
-//	ID        uint64 `json:"id"`
-//	Msg       string `json:"msg"`
-//	CreatedAt string `json:"created_at"`
-//	FromId    uint64 `json:"from_id"`
-//	ToId      uint64 `json:"to_id"`
-//	Channel   string `json:"channel"`
-//	Status    int    `json:"status"`
-//	MsgType   int `json:"msg_type"`
-//	Users []userModel.Users `json:"users" gorm:"foreignKey:ID;references:FromId"`
-//}
 
+type (
+	MessageController struct {}
+	ImMessage struct {
+		ID        uint64 `json:"id"`
+		Msg       string `json:"msg"`
+		CreatedAt string  `json:"created_at"`
+		FromId uint64 `json:"user_id"`
+		ToId uint64 `json:"send_id"`
+		Channel string `json:"channel"`
+		Status int `json:"status"`
+		IsRead     int `json:"is_read"`
+		MsgType int `json:"msg_type"`
+		ChannelType int  `json:"channel_type"`
+		Users userModel.Users `json:"users" gorm:"foreignKey:FromId;references:ID"`
+	}
+)
 
-
-type MessageController struct {}
 
 func (*MessageController) InformationHistory(c *gin.Context) {
 	to_id := c.Query("to_id")
@@ -74,19 +77,7 @@ func SortByAge(list []ImMessage)  {
 	})
 }
 
-type ImMessage struct {
-	ID        uint64 `json:"id"`
-	Msg       string `json:"msg"`
-	CreatedAt string  `json:"created_at"`
-	FromId uint64 `json:"user_id"`
-	ToId uint64 `json:"send_id"`
-	Channel string `json:"channel"`
-	Status int `json:"status"`
-	IsRead     int `json:"is_read"`
-	MsgType int `json:"msg_type"`
-	ChannelType int  `json:"channel_type"`
-	Users userModel.Users `json:"users" gorm:"foreignKey:FromId;references:ID"`
-}
+
 
 func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 	to_id := c.Query("to_id")

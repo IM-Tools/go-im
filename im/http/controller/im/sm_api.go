@@ -20,22 +20,45 @@ import (
 	"time"
 )
 
-type SmApiController struct{}
+type (
+	SmApiController struct{}
+	ResponseData struct {
+		Success   bool   `json:"success"`
+		Code      string `json:"code"`
+		Message   string `json:"message"`
+		Data      Data   `json:"data"`
+		RequestId string `json:"RequestId"`
+	}
+	Data struct {
+		Token string `json:"token"`
+	}
+	ResponseUploadData struct {
+		Success   bool        `json:"'success'"`
+		Code      string      `json:"code"`
+		Message   string      `json:"message"`
+		Data      DataSuccess `json:"data"`
+		RequestId string      `json:"RequestId"`
+	}
+
+	DataSuccess struct {
+		FileId    int    `json:"file_id"`
+		Width     int    `json:"width"`
+		Height    int    `json:"height"`
+		Filename  string `json:"filename"`
+		Storename string `json:"storename"`
+		Size      int    `json:"size"`
+		Path      string `json:"path"`
+		Hash      string `json:"hash"`
+		Url       string `json:"url"`
+		Delete    string `json:"delete"`
+		Page      string `json:"page"`
+	}
+)
 
 var username = config.GetString("app.sm_name")
 var password = config.GetString("app.sm_password")
 var sm_token = config.GetString("app.sm_token")
 
-type ResponseData struct {
-	Success   bool   `json:"success"`
-	Code      string `json:"code"`
-	Message   string `json:"message"`
-	Data      Data   `json:"data"`
-	RequestId string `json:"RequestId"`
-}
-type Data struct {
-	Token string `json:"token"`
-}
 
 func (*SmApiController) GetApiToken(c *gin.Context) {
 	stringCmd := redis.RedisDB.Get("sm_token")
@@ -64,27 +87,7 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 	c.JSON(200, resp)
 }
 
-type ResponseUploadData struct {
-	Success   bool        `json:"'success'"`
-	Code      string      `json:"code"`
-	Message   string      `json:"message"`
-	Data      DataSuccess `json:"data"`
-	RequestId string      `json:"RequestId"`
-}
 
-type DataSuccess struct {
-	FileId    int    `json:"file_id"`
-	Width     int    `json:"width"`
-	Height    int    `json:"height"`
-	Filename  string `json:"filename"`
-	Storename string `json:"storename"`
-	Size      int    `json:"size"`
-	Path      string `json:"path"`
-	Hash      string `json:"hash"`
-	Url       string `json:"url"`
-	Delete    string `json:"delete"`
-	Page      string `json:"page"`
-}
 
 func (*SmApiController) UploadImg(c *gin.Context) {
 	file, _ := c.FormFile("Smfile")

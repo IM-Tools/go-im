@@ -8,10 +8,13 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/streadway/amqp"
 	messageModel "go_im/im/http/models/msg"
 	"go_im/im/http/models/user"
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
+	"go_im/pkg/mq"
+	"log"
 	"strconv"
 	"time"
 )
@@ -29,7 +32,113 @@ func PutGroupData(msg *Msg,is_read int,channel_type int) {
 	model.DB.Create(&user)
 	return
 }
+func MqPersonalPublish(msg []byte,to_id int)  {
+	ch,err := mq.RabbitMq.Channel()
+	if err!= nil {
+		log.Fatal(err)
+	}
+	defer ch.Close()
+	err = ch.Publish(
+		"",  // exchange
+		"personal_"+strconv.Itoa(to_id), // routing key
+		false,   // mandatory
+		false,   // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			MessageId:   string(1),
+			Type:        "AgentJob",
+			Body: msg  ,
+		})
+	if err != nil {
+		log.Fatalf("发送错误")
+	}
+}
 
+func MqGroupPublish(msg []byte,to_id int)  {
+	ch,err := mq.RabbitMq.Channel()
+	if err!= nil {
+		log.Fatal(err)
+	}
+	defer ch.Close()
+
+	err = ch.Publish(
+		"",  // exchange
+		"group_"+strconv.Itoa(to_id), // routing key
+		false,   // mandatory
+		false,   // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			MessageId:   string(1),
+			Type:        "AgentJob",
+			Body: msg  ,
+		})
+	if err != nil {
+		log.Fatalf("发送错误")
+	}
+}
+
+func MqPersonalConsumption(conn *ImClient,user_id int64)  {
+	ch,err :=mq.RabbitMq.Channel()
+	if err!=nil {
+		log.Fatal(err)
+	}
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"personal_"+strconv.Itoa(int(user_id)), // name
+		false,   // durable
+		false,   // delete when unused
+		false,   // exclusive
+		false,   // no-wait
+		nil,     // arguments
+	)
+
+
+	msgs, err := ch.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	for msg := range msgs {
+		log.Printf("Received a message: %s", msg.Body)
+		conn.Send <- msg.Body
+	}
+}
+
+func MqGroupConsumption(conn *ImClient,user_id int64)  {
+	ch,err :=mq.RabbitMq.Channel()
+	if err!=nil {
+		log.Fatal(err)
+	}
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"group_"+strconv.Itoa(int(user_id)), // name
+		false,   // durable
+		false,   // delete when unused
+		false,   // exclusive
+		false,   // no-wait
+		nil,     // arguments
+	)
+
+	msgs, err := ch.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	for msg := range msgs {
+		log.Printf("Received a message: %s", msg.Body)
+		conn.Send <- msg.Body
+	}
+}
 
 //The private chat insert db
 func PutData(msg *Msg,is_read int,channel_type int) {
@@ -61,6 +170,7 @@ func PushUserOnlineNotification(conn *ImClient,id int64)  {
 }
 
 func PushUserOfflineNotification(manager *ImClientManager,conn *ImClient)  {
+
 	if _,ok := manager.ImClientMap[conn.ID];ok {
 		id, _ := strconv.ParseInt(conn.ID, 10, 64)
 		user.SetUserStatus(uint64(id), 0)
@@ -70,4 +180,5 @@ func PushUserOfflineNotification(manager *ImClientManager,conn *ImClient)  {
 		close(conn.Send)
 		delete(manager.ImClientMap, conn.ID)
 	}
+
 }

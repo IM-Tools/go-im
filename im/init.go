@@ -8,6 +8,7 @@ package im
 import (
 	"go_im/pkg/config"
 	"go_im/pkg/model"
+	"go_im/pkg/mq"
 	"go_im/pkg/pool"
 	"go_im/pkg/redis"
 	"time"
@@ -26,4 +27,6 @@ func SetupPool() {
 	redis.InitClient()
 	//启动协程池
 	pool.ConnectPool()
+	//启动mq
+	mq.ConnectMQ()
 }

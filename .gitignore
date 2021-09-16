@@ -7,3 +7,6 @@ tests
 main
 gin.log
 sample.txt
+Dockerfile
+.tellme.yaml
+tellme

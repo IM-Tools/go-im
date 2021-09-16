@@ -20,18 +20,18 @@ import (
 	"strconv"
 	"time"
 )
-
-type AuthController struct{}
-type WeiBoController struct{}
-
-type Me struct {
-	ID             uint64 `json:"id"`
-	Name           string `json:"name"`
-	Avatar         string `json:"avatar"`
-	Email          string `json:"email"`
-	Token          string `json:"token"`
-	ExpirationTime int64  `json:"expiration_time"`
-}
+type (
+	AuthController struct{}
+	WeiBoController struct{}
+	Me struct {
+		ID             uint64 `json:"id"`
+		Name           string `json:"name"`
+		Avatar         string `json:"avatar"`
+		Email          string `json:"email"`
+		Token          string `json:"token"`
+		ExpirationTime int64  `json:"expiration_time"`
+	}
+)
 
 func (*AuthController) Me(c *gin.Context) {
 	user := userModel.AuthUser

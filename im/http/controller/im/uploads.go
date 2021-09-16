@@ -13,7 +13,9 @@ import (
 )
 
 type UploadController struct {}
+
 var ym = config.GetString("app.ym")
+
 func (*UploadController) UploadVoiceFile(c *gin.Context)  {
 	voice, _ := c.FormFile("voice")
 	dir := utils.GetCurrentDirectory()
