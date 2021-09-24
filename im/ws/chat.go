@@ -30,6 +30,10 @@ func (manager *ImClientManager) ImStart() {
 			jsonMessage, _ := json.Marshal(&ImOnlineMsg{Code: connOk, Msg: "用户上线啦", ID: conn.ID,ChannelType:3})
 			id, _ := strconv.ParseInt(conn.ID, 10, 64)
 			user.SetUserStatus(uint64(id), 1)
+
+			for _,wsConn := range manager.ImClientMap {
+				wsConn.Socket.WriteMessage(websocket.TextMessage,jsonMessage)
+			}
 			manager.ImSend(jsonMessage, conn)
 			//用户上线通知
 
@@ -39,7 +43,10 @@ func (manager *ImClientManager) ImStart() {
 				PushUserOnlineNotification(conn,id)
 			})
 
+
+
 		case conn := <-ImManager.Unregister:
+
 			PushUserOfflineNotification(manager,conn)
 		case message := <-ImManager.Broadcast:
 			data := EnMessage(message)

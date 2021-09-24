@@ -8,6 +8,7 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/websocket"
 	"github.com/streadway/amqp"
 	messageModel "go_im/im/http/models/msg"
 	"go_im/im/http/models/user"
@@ -75,6 +76,7 @@ func MqGroupPublish(msg []byte,to_id int)  {
 	if err != nil {
 		log.Fatalf("发送错误")
 	}
+	return
 }
 
 func MqPersonalConsumption(conn *ImClient,user_id int64)  {
@@ -107,6 +109,7 @@ func MqPersonalConsumption(conn *ImClient,user_id int64)  {
 		log.Printf("Received a message: %s", msg.Body)
 		conn.Send <- msg.Body
 	}
+	return
 }
 
 func MqGroupConsumption(conn *ImClient,user_id int64)  {
@@ -170,15 +173,17 @@ func PushUserOnlineNotification(conn *ImClient,id int64)  {
 }
 
 func PushUserOfflineNotification(manager *ImClientManager,conn *ImClient)  {
-
 	if _,ok := manager.ImClientMap[conn.ID];ok {
 		id, _ := strconv.ParseInt(conn.ID, 10, 64)
 		user.SetUserStatus(uint64(id), 0)
-		jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了" + conn.ID, ID: conn.ID,ChannelType: 3})
-		manager.ImSend(jsonMessage, conn)
 		conn.Socket.Close()
 		close(conn.Send)
 		delete(manager.ImClientMap, conn.ID)
+	}
+	//推送离线消息
+	jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了" + conn.ID, ID: conn.ID,ChannelType: 3})
+	for _,wsConn := range manager.ImClientMap {
+		wsConn.Socket.WriteMessage(websocket.TextMessage,jsonMessage)
 	}
 
 }

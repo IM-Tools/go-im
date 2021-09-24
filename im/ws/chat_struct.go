@@ -20,7 +20,7 @@ type ImClient struct {
 	Send chan []byte
 }
 
-//客户度啊管理器
+//客户端管理器
 var ImManager = ImClientManager{
 	ImClientMap:make(map[string]*ImClient),
 	Broadcast:  make(chan []byte),

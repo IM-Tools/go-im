@@ -8,9 +8,6 @@ package tcp
 import (
 	"bufio"
 	"fmt"
-	userModel "go_im/im/http/models/user"
-	"go_im/pkg/helpler"
-	"go_im/pkg/model"
 	"io"
 	"log"
 	"net"
@@ -45,17 +42,18 @@ func StartTcpClient()  {
 }
 
 func login(conn net.Conn)  {
-	username :=getClientLoginMsg("username",conn)
-	password :=getClientLoginMsg("password",conn)
+	username,password :=getClientLoginMsg(conn)
 
-	var users userModel.Users
-	model.DB.Model(&userModel.Users{}).Where("name = ?",username).Find(&users)
-	if users.ID == 0 {
-		log.Fatal("用户不存在")
-	}
-	if !helpler.ComparePasswords(users.Password, password) {
-		log.Fatal("账号或者密码错误")
-	}
+	fmt.Println(username)
+	fmt.Println(password)
+	//var users userModel.Users
+	//	model.DB.Model(&userModel.Users{}).Where("name = ?",username).Find(&users)
+	//	if users.ID == 0 {
+	//		log.Fatal("用户不存在")
+	//	}
+	//	if !helpler.ComparePasswords(users.Password, password) {
+	//		log.Fatal("账号或者密码错误")
+	//}
 
 
 }
@@ -69,16 +67,40 @@ func mustCopy(dst io.Writer,src io.Reader)  {
 
 // 获取登录信息
 
-func getClientLoginMsg(filed string,conn net.Conn) (who string)  {
+func getClientLoginMsg(conn net.Conn) (username string,password string)  {
 	input := bufio.NewScanner(conn)
-	fmt.Fprint(conn,"input "+filed+":")
+
+	fmt.Fprint(conn,"请输入你需要登录账号：")
 	for input.Scan() {
 		if len(strings.TrimSpace(input.Text())) == 0 {
+
 			continue
 		}
-		who = input.Text()
+		username = input.Text()
 		break;
 	}
 
-	return who
+	fmt.Fprint(conn,"请输入你需要登录密码：")
+	for input.Scan() {
+		if len(strings.TrimSpace(input.Text())) == 0 {
+
+			continue
+		}
+		password = input.Text()
+		break;
+	}
+	//if filed == "username" {
+	//	if len(who) < 1 {
+	//		log.Println("用户名最少两位")
+	//		os.Exit(1)
+	//	}
+	//} else {
+	//	if len(who) < 6 {
+	//		log.Println("密码不能低于六位")
+	//		os.Exit(1)
+	//	}
+	//}
+
+
+	return username,password
 }
