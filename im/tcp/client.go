@@ -28,7 +28,7 @@ func StartTcpClient()  {
 	if err != nil {
 		log.Fatal(err)
 	}
-	login(conn)
+	//login(conn)
 	done := make(chan struct{})
 	go func() {
 		fmt.Println(os.Stdout)
@@ -41,22 +41,15 @@ func StartTcpClient()  {
 	<-done // 等待后台 goroutine 完成
 }
 
-func login(conn net.Conn)  {
-	username,password :=getClientLoginMsg(conn)
-
-	fmt.Println(username)
-	fmt.Println(password)
-	//var users userModel.Users
-	//	model.DB.Model(&userModel.Users{}).Where("name = ?",username).Find(&users)
-	//	if users.ID == 0 {
-	//		log.Fatal("用户不存在")
-	//	}
-	//	if !helpler.ComparePasswords(users.Password, password) {
-	//		log.Fatal("账号或者密码错误")
-	//}
-
-
-}
+//func login(conn net.Conn)  {
+//	username :=getClientLoginName(conn)
+//	password :=getClientLoginPwd(conn)
+//	fmt.Println(username,password)
+//
+//
+//
+//
+//}
 
 
 func mustCopy(dst io.Writer,src io.Reader)  {
@@ -67,9 +60,8 @@ func mustCopy(dst io.Writer,src io.Reader)  {
 
 // 获取登录信息
 
-func getClientLoginMsg(conn net.Conn) (username string,password string)  {
+func getClientLoginName(conn net.Conn) (username string)  {
 	input := bufio.NewScanner(conn)
-
 	fmt.Fprint(conn,"请输入你需要登录账号：")
 	for input.Scan() {
 		if len(strings.TrimSpace(input.Text())) == 0 {
@@ -79,7 +71,11 @@ func getClientLoginMsg(conn net.Conn) (username string,password string)  {
 		username = input.Text()
 		break;
 	}
+	return username
+}
 
+func getClientLoginPwd(conn net.Conn) (password string)  {
+	input := bufio.NewScanner(conn)
 	fmt.Fprint(conn,"请输入你需要登录密码：")
 	for input.Scan() {
 		if len(strings.TrimSpace(input.Text())) == 0 {
@@ -89,18 +85,5 @@ func getClientLoginMsg(conn net.Conn) (username string,password string)  {
 		password = input.Text()
 		break;
 	}
-	//if filed == "username" {
-	//	if len(who) < 1 {
-	//		log.Println("用户名最少两位")
-	//		os.Exit(1)
-	//	}
-	//} else {
-	//	if len(who) < 6 {
-	//		log.Println("密码不能低于六位")
-	//		os.Exit(1)
-	//	}
-	//}
-
-
-	return username,password
+	return password
 }

@@ -17,8 +17,9 @@
    - [x] 群聊消息
    - [x] 响应式的前端界面支持pc与h5
    - [x] 严禁网络不良用语、过滤敏感词汇
+   - [x] 支持tcp命令行登录
    - [ ] 数据限流
-   - [ ] 支持tcp&websocket数据交互
+   - [ ] 支持tcp&websocket数据交互(这点不难 解决方案待调整 用户登录时更新设备端的状态)
    
    
 > 基于jwt签名验证、集成第三方登录。支持cors跨域、zap日志收集、图片、语言文件上传、垃圾词过滤、ants协程池管理、redis
@@ -29,94 +30,8 @@
 #### 架构梳理
 ![](docs/WechatIMG533.png)
 
-#### 目录结构
-```shell
-.
-├── README.md
-├── config
-│   ├── app.go
-│   ├── cache.go
-│   ├── config.go
-│   ├── database.go
-│   └── oauth.go
-├── go.mod
-├── go.sum
-├── im
-│   ├── http
-│   │   ├── controller
-│   │   │   ├── auth
-│   │   │   │   ├── auth.go
-│   │   │   │   └── user.go
-│   │   │   └── im
-│   │   │       ├── group.go
-│   │   │       ├── im_ws.go
-│   │   │       ├── message.go
-│   │   │       ├── sm_api.go
-│   │   │       └── uploads.go
-│   │   ├── middleware
-│   │   │   └── auth.go
-│   │   ├── models
-│   │   │   ├── group
-│   │   │   │   └── group.go
-│   │   │   ├── group_user
-│   │   │   │   └── group_user.go
-│   │   │   ├── msg
-│   │   │   │   └── msg.go
-│   │   │   └── user
-│   │   │       └── user.go
-│   │   └── validates
-│   │       ├── auth.go
-│   │       ├── create_group.go
-│   │       └── upload.go
-│   ├── init.go
-│   ├── oauth
-│   │   ├── gitee.go
-│   │   └── weibo.go
-│   ├── service
-│   │   ├── chat.go
-│   │   ├── chat_struct.go
-│   │   └── helper.go
-│   └── utils
-│       └── upload.go
-├── im.sql
-├── lang
-│   ├── de.json
-│   ├── en.json
-│   ├── es.json
-│   ├── jp.json
-│   ├── kr.json
-│   ├── loader.go
-│   ├── pt.json
-│   ├── tr.json
-│   ├── zh-CN.json
-│   └── zh-TW.json
-├── main
-├── main.go
-├── pkg
-│   ├── config
-│   │   └── config.go
-│   ├── helpler
-│   │   └── helplers.go
-│   ├── jwt
-│   │   └── jwt.go
-│   ├── log
-│   │   ├── errors.go
-│   │   └── handler.go
-│   ├── model
-│   │   └── model.go
-│   ├── pool
-│   │   └── ants_pool.go
-│   ├── redis
-│   │   └── redis.go
-│   ├── response
-│   │   └── response.go
-│   └── ws
-│       └── app.go
-├── router
-│   ├── api.go
-│   └── im.go
-```   
-#### 效果图
+
+#### web登录 效果图
 ![golang+vue3开发的一个im应用](https://cdn.learnku.com/uploads/images/202108/14/32593/aajXTvR3GF.png!large)
 
 ![golang+vue3开发的一个im应用](https://cdn.learnku.com/uploads/images/202108/14/32593/2tVT1ndyTS.png!large)
@@ -129,7 +44,10 @@
 
 #### [前端源码](https://github.com/pl1998/web-im-app)
 
-#### 简单部署
+
+
+
+#### 启动http服务
 ```shell script
 cp .env.example .env
 go run main.go 或者 air
@@ -140,6 +58,10 @@ go run main.go 或者 air
 go run main.go --serve tcp-serve //启动tcp服务端
 go run main.go --serve tcp-client //启动tcp客户端
 ```
+ 启动后输入账号密码登录
+ 
+![](docs/WechatIMG552.png)
+
 #### 使用到的图床
 ```shell script
 https://sm.ms/register

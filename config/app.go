@@ -20,6 +20,7 @@ func init() {
 		"env": config.Env("APP_ENV", "production"),
 		"file_disk": config.Env("FILE_DISK", "file"),
 		"port": config.Env("HTTP_PORT", "8000"),
+		"tcp_port": config.Env("TCP_PORT", "8000"),
 		"gitee_api_key": config.Env("GITEE_API_KEY", "8000"),
 		//jwt 授权登录
 		"jwt": map[string]interface{}{

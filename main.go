@@ -27,6 +27,7 @@ func init()  {
 	config.Initialize()
 	wordsfilter.SetTexts()
 }
+
 func main() {
 	var serve string
 	flag.StringVar(&serve, "serve", "", "选择运行的服务🚀")
