@@ -21,14 +21,17 @@ import (
 	"go_im/im"
 	"go_im/im/tcp"
 	"go_im/pkg/wordsfilter"
+	"go_im/pkg/zaplog"
 )
 
 func init()  {
 	config.Initialize()
 	wordsfilter.SetTexts()
+	zaplog.InitZapLogger()
 }
 
 func main() {
+	//zaplog.ZapLogger.Info("this is hello func", zap.String("test", "test--------->"))
 	var serve string
 	flag.StringVar(&serve, "serve", "", "选择运行的服务🚀")
 	flag.Parse()

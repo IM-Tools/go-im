@@ -55,7 +55,7 @@ go run main.go 或者 air
 
 #### 启动tcp服务
 ```shell script
-go run main.go --serve tcp-serve //启动tcp服务端
+go run main.go --serve tcp-serve  //启动tcp服务端
 go run main.go --serve tcp-client //启动tcp客户端
 ```
  启动后输入账号密码登录
@@ -159,7 +159,7 @@ server
         access_log /dev/null; 
     }
 
-    access_log  /www/wwwlogs/im.pltrue.top.log;
-    error_log  /www/wwwlogs/im.pltrue.top.error.log;
+    access_log  /www/wwwlogs/im.pltrue.top.zaplog;
+    error_log  /www/wwwlogs/im.pltrue.top.error.zaplog;
 }
 ```  

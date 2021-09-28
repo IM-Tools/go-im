@@ -35,9 +35,8 @@ func RegisterApiRoutes(router *gin.Engine) {
 		apiRouter.POST("/login", auth.Login)                 // account  login
 		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack) // weibo auth
 		apiRouter.GET("/getApiToken",  sm.GetApiToken)       // get sm token
-		apiRouter.Use(middleware.Auth())
+		apiRouter.Use(middleware.Auth(),middleware.GinLogger(),middleware.GinRecovery(true))
 		{
-
 			apiRouter.POST("/me", auth.Me)                  // get user info
 			apiRouter.GET("/UsersList", users.GetUsersList) // get user list
 

@@ -3,7 +3,7 @@
   @data:2021/8/16
   @note
 **/
-package log
+package zaplog
 
 import (
 	"github.com/gin-gonic/gin"
@@ -23,7 +23,6 @@ func Recover(c *gin.Context)  {
 				"msg":  "服务器异常",
 				"data": nil,
 			})
-
 			c.Abort()
 		}
 	}()

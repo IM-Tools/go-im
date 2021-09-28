@@ -3,7 +3,7 @@
   @data:2021/8/16
   @note
 **/
-package log
+package zaplog
 
 import (
 	"encoding/json"
@@ -27,7 +27,9 @@ type ErrorInfo struct {
 	ErrorMessage  string `json:"error_message"`
 	Line int `json:"line"`
 }
-
+/**
+自定义日志方法
+ */
 func Warning(str string)  {
 	timeString := time.Unix(time.Now().Unix(), 0).Format("2006-01-02")
 	fileName, line, functionName := "?", 0 , "?"
@@ -49,8 +51,8 @@ func Warning(str string)  {
 		fmt.Println("json日志存储异常--",err)
 	}
 	errorJson := string(jsons)+"\n"
-	path := utils.GetCurrentDirectory()+"/log";
-	logFile := path+"/"+timeString+"-error.log";
+	path := utils.GetCurrentDirectory()+"/zaplog";
+	logFile := path+"/"+timeString+"-error.zaplog";
 	_,exist := os.Stat( path )
 	if os.IsNotExist(exist) {
 		os.Mkdir(path,os.ModePerm)

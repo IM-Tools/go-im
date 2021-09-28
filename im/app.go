@@ -9,8 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"go_im/im/ws"
 	conf "go_im/pkg/config"
-	log2 "go_im/pkg/log"
 	"go_im/pkg/pool"
+	"go_im/pkg/zaplog"
 	"go_im/router"
 )
 //http服务
@@ -22,12 +22,11 @@ func StartHttp()  {
 	pool.AntsPool.Submit(func() {
 		ws.ImManager.ImStart()
 	})
-
 	//注册路由
 	router.RegisterApiRoutes(app)
 	router.RegisterIMRouters(app)
 	//全局异常处理
-	app.Use(log2.Recover)
+	app.Use(zaplog.Recover)
 	_ = app.Run(":" + conf.GetString("app.port"))
 }
 

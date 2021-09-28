@@ -7,9 +7,10 @@ package utils
 
 import (
 	"github.com/tidwall/gjson"
-	"go_im/im/helper"
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
+	"log"
+
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -49,7 +50,7 @@ func GetWeiBoAccessToken(code *string) string  {
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
 	if err!=nil{
-		helper.Error("获取code失败",err)
+		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 
@@ -69,7 +70,7 @@ func GetWeiBoUserInfo(access_token *string) string {
 	urls := user_info_url+"?uid="+ uid+"&access_token="+*access_token
 	resp,err := http.Get(urls)
 	if err!=nil{
-		helper.Error("请求微博获取access_token失败",err)
+		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 
@@ -85,7 +86,7 @@ func getUid(access_token *string) string  {
 	body := strings.NewReader(data.Encode())
 	resp,err := http.Post(urls,"application/x-www-form-urlencoded",body)
 	if err!=nil{
-		helper.Error("请求微博获取uid失败",err)
+		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 

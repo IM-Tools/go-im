@@ -8,8 +8,7 @@ package wordsfilter
 import (
 	"bufio"
 	"github.com/syyongx/go-wordsfilter"
-	"go.uber.org/zap"
-	"go_im/pkg/log"
+	"log"
 	"os"
 )
 
@@ -22,7 +21,8 @@ var root map[string]*wordsfilter.Node
 func SetTexts()  {
 	f, err := os.Open("sample.txt")
 	if err != nil {
-		log.Logger.Error("没有找到敏感词文件",zap.Error(err))
+		log.Fatal(err)
+
 	}
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
@@ -31,7 +31,7 @@ func SetTexts()  {
 		samples = append(samples, s)
 	}
 	if err := scanner.Err(); err != nil {
-		log.Logger.Error("加载scanner失败",zap.Error(err))
+		log.Fatal(err)
 	}
 	Wf = wordsfilter.New()
 	root = Wf.Generate(samples)

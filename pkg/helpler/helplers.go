@@ -7,9 +7,11 @@ package helpler
 
 import (
 	"encoding/json"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/url"
+	"time"
 )
 // json string to a map type
 func JsonToMap(str []byte) map[string]interface{} {
@@ -52,4 +54,13 @@ func ProduceChannelName(f_id string, t_id string) (channel_a string, channel_b s
 }
 func ProduceChannelGroupName(t_id string) string {
 	return "channel_" +t_id
+}
+
+func GetNowFormatTodayTime() string {
+
+	now := time.Now()
+	dateStr := fmt.Sprintf("%02d-%02d-%02d", now.Year(), int(now.Month()),
+		now.Day())
+
+	return dateStr
 }

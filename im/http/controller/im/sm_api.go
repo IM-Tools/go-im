@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go_im/im/utils"
 	"go_im/pkg/config"
-	log2 "go_im/pkg/log"
+	log2 "go_im/pkg/zaplog"
 	"go_im/pkg/redis"
 	"go_im/pkg/response"
 	"io/ioutil"
