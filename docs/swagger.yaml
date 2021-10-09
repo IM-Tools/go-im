@@ -1,0 +1,253 @@
+basePath: /api
+host: 127.0.0.1:9502
+info:
+  contact:
+    email: pltrueover@gmail.com
+    name: go-im
+    url: https://im.pltrue.top
+  license:
+    name: MIT
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: go-im  接口文档
+  version: "2.0"
+paths:
+  /CreateGroup:
+    post:
+      description: 创建群聊
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊名称
+        in: formData
+        name: group_name
+        required: true
+        type: string
+      - description: 群聊用户
+        in: formData
+        name: user_id
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 创建群聊
+      tags:
+      - 创建群聊
+  /GetGroupList:
+    get:
+      description: 获取群聊列表
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取群聊列表
+      tags:
+      - 获取群聊列表
+  /GetGroupMessageList:
+    get:
+      description: 获取群聊历史消息
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: query
+        name: to_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取群聊历史消息
+      tags:
+      - 获取群聊历史消息
+  /InformationHistory:
+    get:
+      description: 获取用户历史消息
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户id
+        in: query
+        name: to_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取用户历史消息
+      tags:
+      - 获取用户历史消息
+  /ReadMessage:
+    get:
+      description: 历史消息读取
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图片上传
+        in: formData
+        name: voice
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 历史消息读取[废弃]
+      tags:
+      - 历史消息读取
+  /RemoveGroup:
+    post:
+      description: 删除群聊
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: formData
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除群聊
+      tags:
+      - 删除群聊
+  /UploadImg:
+    post:
+      description: 图片上传接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图片上传
+        in: formData
+        name: Smfile
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 图片上传接口
+      tags:
+      - 图片上传接口
+  /UploadVoiceFile:
+    post:
+      description: 音频文件上传接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图片上传
+        in: formData
+        name: voice
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 音频文件上传接口
+      tags:
+      - 音频文件上传接口
+  /UsersList:
+    get:
+      description: 获取用户列表
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 账号
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取用户列表
+      tags:
+      - 获取用户列表
+  /login:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 登录接口
+      parameters:
+      - description: 账号
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 这是一个登录接口
+      tags:
+      - 登录接口
+  /me:
+    post:
+      description: 获取用户信息接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取用户信息接口
+      tags:
+      - 获取用户信息接口
+swagger: "2.0"

@@ -88,7 +88,19 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 }
 
 
+// @BasePath /api
 
+// @Summary 图片上传接口
+// @Description 图片上传接口
+// @Tags 图片上传接口
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param Smfile formData file true "图片上传"
+// @Produce json
+// @Success 200
+// @Router /UploadImg [post]
 func (*SmApiController) UploadImg(c *gin.Context) {
 	file, _ := c.FormFile("Smfile")
 	dir := utils.GetCurrentDirectory()

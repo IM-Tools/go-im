@@ -22,7 +22,7 @@ jobs:
         ports:
           - 6379:6379
       # 设置语言环境
-      - name: Set up Go
+      - name: golang
         uses: actions/setup-go@v2
         with:
         go-version: 1.15

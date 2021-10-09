@@ -30,8 +30,23 @@ func init()  {
 	zaplog.InitZapLogger()
 }
 
+// @title go-im  接口文档
+// @version 2.0
+// @description
+
+// @contact.name go-im
+// @contact.url https://im.pltrue.top
+// @contact.email pltrueover@gmail.com
+
+// @license.name MIT
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host 127.0.0.1:9502
+// @BasePath /api
+
+
+
 func main() {
-	//zaplog.ZapLogger.Info("this is hello func", zap.String("test", "test--------->"))
 	var serve string
 	flag.StringVar(&serve, "serve", "", "选择运行的服务🚀")
 	flag.Parse()

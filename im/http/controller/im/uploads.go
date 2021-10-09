@@ -15,7 +15,19 @@ import (
 type UploadController struct {}
 
 var ym = config.GetString("app.ym")
+// @BasePath /api
 
+// @Summary 音频文件上传接口
+// @Description 音频文件上传接口
+// @Tags 音频文件上传接口
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param voice formData file true "图片上传"
+// @Produce json
+// @Success 200
+// @Router /UploadVoiceFile [post]
 func (*UploadController) UploadVoiceFile(c *gin.Context)  {
 	voice, _ := c.FormFile("voice")
 	dir := utils.GetCurrentDirectory()

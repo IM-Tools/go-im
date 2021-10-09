@@ -19,10 +19,11 @@ func init() {
 		// 当前环境，用以区分多环境
 		"env": config.Env("APP_ENV", "production"),
 		"file_disk": config.Env("FILE_DISK", "file"),
-		"port": config.Env("HTTP_PORT", "8000"),
+		"port": config.Env("HTTP_PORT", "9502"),
 		"tcp_port": config.Env("TCP_PORT", "8000"),
+		"swagger_port": config.Env("SWAGGER_PORT", "8080"),
 		"log_address": config.Env("LOG_ADDRESS"),
-		"gitee_api_key": config.Env("GITEE_API_KEY", "8000"),
+		"gitee_api_key": config.Env("GITEE_API_KEY"),
 		//jwt 授权登录
 		"jwt": map[string]interface{}{
 			"sign_key":config.Env("JWT_SIGN_KEY"),

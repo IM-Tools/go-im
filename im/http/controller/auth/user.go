@@ -32,7 +32,19 @@ type (
 		MsgTotal     int `json:"msg_total"`
 	}
 )
+// @BasePath /api
 
+// @Summary 获取用户列表
+// @Description 获取用户列表
+// @Tags 获取用户列表
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param name query string true "账号"
+// @Produce json
+// @Success 200
+// @Router /UsersList [get]
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")
 
@@ -48,7 +60,17 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 		"list": Users,
 	}, 200).ToJson(c)
 }
-
+// @Summary 历史消息读取[废弃]
+// @Description 历史消息读取
+// @Tags 历史消息读取
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param voice formData file true "图片上传"
+// @Produce json
+// @Success 200
+// @Router /ReadMessage [get]
 func (*UsersController) ReadMessage(c *gin.Context) {
 	user := userModel.AuthUser
 	channel_a, channel_b := helpler.ProduceChannelName(strconv.Itoa(int(user.ID)), c.Query("to_id"))

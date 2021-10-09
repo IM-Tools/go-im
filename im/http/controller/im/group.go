@@ -30,7 +30,18 @@ type (
 		GroupId string `json:"group_id"`
 	}
 )
+// @BasePath /api
 
+// @Summary 获取群聊列表
+// @Description 获取群聊列表
+// @Tags 获取群聊列表
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Produce json
+// @Success 200
+// @Router /GetGroupList [get]
 func (*GroupController) List(c *gin.Context){
 
 	user :=userModel.AuthUser
@@ -55,7 +66,20 @@ func (*GroupController) List(c *gin.Context){
 	response.SuccessResponse(list).ToJson(c)
 	return
 }
-//创建一个新群聊
+// @BasePath /api
+
+// @Summary 创建群聊
+// @Description 创建群聊
+// @Tags 创建群聊
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param group_name formData string true "群聊名称"
+// @Param user_id formData array true "群聊用户"
+// @Produce json
+// @Success 200
+// @Router /CreateGroup [post]
 func (*GroupController) Create(c *gin.Context){
 	user :=userModel.AuthUser
 
@@ -99,7 +123,19 @@ func (*GroupController) Create(c *gin.Context){
 	response.SuccessResponse().ToJson(c)
 	return
 }
+// @BasePath /api
 
+// @Summary 删除群聊
+// @Description 删除群聊
+// @Tags 删除群聊
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param group_id formData string true "群聊id"
+// @Produce json
+// @Success 200
+// @Router /RemoveGroup [post]
 func (*GroupController) RemoveGroup(c *gin.Context){
 	group_id := c.PostForm("group_id")
 	if len(group_id) == 0 {

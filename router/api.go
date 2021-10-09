@@ -8,6 +8,10 @@ package router
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	"go_im/docs"
 	Auth "go_im/im/http/controller/auth"
 	"go_im/im/http/controller/im"
 	"go_im/im/http/middleware"
@@ -28,6 +32,9 @@ func RegisterApiRoutes(router *gin.Engine) {
 	group := new(im.GroupController)
 	message := new(im.MessageController)
 	friends := new(im.FriendController)
+
+
+	docs.SwaggerInfo.BasePath = "/api"
 
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")
@@ -55,5 +62,8 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/SendFriendRequest", friends.SendFriendRequest)
 			apiRouter.POST("/ByFriendRequest", friends.ByFriendRequest)
 		}
+
 	}
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 }

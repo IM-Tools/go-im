@@ -35,7 +35,19 @@ type (
 	}
 )
 
+// @BasePath /api
 
+// @Summary 获取用户历史消息
+// @Description 获取用户历史消息
+// @Tags 获取用户历史消息
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param to_id query string true "用户id"
+// @Produce json
+// @Success 200
+// @Router /InformationHistory [get]
 func (*MessageController) InformationHistory(c *gin.Context) {
 	to_id := c.Query("to_id")
 	channel_type := c.DefaultQuery("channel_type","1")
@@ -78,7 +90,19 @@ func SortByAge(list []ImMessage)  {
 }
 
 
+// @BasePath /api
 
+// @Summary 获取群聊历史消息
+// @Description 获取群聊历史消息
+// @Tags 获取群聊历史消息
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param to_id query string true "群聊id"
+// @Produce json
+// @Success 200
+// @Router /GetGroupMessageList [get]
 func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 	to_id := c.Query("to_id")
 	channel_type := c.DefaultQuery("channel_type","1")

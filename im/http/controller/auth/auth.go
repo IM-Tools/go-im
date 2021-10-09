@@ -33,11 +33,35 @@ type (
 	}
 )
 
+// @BasePath /api
+
+// @Summary 获取用户信息接口
+// @Description 获取用户信息接口
+// @Tags 获取用户信息接口
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Produce json
+// @Success 200
+// @Router /me [post]
 func (*AuthController) Me(c *gin.Context) {
 	user := userModel.AuthUser
 	response.SuccessResponse(user, 200).ToJson(c)
 }
 
+
+// @BasePath /api
+
+// @Summary 这是一个登录接口
+// @Description 登录接口
+// @Tags 登录接口
+// @Accept multipart/form-data
+// @Produce json
+// @Param name formData string true "账号"
+// @Param password formData string true "密码"
+// @Success 200
+// @Router /login [post]
 func (that *AuthController) Login(c *gin.Context) {
 	_user := userModel.Users{
 		Name: c.PostForm("name"),
@@ -60,6 +84,7 @@ func (that *AuthController) Login(c *gin.Context) {
 	}
 	generateToken(c, &users)
 }
+
 
 func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 	code := c.Query("code")
