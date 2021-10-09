@@ -317,8 +317,7 @@ var doc = `{
                         "type": "string",
                         "description": "账号",
                         "name": "name",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {

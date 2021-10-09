@@ -41,7 +41,7 @@ type (
 // @In header
 // @Name Authorization
 // @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Param name query string true "账号"
+// @Param name query string false "账号"
 // @Produce json
 // @Success 200
 // @Router /UsersList [get]

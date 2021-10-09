@@ -199,7 +199,6 @@ paths:
       - description: 账号
         in: query
         name: name
-        required: true
         type: string
       produces:
       - application/json
