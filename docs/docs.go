@@ -404,7 +404,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "2.0",
-	Host:        "127.0.0.1:9502",
+	Host:        "114.132.40.112:9502",
 	BasePath:    "/api",
 	Schemes:     []string{},
 	Title:       "go-im  接口文档",

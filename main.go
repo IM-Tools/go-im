@@ -41,7 +41,7 @@ func init()  {
 // @license.name MIT
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host 127.0.0.1:9502
+// @host 114.132.40.112:9502
 // @BasePath /api
 
 

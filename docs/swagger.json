@@ -13,7 +13,7 @@
         },
         "version": "2.0"
     },
-    "host": "127.0.0.1:9502",
+    "host": "114.132.40.112:9502",
     "basePath": "/api",
     "paths": {
         "/CreateGroup": {
