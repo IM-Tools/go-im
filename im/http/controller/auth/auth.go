@@ -119,6 +119,11 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 	}
 }
 
+func (*AuthController) WxCallback(c *gin.Context)  {
+	response.SuccessResponse().ToJson(c)
+	return
+}
+
 
 func generateToken(c *gin.Context, user *userModel.Users) {
 	sign_key := config.GetString("app.jwt.sign_key")
