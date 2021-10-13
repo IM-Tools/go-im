@@ -32,3 +32,9 @@ func (*TcpDao)Login(conn net.Conn,username string,password string) (user userMod
 	}
 	return users,nil
 }
+
+func (*TcpDao)GetUser(uid string) (user userModel.Users,err error)  {
+	var users userModel.Users
+	model.DB.Model(&userModel.Users{}).Where("id = ?",uid).Find(&users)
+	return users,nil
+}

@@ -11,6 +11,7 @@ import (
 	"go_im/im"
 	"go_im/im/service"
 	"go_im/pkg/config"
+	NewJwt "go_im/pkg/jwt"
 	"go_im/pkg/pool"
 	"log"
 	"net"
@@ -64,9 +65,7 @@ func StartTcpServe()  {
 			continue
 		}
 		//使用协程池管理使用协程
-		pool.AntsPool.Submit(func() {
-			handleConn(conn)
-		})
+		go handleConn(conn)
 	}
 }
 
@@ -102,15 +101,35 @@ func broadcaster() {
 		}
 		}
 }
+var (
+	err    error
+   claims *NewJwt.CustomClaims
+)
 
 //处理连接
 func  handleConn(conn net.Conn)  {
 	//执行登录逻辑操作 读取用户输入账号和密码
-	username:= clientRegisterUser(conn)
-	password:= clientRegisterPwd(conn)
+	token:= getToken(conn)
+
+	jwt := NewJwt.NewJWT()
+	claims, err = jwt.ParseToken(token)
+	fmt.Println(claims)
+
+	if err != nil {
+		data := fmt.Sprintf(`{"code":401,"msg":"%s","errMsg":"%s"}`, "用户身份验证失败",err.Error())
+		conn.Write([]byte(data))
+		conn.Close()
+		return
+	}
+
+	fmt.Fprintf(conn, "name %q is existed\r\ntry other name: ", "登录成功")
+
+	//username:= clientRegisterUser(conn)
+	//password:= clientRegisterPwd(conn)
 	//执行登录操作
 	tcpDao := new(service.TcpDao)
-	users,err :=tcpDao.Login(conn,username,password)
+	users,err :=tcpDao.GetUser(claims.ID)
+
 	if err!= nil {
 		conn.Close()
 	}
@@ -126,8 +145,8 @@ func  handleConn(conn net.Conn)  {
 	//用户信息结构体
 	chl := TcpClient{ID: users.ID,UserName: users.Name,Ch: ch}
 
-	ch <- "你是-"+username
-	messages <- username+"登录成功"
+	ch <- "你是-"+users.Name
+	messages <- users.Name+"登录成功"
 	entering <- chl
 	inputFunc := func(sig chan<- struct{}) {
 		input := bufio.NewScanner(conn)
@@ -136,14 +155,37 @@ func  handleConn(conn net.Conn)  {
 			if len(strings.TrimSpace(input.Text())) == 0 {
 				continue
 			}
-			messages <- username + ": " + input.Text()
+			messages <- users.Name + ": " + input.Text()
 		}
 		// 注意，忽略input.Err()中可能的错误
 	}
 	inputWithTimeout(conn, 300*time.Second, inputFunc)
 
 	leaving <- chl
-	messages <- username + " 已经下线了"
+	messages <- users.Name + " 已经下线了"
+}
+
+func getToken(conn net.Conn) (who string) {
+	inputFunc := func(sig chan<- struct{}) {
+		input := bufio.NewScanner(conn)
+		ch := make(chan bool)
+		data := fmt.Sprintf(`{"code":1,"msg":"%s"}`, "请输入token")
+		conn.Write([]byte(data))
+		//fmt.Fprint(conn, "请输入token:") // 注意，忽略网络层面的错误
+		for input.Scan() {
+			if len(strings.TrimSpace(input.Text())) == 0 { // 禁止发送纯空白字符
+				continue
+			}
+			who = input.Text()
+			if <-ch {
+				break
+			}
+			fmt.Fprintf(conn, "name %q is existed\r\ntry other name: ", who)
+		}
+		// 注意，忽略input.Err()中可能的错误
+	}
+	inputWithTimeout(conn, 15*time.Second, inputFunc)
+	return who
 }
 
 
@@ -216,6 +258,7 @@ func inputWithTimeout(conn net.Conn, timeout time.Duration, input func(sig chan<
 //客户端消息写入
 func clientWriter(conn net.Conn,ch<-chan string)  {
 	for msg := range ch {
+		fmt.Println(msg)
 		fmt.Fprintln(conn, msg+"\r") // 注意，忽略网络层面的错误
 	}
 }

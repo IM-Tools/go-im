@@ -118,12 +118,11 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		generateToken(c, &users)
 	}
 }
-
+//d55894389fe5bca5833cf28aa4384b04 EngV58oPYmhoIKIbBkFh3KLcRMqr9ke8x1I1KcSONwn
 func (*AuthController) WxCallback(c *gin.Context)  {
 	response.SuccessResponse().ToJson(c)
 	return
 }
-
 
 func generateToken(c *gin.Context, user *userModel.Users) {
 	sign_key := config.GetString("app.jwt.sign_key")

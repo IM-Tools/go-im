@@ -71,12 +71,11 @@ func (manager *ImClientManager) ImStart() {
 			} else {
 				//群聊消息消费
 				groups,_ := GetGroupUid(msg.ToId)
-
+				PutGroupData(msg, 1,msg.ChannelType)
 				for _,value :=range groups {
 					if data,ok := manager.ImClientMap[value.UserId];ok {
 						pool.AntsPool.Submit(func() {
 							MqGroupPublish(jsonMessage_from,msg.ToId)
-							PutGroupData(msg, 1,msg.ChannelType)
 						})
 						data.Send <- jsonMessage_from
 					}

@@ -24,6 +24,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}
 	config.AllowHeaders = []string{"tus-resumable", "upload-length", "upload-metadata", "cache-control", "x-requested-with", "*"}
 	router.Use(cors.New(config))
+
 	weibo := new(Auth.WeiBoController)
 	auth  := new(Auth.AuthController)
 	users := new(Auth.UsersController)
@@ -48,11 +49,12 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/me", auth.Me)                  // get user info
 			apiRouter.GET("/UsersList", users.GetUsersList) // get user list
 
-
 			apiRouter.GET("/InformationHistory", message.InformationHistory) //get message list
 			apiRouter.GET("/GetGroupMessageList", message.GetGroupMessageList) //get message list
+
 			apiRouter.POST("/UploadImg", sm.UploadImg)                  //upload img
 			apiRouter.POST("/UploadVoiceFile", uploads.UploadVoiceFile) //upload voice file
+
 			apiRouter.GET("/ReadMessage", users.ReadMessage)            //read message
 
 			apiRouter.GET("/GetGroupList", group.List)                  //get group list
