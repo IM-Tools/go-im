@@ -140,6 +140,7 @@ func SortGroupByAge(list []msg.ImMessage)  {
 func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 	to_id := c.Query("to_id")
 	channel_type := c.DefaultQuery("channel_type","2")
+	user := userModel.AuthUser
 
 	if len(to_id) < 0 {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
@@ -158,11 +159,16 @@ func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 	if list.Error != nil {
 		return
 	}
-
+	from_ids, _ := cast.ToUint64E(user.ID)
 	for key, value := range MsgList {
 
 		MsgList[key].CreatedAt = carbon.Parse(value.CreatedAt).SetLocale("zh-CN").DiffForHumans()
 
+		if value.FromId == from_ids {
+			MsgList[key].Status = 0
+		} else {
+			MsgList[key].Status = 1
+		}
 	}
 	SortGroupByAge(MsgList)
 	response.SuccessResponse( MsgList, 200).ToJson(c)
