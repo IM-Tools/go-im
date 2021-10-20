@@ -154,6 +154,18 @@ var doc = `{
                         "name": "to_id",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "分页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "第几页",
+                        "name": "page",
+                        "in": "query"
                     }
                 ],
                 "responses": {

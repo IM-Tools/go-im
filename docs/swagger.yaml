@@ -91,6 +91,14 @@ paths:
         name: to_id
         required: true
         type: string
+      - description: 分页条数
+        in: query
+        name: pageSize
+        type: string
+      - description: 第几页
+        in: query
+        name: page
+        type: string
       produces:
       - application/json
       responses:

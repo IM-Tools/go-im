@@ -6,7 +6,6 @@
 package im
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon"
 	"github.com/spf13/cast"
@@ -22,6 +21,19 @@ import (
 type (
 	MessageController struct {}
 	ImMessage struct {
+		ID        uint64 `json:"id"`
+		Msg       string `json:"msg"`
+		CreatedAt string  `json:"created_at"`
+		FromId uint64 `json:"user_id"`
+		ToId uint64 `json:"send_id"`
+		Channel string `json:"channel"`
+		Status int `json:"status"`
+		IsRead     int `json:"is_read"`
+		MsgType int `json:"msg_type"`
+		ChannelType int  `json:"channel_type"`
+	}
+
+	ImMessageGroup struct {
 		ID        uint64 `json:"id"`
 		Msg       string `json:"msg"`
 		CreatedAt string  `json:"created_at"`
@@ -64,14 +76,21 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	if len(to_id) < 0 {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
 	}
+
+	var Users []userModel.Users
+	var toUsers []userModel.Users
+	model.DB.Where("id=?",to_id).First(&Users)
+	model.DB.Where("id=?",userModel.AuthUser.ID).First(&toUsers)
+
+
+
 	var MsgList []ImMessage
 	//生成频道标识符号 用户查询用户信息
 	channel_a, channel_b := helpler.ProduceChannelName(from_id, to_id)
-	fmt.Println(channel_b,channel_a)
 
 	query := model.DB.
 		Model(ImMessage{}).
-		Preload("Users").
+
 		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b,channel_type)
 
 	query.Count(&total)
@@ -97,6 +116,8 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	SortByAge(MsgList)
 	response.SuccessResponse(gin.H{
 		"list":MsgList,
+		"user":Users[0],
+		"toUsers":toUsers[0],
 		"mate":gin.H{
 			"pageSize":pageSize,
 			"page":page,
@@ -105,6 +126,11 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 }
 
 func SortByAge(list []ImMessage)  {
+	sort.Slice(list, func(i, j int) bool {
+		return list[i].ID < list[j].ID
+	})
+}
+func SortGroupByAge(list []ImMessageGroup)  {
 	sort.Slice(list, func(i, j int) bool {
 		return list[i].ID < list[j].ID
 	})
@@ -132,7 +158,7 @@ func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 	if len(to_id) < 0 {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
 	}
-	var MsgList []ImMessage
+	var MsgList []ImMessageGroup
 	//生成频道标识符号 用户查询用户信息
 	channel_a := helpler.ProduceChannelGroupName(to_id)
 
@@ -157,7 +183,7 @@ func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 			MsgList[key].Status = 1
 		}
 	}
-	SortByAge(MsgList)
+	SortGroupByAge(MsgList)
 	response.SuccessResponse( MsgList, 200).ToJson(c)
 }
 
