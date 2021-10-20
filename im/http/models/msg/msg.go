@@ -22,7 +22,8 @@ type ImMessage struct {
 	IsRead     int `json:"is_read"`
 	MsgType int `json:"msg_type"`
 	ChannelType int  `json:"channel_type"`
-	Users []userModel.Users `json:"users" gorm:"foreignKey:ID;references:FromId"`
+	//Users userModel.Users `json:"users" gorm:"foreignKey:ID;references:FromId"`
+	Users userModel.Users `json:"users,omitempty" gorm:"foreignKey:FromId;references:ID"`
 }
 
 func (ImMessage) TableName() string {

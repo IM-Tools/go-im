@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon"
 	"github.com/spf13/cast"
+	"go_im/im/http/models/msg"
 	userModel "go_im/im/http/models/user"
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
@@ -24,28 +25,17 @@ type (
 		ID        uint64 `json:"id"`
 		Msg       string `json:"msg"`
 		CreatedAt string  `json:"created_at"`
-		FromId uint64 `json:"user_id"`
+		FromId uint64 `json:"form_id"`
 		ToId uint64 `json:"send_id"`
 		Channel string `json:"channel"`
 		Status int `json:"status"`
 		IsRead     int `json:"is_read"`
 		MsgType int `json:"msg_type"`
 		ChannelType int  `json:"channel_type"`
+		//Users userModel.Users `json:"users,omitempty" gorm:"foreignKey:FromId;references:ID"`
 	}
 
-	ImMessageGroup struct {
-		ID        uint64 `json:"id"`
-		Msg       string `json:"msg"`
-		CreatedAt string  `json:"created_at"`
-		FromId uint64 `json:"user_id"`
-		ToId uint64 `json:"send_id"`
-		Channel string `json:"channel"`
-		Status int `json:"status"`
-		IsRead     int `json:"is_read"`
-		MsgType int `json:"msg_type"`
-		ChannelType int  `json:"channel_type"`
-		Users userModel.Users `json:"users" gorm:"foreignKey:ToId;references:ID"`
-	}
+
 
 )
 
@@ -78,10 +68,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	}
 
 	var Users []userModel.Users
-	var toUsers []userModel.Users
 	model.DB.Where("id=?",to_id).First(&Users)
-	model.DB.Where("id=?",userModel.AuthUser.ID).First(&toUsers)
-
 
 
 	var MsgList []ImMessage
@@ -89,7 +76,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	channel_a, channel_b := helpler.ProduceChannelName(from_id, to_id)
 
 	query := model.DB.
-		Model(ImMessage{}).
+		Table("im_messages").
 
 		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b,channel_type)
 
@@ -117,7 +104,6 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	response.SuccessResponse(gin.H{
 		"list":MsgList,
 		"user":Users[0],
-		"toUsers":toUsers[0],
 		"mate":gin.H{
 			"pageSize":pageSize,
 			"page":page,
@@ -130,7 +116,8 @@ func SortByAge(list []ImMessage)  {
 		return list[i].ID < list[j].ID
 	})
 }
-func SortGroupByAge(list []ImMessageGroup)  {
+
+func SortGroupByAge(list []msg.ImMessage)  {
 	sort.Slice(list, func(i, j int) bool {
 		return list[i].ID < list[j].ID
 	})
@@ -152,13 +139,12 @@ func SortGroupByAge(list []ImMessageGroup)  {
 // @Router /GetGroupMessageList [get]
 func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 	to_id := c.Query("to_id")
-	channel_type := c.DefaultQuery("channel_type","1")
-	user := userModel.AuthUser
+	channel_type := c.DefaultQuery("channel_type","2")
 
 	if len(to_id) < 0 {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
 	}
-	var MsgList []ImMessageGroup
+	var MsgList []msg.ImMessage
 	//生成频道标识符号 用户查询用户信息
 	channel_a := helpler.ProduceChannelGroupName(to_id)
 
@@ -172,16 +158,11 @@ func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 	if list.Error != nil {
 		return
 	}
-	from_ids, _ := cast.ToUint64E(user.ID)
+
 	for key, value := range MsgList {
 
 		MsgList[key].CreatedAt = carbon.Parse(value.CreatedAt).SetLocale("zh-CN").DiffForHumans()
 
-		if value.FromId == from_ids {
-			MsgList[key].Status = 0
-		} else {
-			MsgList[key].Status = 1
-		}
 	}
 	SortGroupByAge(MsgList)
 	response.SuccessResponse( MsgList, 200).ToJson(c)
