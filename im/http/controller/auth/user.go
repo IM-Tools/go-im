@@ -78,3 +78,7 @@ func (*UsersController) ReadMessage(c *gin.Context) {
 	response.SuccessResponse(gin.H{}, 200).ToJson(c)
 }
 
+func (*UsersController) FriendList(C *gin.Context)  {
+
+}
+

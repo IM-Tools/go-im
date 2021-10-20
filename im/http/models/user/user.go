@@ -6,6 +6,7 @@
 package user
 
 import (
+	"encoding/json"
 	"go_im/pkg/model"
 )
 
@@ -20,6 +21,30 @@ type Users struct {
 	CreatedAt       string `json:"created_at"`
 	PasswordComfirm string ` gorm:"-" valid:"password_comfirm"`
 	Bio string `json:"bio"`
+}
+
+type UsersWhiteList struct {
+	ID              uint64 `json:"id"`
+	Email           string `valid:"email" json:"email"`
+	Avatar          string `json:"avatar"`
+	Name            string `json:"name" valid:"name"`
+	OauthType       int
+	OauthId         string
+	CreatedAt       string `json:"created_at"`
+	Bio string `json:"bio"`
+}
+// 字段过滤机制
+func (u *Users) MarshalJSON() ([]byte, error) {
+	// 将 User 的数据映射到 UsersWhiteList 上
+	user := UsersWhiteList{
+		ID:       u.ID,
+		Email: u.Email,
+		Name: u.Name,
+		Avatar:     u.Avatar,
+		CreatedAt:     u.CreatedAt,
+		Bio:     u.Bio,
+	}
+	return json.Marshal(user)
 }
 
 func (Users) TableName() string {

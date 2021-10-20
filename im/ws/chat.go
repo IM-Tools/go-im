@@ -13,6 +13,7 @@ import (
 	"go_im/pkg/pool"
 	"go_im/pkg/wordsfilter"
 	"log"
+	"net/url"
 	"strconv"
 	"sync"
 )
@@ -50,7 +51,9 @@ func (manager *ImClientManager) ImStart() {
 			if err != nil {
 				fmt.Println(err)
 			}
-			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg: msg.Msg,
+			msgs ,_ := url.QueryUnescape(msg.Msg)
+			msg.Msg = msgs
+			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg:msg.Msg ,
 				FromId: msg.FromId,
 				ToId:   msg.ToId, Status:1, MsgType: msg.MsgType,ChannelType: msg.ChannelType})
 
@@ -127,6 +130,7 @@ func (c *ImClient) ImRead() {
 			}
 
 		}
+
 		jsonMessage, _ := json.Marshal(&Message{Sender: c.ID, Content: string(message)})
 		ImManager.Broadcast <- jsonMessage
 	}

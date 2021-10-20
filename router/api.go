@@ -48,6 +48,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 		{
 			apiRouter.POST("/me", auth.Me)                  // get user info
 			apiRouter.GET("/UsersList", users.GetUsersList) // get user list
+			apiRouter.GET("/FriendList", users.FriendList) // get user list
 
 			apiRouter.GET("/InformationHistory", message.InformationHistory) //get message list
 			apiRouter.GET("/GetGroupMessageList", message.GetGroupMessageList) //get message list

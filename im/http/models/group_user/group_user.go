@@ -19,6 +19,7 @@ type ImGroupUsers struct {
 	GroupId uint64 `json:"group_id"`
 	Remark string `json:"remark"`
 	Avatar string `json:"avatar"`
+
 }
 
 

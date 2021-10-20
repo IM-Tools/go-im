@@ -15,6 +15,7 @@ import (
 	"go_im/pkg/model"
 	"go_im/pkg/response"
 	"sort"
+	"strconv"
 )
 
 
@@ -31,9 +32,12 @@ type (
 		IsRead     int `json:"is_read"`
 		MsgType int `json:"msg_type"`
 		ChannelType int  `json:"channel_type"`
-		Users userModel.Users `json:"users" gorm:"foreignKey:FromId;references:ID"`
+		Users userModel.Users `json:"users" gorm:"foreignKey:ToId;references:ID"`
 	}
+
 )
+
+var total int64
 
 // @BasePath /api
 
@@ -45,11 +49,15 @@ type (
 // @Name Authorization
 // @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
 // @Param to_id query string true "用户id"
+// @Param pageSize query string false "分页条数"
+// @Param page query string false "第几页"
 // @Produce json
 // @Success 200
 // @Router /InformationHistory [get]
 func (*MessageController) InformationHistory(c *gin.Context) {
 	to_id := c.Query("to_id")
+	pageSize,_ := strconv.Atoi(c.DefaultQuery("pageSize","40"))
+	page,_ := strconv.Atoi(c.DefaultQuery("page","1"))
 	channel_type := c.DefaultQuery("channel_type","1")
 	user := userModel.AuthUser
 	from_id := cast.ToString(user.ID)
@@ -60,10 +68,17 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	//生成频道标识符号 用户查询用户信息
 	channel_a, channel_b := helpler.ProduceChannelName(from_id, to_id)
 	fmt.Println(channel_b,channel_a)
-	list := model.DB.
+
+	query := model.DB.
 		Model(ImMessage{}).
-		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b,channel_type).
-		Limit(40).
+		Preload("Users").
+		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b,channel_type)
+
+	query.Count(&total)
+
+	list := query.
+		Offset((page-1)*pageSize).
+		Limit(pageSize).
 		Select("id,msg,created_at,from_id,to_id,channel,msg_type").
 		Find(&MsgList)
 
@@ -80,7 +95,13 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 		}
 	}
 	SortByAge(MsgList)
-	response.SuccessResponse( MsgList, 200).ToJson(c)
+	response.SuccessResponse(gin.H{
+		"list":MsgList,
+		"mate":gin.H{
+			"pageSize":pageSize,
+			"page":page,
+			"total":total,
+		}}, 200).ToJson(c)
 }
 
 func SortByAge(list []ImMessage)  {
