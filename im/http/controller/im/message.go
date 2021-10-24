@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon"
 	"github.com/spf13/cast"
+	"go_im/im/http/models/group_user"
 	"go_im/im/http/models/msg"
 	userModel "go_im/im/http/models/user"
 	"go_im/pkg/helpler"
@@ -25,14 +26,15 @@ type (
 		ID        uint64 `json:"id"`
 		Msg       string `json:"msg"`
 		CreatedAt string  `json:"created_at"`
-		FromId uint64 `json:"form_id"`
+		FromId uint64 `json:"user_id"`
 		ToId uint64 `json:"send_id"`
 		Channel string `json:"channel"`
 		Status int `json:"status"`
 		IsRead     int `json:"is_read"`
 		MsgType int `json:"msg_type"`
 		ChannelType int  `json:"channel_type"`
-		//Users userModel.Users `json:"users,omitempty" gorm:"foreignKey:FromId;references:ID"`
+		Users userModel.Users `json:"users,omitempty" gorm:"foreignKey:FromId;references:ID"`
+		Group group_user.ImGroupUsers `json:"group,omitempty" gorm:"foreignKey:FromId;references:ID"`
 	}
 
 
@@ -172,5 +174,17 @@ func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 	}
 	SortGroupByAge(MsgList)
 	response.SuccessResponse( MsgList, 200).ToJson(c)
+}
+
+func (*MessageController) GetList(c *gin.Context)  {
+	user := userModel.AuthUser
+	var MsgList []ImMessage
+	model.DB.Table("im_messages").
+		Where("from_id=?",user.ID).
+		Order("created_at").
+		Find(&MsgList)
+
+	response.SuccessResponse( MsgList, 200).ToJson(c)
+	return
 }
 

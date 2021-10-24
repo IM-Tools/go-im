@@ -78,6 +78,7 @@ const (
 	connOut = 5000 //断开链接
 	connOk  = 1000 //连接成功
 	SendOk  = 200  //发送成功
+	CrowdedOk  = 4001  //已在别处登录
 )
 
 //存储房间号

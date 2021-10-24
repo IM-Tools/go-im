@@ -187,3 +187,19 @@ func PushUserOfflineNotification(manager *ImClientManager,conn *ImClient)  {
 	}
 
 }
+
+//用户被挤下线
+func CrowdedOffline( user_id string)  {
+	manager :=  new(ImClientManager)
+	if conn,ok :=manager.ImClientMap[user_id];ok {
+		jsonMessage, _ := json.Marshal(&ImOnlineMsg{Code: CrowdedOk, Msg: "账号已在别处登录", ID: conn.ID,ChannelType:3})
+
+		fmt.Println(jsonMessage)
+		conn.Send <-jsonMessage
+		
+		conn.Socket.Close()
+		close(conn.Send)
+		delete(manager.ImClientMap, conn.ID)
+	}
+}
+

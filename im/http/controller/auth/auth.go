@@ -12,6 +12,7 @@ import (
 	userModel "go_im/im/http/models/user"
 	"go_im/im/http/validates"
 	"go_im/im/utils"
+	"go_im/im/ws"
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
 	"go_im/pkg/jwt"
@@ -30,6 +31,9 @@ type (
 		Email          string `json:"email"`
 		Token          string `json:"token"`
 		ExpirationTime int64  `json:"expiration_time"`
+		Six int  `json:"six"`
+		ClientType int  `json:"Client_type"`
+		Bio string  `json:"bio"`
 	}
 )
 
@@ -50,6 +54,39 @@ func (*AuthController) Me(c *gin.Context) {
 	response.SuccessResponse(user, 200).ToJson(c)
 }
 
+// @BasePath /api
+
+// @Summary 更新用户数据
+// @Description 更新用户数据
+// @Tags 更新用户数据
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param bio formData string false "个性签名"
+// @Param six formData int false "性别"
+
+
+// @Produce json
+// @Success 200
+// @Router /Update [put]
+func (*AuthController) Update(c *gin.Context){
+	bio := c.PostForm("bio")
+	six := c.PostForm("six")
+	user := userModel.AuthUser
+	var users  userModel.Users
+	if len(six) != 0 {
+		six,_ :=strconv.Atoi(six)
+		users.Six = six
+	}
+	users.Bio =bio
+
+	model.DB.Table("users").Where("id",user.ID).First(&users)
+	users.Bio = bio
+	model.DB.Save(&users)
+	response.SuccessResponse().WriteTo(c)
+	return
+}
 
 // @BasePath /api
 
@@ -81,6 +118,11 @@ func (that *AuthController) Login(c *gin.Context) {
 	if !helpler.ComparePasswords(users.Password, _user.Password) {
 		response.FailResponse(403, "账号或者密码错误").ToJson(c)
 		return
+	}
+
+	//挤下线操作
+	if(users.Status == 1) {
+		ws.CrowdedOffline(strconv.Itoa(int(users.ID)))
 	}
 	generateToken(c, &users)
 }
@@ -145,6 +187,8 @@ func generateToken(c *gin.Context, user *userModel.Users) {
 		response.FailResponse(403, "jwt token颁发失败~").ToJson(c)
 		return
 	} else {
+
+
 		data := new(Me)
 		data.ID = user.ID
 		data.Name = user.Name
@@ -152,6 +196,9 @@ func generateToken(c *gin.Context, user *userModel.Users) {
 		data.Email = user.Email
 		data.Token = token
 		data.ExpirationTime = expiration_time
+		data.Bio = user.Bio
+		data.Six = user.Six
+		data.ClientType = user.ClientType
 		response.SuccessResponse(data, 200).ToJson(c)
 		return
 	}

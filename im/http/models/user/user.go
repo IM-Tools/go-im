@@ -17,10 +17,13 @@ type Users struct {
 	Avatar          string `json:"avatar"`
 	Name            string `json:"name" valid:"name"`
 	OauthType       int
+	Status          int `json:"status"`
 	OauthId         string
 	CreatedAt       string `json:"created_at"`
 	PasswordComfirm string ` gorm:"-" valid:"password_comfirm"`
 	Bio string `json:"bio"`
+	Six int `json:"sex"`
+	ClientType int `json:"client_type"`
 }
 
 type UsersWhiteList struct {
@@ -29,9 +32,12 @@ type UsersWhiteList struct {
 	Avatar          string `json:"avatar"`
 	Name            string `json:"name" valid:"name"`
 	OauthType       int
+	Status          int `json:"status"`
 	OauthId         string
 	CreatedAt       string `json:"created_at"`
 	Bio string `json:"bio"`
+	Six int `json:"sex"`
+	ClientType int `json:"client_type"`
 }
 // 字段过滤机制
 func (u *Users) MarshalJSON() ([]byte, error) {
@@ -43,6 +49,9 @@ func (u *Users) MarshalJSON() ([]byte, error) {
 		Avatar:     u.Avatar,
 		CreatedAt:     u.CreatedAt,
 		Bio:     u.Bio,
+		Six:     u.Six,
+		ClientType:     u.ClientType,
+		Status:     u.Status,
 	}
 	return json.Marshal(user)
 }

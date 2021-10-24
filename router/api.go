@@ -47,11 +47,13 @@ func RegisterApiRoutes(router *gin.Engine) {
 		apiRouter.Use(middleware.Auth(),middleware.GinLogger(),middleware.GinRecovery(true))
 		{
 			apiRouter.POST("/me", auth.Me)                  // get user info
+			apiRouter.PUT("/user", auth.Update)                  // get user info
 			apiRouter.GET("/UsersList", users.GetUsersList) // get user list
 			apiRouter.GET("/FriendList", users.FriendList) // get user list
 
 			apiRouter.GET("/InformationHistory", message.InformationHistory) //get message list
 			apiRouter.GET("/GetGroupMessageList", message.GetGroupMessageList) //get message list
+			apiRouter.GET("/GetMessageList", message.GetList) //get message list
 
 			apiRouter.POST("/UploadImg", sm.UploadImg)                  //upload img
 			apiRouter.POST("/UploadVoiceFile", uploads.UploadVoiceFile) //upload voice file
