@@ -9,6 +9,7 @@ import (
 	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
+	"go_im/im/http/dao"
 	userModel "go_im/im/http/models/user"
 	"go_im/im/http/validates"
 	"go_im/im/utils"
@@ -31,8 +32,8 @@ type (
 		Email          string `json:"email"`
 		Token          string `json:"token"`
 		ExpirationTime int64  `json:"expiration_time"`
-		Six int  `json:"six"`
-		ClientType int  `json:"Client_type"`
+		Sex int  `json:"sex"`
+		ClientType int  `json:"client_type"`
 		Bio string  `json:"bio"`
 	}
 )
@@ -72,12 +73,12 @@ func (*AuthController) Me(c *gin.Context) {
 // @Router /Update [put]
 func (*AuthController) Update(c *gin.Context){
 	bio := c.PostForm("bio")
-	six := c.PostForm("six")
+	sex := c.PostForm("sex")
 	user := userModel.AuthUser
 	var users  userModel.Users
-	if len(six) != 0 {
-		six,_ :=strconv.Atoi(six)
-		users.Six = six
+	if len(sex) != 0 {
+		sex,_ :=strconv.Atoi(sex)
+		users.Sex = sex
 	}
 	users.Bio =bio
 
@@ -97,6 +98,7 @@ func (*AuthController) Update(c *gin.Context){
 // @Produce json
 // @Param name formData string true "账号"
 // @Param password formData string true "密码"
+// @Param client_type formData string false "客户端类型 0.网页端登录 1.设备端登录"
 // @Success 200
 // @Router /login [post]
 func (that *AuthController) Login(c *gin.Context) {
@@ -104,6 +106,9 @@ func (that *AuthController) Login(c *gin.Context) {
 		Name: c.PostForm("name"),
 		Password: c.PostForm("password"),
 	}
+
+    ClientType,_ := strconv.Atoi(c.DefaultPostForm("client_type","0"))
+
 	errs := validates.ValidateLoginForm(_user)
 	if len(errs) >0 {
 		response.ErrorResponse(500,"参数错误",errs).WriteTo(c)
@@ -120,10 +125,14 @@ func (that *AuthController) Login(c *gin.Context) {
 		return
 	}
 
+	users.ClientType = ClientType
+	model.DB.Model(&userModel.Users{}).Save(&users)
 	//挤下线操作
 	if(users.Status == 1) {
 		ws.CrowdedOffline(strconv.Itoa(int(users.ID)))
 	}
+
+
 	generateToken(c, &users)
 }
 
@@ -151,9 +160,14 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		}
 		result := model.DB.Create(&userData)
 
+
+
 		if result.Error != nil {
 			response.FailResponse(500, "用户微博授权失败").ToJson(c)
 		} else {
+			//执行默认添加好友逻辑
+			dao := new(dao.UserService)
+			dao.AddDefaultFriend(users.ID)
 			generateToken(c, &userData)
 		}
 	} else {
@@ -197,7 +211,7 @@ func generateToken(c *gin.Context, user *userModel.Users) {
 		data.Token = token
 		data.ExpirationTime = expiration_time
 		data.Bio = user.Bio
-		data.Six = user.Six
+		data.Sex = user.Sex
 		data.ClientType = user.ClientType
 		response.SuccessResponse(data, 200).ToJson(c)
 		return

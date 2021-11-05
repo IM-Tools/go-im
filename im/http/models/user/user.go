@@ -22,8 +22,9 @@ type Users struct {
 	CreatedAt       string `json:"created_at"`
 	PasswordComfirm string ` gorm:"-" valid:"password_comfirm"`
 	Bio string `json:"bio"`
-	Six int `json:"sex"`
+	Sex int `json:"sex"`
 	ClientType int `json:"client_type"`
+	Age int `json:"age"`
 }
 
 type UsersWhiteList struct {
@@ -36,8 +37,9 @@ type UsersWhiteList struct {
 	OauthId         string
 	CreatedAt       string `json:"created_at"`
 	Bio string `json:"bio"`
-	Six int `json:"sex"`
+	Sex int `json:"sex"`
 	ClientType int `json:"client_type"`
+	Age int `json:"Age"`
 }
 // 字段过滤机制
 func (u *Users) MarshalJSON() ([]byte, error) {
@@ -49,15 +51,16 @@ func (u *Users) MarshalJSON() ([]byte, error) {
 		Avatar:     u.Avatar,
 		CreatedAt:     u.CreatedAt,
 		Bio:     u.Bio,
-		Six:     u.Six,
+		Sex:     u.Sex,
 		ClientType:     u.ClientType,
 		Status:     u.Status,
+		Age:     u.Age,
 	}
 	return json.Marshal(user)
 }
 
 func (Users) TableName() string {
-	return "users"
+	return "im_users"
 }
 
 
@@ -69,6 +72,15 @@ func (a Users) GetAvatar() string {
 		return "https://learnku.com/users/27407"
 	}
 	return a.Avatar
+}
+
+func GetFriendListV2(user_id[] uint64)  ([]Users,error) {
+	var users []Users
+	err := model.DB.Where("id in (?)",user_id).Find(&users).Error;
+	if err!=nil{
+		return users,err
+	}
+	return users,nil
 }
 
 //设置用户上下线状态

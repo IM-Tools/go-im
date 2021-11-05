@@ -16,7 +16,6 @@ import (
 )
 type FriendController struct{}
 
-
 func (*FriendController) GetList(c *gin.Context)  {
 	list,err := friend.GetFriendList(userModel.AuthUser.ID)
 	if err !=nil {

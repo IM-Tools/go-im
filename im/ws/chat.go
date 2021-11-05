@@ -60,10 +60,13 @@ func (manager *ImClientManager) ImStart() {
 			if msg.ChannelType == 1 {
 				conn_id := strconv.Itoa(msg.ToId)
 				if data,ok :=manager.ImClientMap[conn_id];ok {
-					pool.AntsPool.Submit(func() {
-						PutData(msg, 1,msg.ChannelType)
-					})
+					//pool.AntsPool.Submit(func() {
+					//	PutData(msg, 1,msg.ChannelType)
+					//})
 					data.Send <- jsonMessage_from
+					PutData(msg, 1,msg.ChannelType)
+
+
 				} else {
 
 					pool.AntsPool.Submit(func() {

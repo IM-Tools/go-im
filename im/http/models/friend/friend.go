@@ -13,12 +13,12 @@ import (
 
 type ImFriends struct {
 	ID uint64 `json:"id"`
-	Mid uint64 `json:"mid"`
-	Fid uint64 `json:"fid"`
+	MId uint64 `json:"m_id"`
+	FId uint64 `json:"f_id"`
 	Status int `json:"status"`
 	CreatedAt string `json:"created_at"`
 	Note string `json:"note"`
-	Users user.Users `json:"users" gorm:"foreignKey:ID;references:Fid"`
+	Users user.Users `json:"users" gorm:"foreignKey:FId;references:ID"`
 }
 
 func (ImFriends ) TableName() string  {
@@ -35,8 +35,8 @@ func GetFriendList(user_id uint64)  ([]ImFriends,error) {
 }
 
 func AddFriends(mid uint64, fid uint64) error  {
-	result := model.DB.Create(ImFriends{Mid: mid,
-		Fid: fid,
+	result := model.DB.Create(ImFriends{MId: mid,
+		FId: fid,
 		Status: 0,
 		CreatedAt:time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
 			}).Error
@@ -46,3 +46,4 @@ func AddFriends(mid uint64, fid uint64) error  {
 	}
 	return nil
 }
+
