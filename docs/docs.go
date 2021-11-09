@@ -31,6 +31,35 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/ByFriendRequest": {
+            "post": {
+                "description": "同意好友请求接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "同意好友请求接口"
+                ],
+                "summary": "同意好友请求",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "请求记录id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/CreateGroup": {
             "post": {
                 "description": "创建群聊",
@@ -61,6 +90,58 @@ var doc = `{
                         "description": "群聊用户",
                         "name": "user_id",
                         "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/FriendList": {
+            "get": {
+                "description": "获取好友列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "获取好友列表"
+                ],
+                "summary": "获取好友列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/GetFriendForRecord": {
+            "get": {
+                "description": "获取好友申请记录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "获取好友申请记录"
+                ],
+                "summary": "获取好友申请记录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -241,6 +322,60 @@ var doc = `{
                 }
             }
         },
+        "/SendFriendRequest": {
+            "post": {
+                "description": "发送好友请求接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "发送好友请求接口"
+                ],
+                "summary": "发送好友请求",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "请求描述",
+                        "name": "information",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "f_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "客户端类型 0.网页端登录 1.设备端登录",
+                        "name": "client_type",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/Update": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/UploadImg": {
             "post": {
                 "description": "图片上传接口",
@@ -309,14 +444,14 @@ var doc = `{
         },
         "/UsersList": {
             "get": {
-                "description": "获取用户列表",
+                "description": "获取非好友用户列表",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "获取用户列表"
+                    "获取非好友用户列表"
                 ],
-                "summary": "获取用户列表",
+                "summary": "获取非好友用户列表",
                 "parameters": [
                     {
                         "type": "string",
@@ -366,6 +501,12 @@ var doc = `{
                         "name": "password",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "客户端类型 0.网页端登录 1.设备端登录",
+                        "name": "client_type",
+                        "in": "formData"
                     }
                 ],
                 "responses": {

@@ -7,19 +7,14 @@ package auth
 
 import "C"
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
-	"go_im/im/http/models/friend"
 	messageModel "go_im/im/http/models/msg"
 	userModel "go_im/im/http/models/user"
 	"go_im/pkg/helpler"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
-	log2 "go_im/pkg/zaplog"
-	"net/http"
-	"reflect"
 	"strconv"
+	"time"
 )
 
 
@@ -39,13 +34,14 @@ type (
 		ClientType     int `json:"client_type"`
 		Bio     int `json:"bio"`
 		Sex     int `json:"sex"`
+		LastLoginTime time.Time `gorm:"type:time" json:"last_login_time"`
 	}
 )
 // @BasePath /api
 
-// @Summary 获取用户列表
-// @Description 获取用户列表
-// @Tags 获取用户列表
+// @Summary 获取非好友用户列表
+// @Description 获取非好友用户列表
+// @Tags 获取非好友用户列表
 // @SecurityDefinitions.apikey ApiKeyAuth
 // @In header
 // @Name Authorization
@@ -56,15 +52,20 @@ type (
 // @Router /UsersList [get]
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")
-
 	user := userModel.AuthUser
 	var Users []UsersList
+	subQuery := model.DB.Select("f_id").
+		Where("m_id=?",user.ID).
+		Table("im_friends")
 	//将自己信息排除掉
-	query := model.DB.Model(userModel.Users{}).Where("id <> ?", user.ID)
+	query := model.DB.Model(userModel.Users{}).
+		Order("last_login_time desc").
+		Where("id <> ?", user.ID).
+		Having("id not in (?)",subQuery)
 	if len(name) > 0 {
 		query = query.Where("name like ?", "%"+name+"%")
 	}
-	query = query.Select("id", "name", "avatar", "status", "created_at").Find(&Users)
+	 query.Select("id", "name", "avatar", "status", "created_at").Find(&Users)
 	response.SuccessResponse(map[string]interface{}{
 		"list": Users,
 	}, 200).ToJson(c)
@@ -86,39 +87,6 @@ func (*UsersController) ReadMessage(c *gin.Context) {
 	messageModel.ReadMsg(channel_a,channel_b)
 	response.SuccessResponse(gin.H{}, 200).ToJson(c)
 }
-// @Summary 获取好友列表
-// @Description 获取好友列表
-// @Tags 获取好友列表
-// @SecurityDefinitions.apikey ApiKeyAuth
-// @In header
-// @Name Authorization
-// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Produce json
-// @Success 200
-// @Router /ReadMessage [get]
-func (*UsersController) FriendList(c *gin.Context)  {
-	user := userModel.AuthUser
-	var friendId []friend.ImFriends
-	err:= model.DB.Select("f_id").Where("m_id=?",user.ID).Find(&friendId).Error
-	if err !=nil{
-		fmt.Println(err)
-	}
 
-	v := reflect.ValueOf(friendId)
-	group_slice := make([]uint64, v.Len())
-	for key,value := range friendId {
-		group_slice[key] = value.FId
-	}
-	list,err :=userModel.GetFriendListV2(group_slice)
-	if err != nil {
-		log2.ZapLogger.Error("获取好友列表异常",zap.Error(err))
-		response.FailResponse(http.StatusInternalServerError,"服务器错误")
-		return
-	}
-	response.SuccessResponse(map[string]interface{}{
-		"list": list,
-	}, 200).ToJson(c)
-	return
 
-}
 

@@ -20,6 +20,7 @@ func init() {
 		"env": config.Env("APP_ENV", "production"),
 		"file_disk": config.Env("FILE_DISK", "file"),
 		"port": config.Env("HTTP_PORT", "9502"),
+		"grpc_port": config.Env("GRPC_PORT", "8001"),
 		"tcp_port": config.Env("TCP_PORT", "8000"),
 		"swagger_port": config.Env("SWAGGER_PORT", "8080"),
 		"log_address": config.Env("LOG_ADDRESS"),

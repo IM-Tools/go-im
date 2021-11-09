@@ -21,9 +21,22 @@
    - [x] 支持tcp命令行登录
    - [ ] 数据限流
    - [ ] 支持tcp&websocket数据交互(这点不难 解决方案待调整 用户登录时更新设备端的状态)
+   - [ ] 服务集群(不同节点用户使用grpc协议通讯、redis存储服务节点数据 )
+
+   
 
 
-> 基于gin框架搭建的im服务端应用，支持cors跨域、集成mysql,redis,协程,池、jwt签名认证、zap日志收集、viper配置文件解析
+> 一些库的使用。
+
+ * 支持cors跨域
+ * 集成mysql、redis、协程池
+ * jwt签名认证
+ * zap日志收集
+ * viper配置文件解析
+ * swag接口文档生成
+ * rabbitmq存储离线消息
+ 
+
    
    
 

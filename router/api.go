@@ -49,7 +49,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/me", auth.Me)                  // get user info
 			apiRouter.PUT("/user", auth.Update)                  // get user info
 			apiRouter.GET("/UsersList", users.GetUsersList) // get user list
-			apiRouter.GET("/FriendList", users.FriendList) // get user list
+
 
 			apiRouter.GET("/InformationHistory", message.InformationHistory) //get message list
 			apiRouter.GET("/GetGroupMessageList", message.GetGroupMessageList) //get message list
@@ -64,7 +64,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/CreateGroup", group.Create)                //add group
 			apiRouter.POST("/RemoveGroup", group.RemoveGroup)                //add group
 
-			apiRouter.GET("/GetFriendsList", friends.GetList)
+			apiRouter.GET("/FriendList", friends.GetList) // get user list
 			apiRouter.GET("/GetFriendForRecord", friends.GetFriendForRecord)
 			apiRouter.POST("/SendFriendRequest", friends.SendFriendRequest)
 			apiRouter.POST("/ByFriendRequest", friends.ByFriendRequest)

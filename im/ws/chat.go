@@ -106,7 +106,6 @@ func (c *ImClient) ImRead() {
 	}()
 	for {
 		_, message, err := c.Socket.ReadMessage()
-		fmt.Println(message)
 		if err != nil {
 			ImManager.Unregister <- c
 			c.Socket.Close()

@@ -1,0 +1,15 @@
+syntax ="proto3";
+
+package Message.SearchNode;
+option go_package = "./im/grpc";
+
+service ImRpcService{
+  rpc SendMessage(MessageRequest) returns (MessageResponse){}
+}
+message MessageRequest {
+  int32 name = 1;
+}
+
+message MessageResponse {
+  int32 greeting = 1;
+}

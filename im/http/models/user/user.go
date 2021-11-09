@@ -8,6 +8,7 @@ package user
 import (
 	"encoding/json"
 	"go_im/pkg/model"
+	"time"
 )
 
 type Users struct {
@@ -21,6 +22,7 @@ type Users struct {
 	OauthId         string
 	CreatedAt       string `json:"created_at"`
 	PasswordComfirm string ` gorm:"-" valid:"password_comfirm"`
+	LastLoginTime string `json:"last_login_time"`
 	Bio string `json:"bio"`
 	Sex int `json:"sex"`
 	ClientType int `json:"client_type"`
@@ -40,9 +42,12 @@ type UsersWhiteList struct {
 	Sex int `json:"sex"`
 	ClientType int `json:"client_type"`
 	Age int `json:"Age"`
+	LastLoginTime string `json:"last_login_time"`
 }
 // 字段过滤机制
 func (u *Users) MarshalJSON() ([]byte, error) {
+
+
 	// 将 User 的数据映射到 UsersWhiteList 上
 	user := UsersWhiteList{
 		ID:       u.ID,
@@ -55,6 +60,7 @@ func (u *Users) MarshalJSON() ([]byte, error) {
 		ClientType:     u.ClientType,
 		Status:     u.Status,
 		Age:     u.Age,
+		LastLoginTime: u.LastLoginTime,
 	}
 	return json.Marshal(user)
 }
@@ -85,5 +91,6 @@ func GetFriendListV2(user_id[] uint64)  ([]Users,error) {
 
 //设置用户上下线状态
 func SetUserStatus(id uint64 ,status int )  {
-	model.DB.Model(&Users{}).Where("id=?",id).Update("status",status)
+	model.DB.Model(&Users{}).Where("id=?",id).Updates(Users{Status: status,
+		LastLoginTime:time.Unix(time.Now().Unix(), 0,).Format("2006-01-02 15:04:05") })
 }

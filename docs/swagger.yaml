@@ -11,6 +11,25 @@ info:
   title: go-im  接口文档
   version: "2.0"
 paths:
+  /ByFriendRequest:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 同意好友请求接口
+      parameters:
+      - description: 请求记录id
+        in: formData
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 同意好友请求
+      tags:
+      - 同意好友请求接口
   /CreateGroup:
     post:
       description: 创建群聊
@@ -38,6 +57,40 @@ paths:
       summary: 创建群聊
       tags:
       - 创建群聊
+  /FriendList:
+    get:
+      description: 获取好友列表
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取好友列表
+      tags:
+      - 获取好友列表
+  /GetFriendForRecord:
+    get:
+      description: 获取好友申请记录
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取好友申请记录
+      tags:
+      - 获取好友申请记录
   /GetGroupList:
     get:
       description: 获取群聊列表
@@ -151,6 +204,41 @@ paths:
       summary: 删除群聊
       tags:
       - 删除群聊
+  /SendFriendRequest:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 发送好友请求接口
+      parameters:
+      - description: 请求描述
+        in: formData
+        name: information
+        required: true
+        type: string
+      - description: 用户id
+        in: formData
+        name: f_id
+        required: true
+        type: string
+      - description: 客户端类型 0.网页端登录 1.设备端登录
+        in: formData
+        name: client_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 发送好友请求
+      tags:
+      - 发送好友请求接口
+  /Update:
+    put:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
   /UploadImg:
     post:
       description: 图片上传接口
@@ -197,7 +285,7 @@ paths:
       - 音频文件上传接口
   /UsersList:
     get:
-      description: 获取用户列表
+      description: 获取非好友用户列表
       parameters:
       - description: Bearer 31a165baebe6dec616b1f8f3207b4273
         in: header
@@ -213,9 +301,9 @@ paths:
       responses:
         "200":
           description: ""
-      summary: 获取用户列表
+      summary: 获取非好友用户列表
       tags:
-      - 获取用户列表
+      - 获取非好友用户列表
   /login:
     post:
       consumes:
@@ -231,6 +319,10 @@ paths:
         in: formData
         name: password
         required: true
+        type: string
+      - description: 客户端类型 0.网页端登录 1.设备端登录
+        in: formData
+        name: client_type
         type: string
       produces:
       - application/json
