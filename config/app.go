@@ -16,6 +16,8 @@ func init() {
 		"ym": config.Env("APP_YM"),
 		//协程池数
 		"go_coroutines": config.Env("APP_GO_COROUTINES"),
+		//当前服务节点
+		"node": config.Env("APP_NODE"),
 		// 当前环境，用以区分多环境
 		"env": config.Env("APP_ENV", "production"),
 		"file_disk": config.Env("FILE_DISK", "file"),
