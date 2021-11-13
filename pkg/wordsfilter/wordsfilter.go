@@ -18,7 +18,7 @@ var root map[string]*wordsfilter.Node
 
 //敏感词过滤
 
-func SetTexts()  {
+func SetTexts() {
 	f, err := os.Open("sample.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -38,6 +38,6 @@ func SetTexts()  {
 	return
 }
 
-func MsgFilter(val string) bool  {
-    return 	Wf.Contains(val,root)
+func MsgFilter(val string) bool {
+	return Wf.Contains(val, root)
 }

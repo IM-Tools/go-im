@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"time"
 )
+
 // json string to a map type
 func JsonToMap(str []byte) map[string]interface{} {
 	var jsonMap map[string]interface{}
@@ -53,7 +54,7 @@ func ProduceChannelName(f_id string, t_id string) (channel_a string, channel_b s
 	return channel_a, channel_b
 }
 func ProduceChannelGroupName(t_id string) string {
-	return "channel_" +t_id
+	return "channel_" + t_id
 }
 
 func GetNowFormatTodayTime() string {

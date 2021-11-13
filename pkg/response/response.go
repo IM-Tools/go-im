@@ -58,7 +58,7 @@ func SuccessResponse(data ...interface{}) *JsonResponse {
 	}
 }
 
-func ErrorResponse(status int, message string,data ...interface{}) *JsonResponse {
+func ErrorResponse(status int, message string, data ...interface{}) *JsonResponse {
 	return &JsonResponse{
 		Code:    status,
 		Message: message,

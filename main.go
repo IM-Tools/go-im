@@ -24,7 +24,7 @@ import (
 	"go_im/pkg/zaplog"
 )
 
-func init()  {
+func init() {
 	config.Initialize()
 	wordsfilter.SetTexts()
 	zaplog.InitZapLogger()
@@ -43,8 +43,6 @@ func init()  {
 
 // @host 114.132.40.112:9502
 // @BasePath /api
-
-
 
 func main() {
 	var serve string

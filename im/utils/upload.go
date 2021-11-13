@@ -43,11 +43,9 @@ func PostFile(filename string, target_url string, headers *Header) (*http.Respon
 		return nil, err
 	}
 
-
 	fh, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("error opening file")
-
 
 		return nil, err
 	}
@@ -80,5 +78,3 @@ func GetCurrentDirectory() string {
 	}
 	return dir
 }
-
-

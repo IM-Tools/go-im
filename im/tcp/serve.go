@@ -21,9 +21,9 @@ import (
 )
 
 type TcpClient struct {
-	ID uint64 //用户id
+	ID       uint64 //用户id
 	UserName string //用户名称
-	Ch client //客户端消息通道
+	Ch       client //客户端消息通道
 }
 
 //客户端集合
@@ -32,35 +32,35 @@ type client chan<- string
 //Client manager
 type TcpClientManager struct {
 	ClientMap map[uint64]*TcpClient
-	ch chan string
+	ch        chan string
 }
+
 var Manager = TcpClientManager{
-	ClientMap:make(map[uint64]*TcpClient),
+	ClientMap: make(map[uint64]*TcpClient),
 }
 
 var (
 	entering = make(chan TcpClient) //上线消息
 	leaving  = make(chan TcpClient) //离线消息
-	messages = make(chan string) // 所有接受的客户消息
+	messages = make(chan string)    // 所有接受的客户消息
 )
 
-
-func init()  {
+func init() {
 	//加载池
 	im.SetupPool()
 }
 
-func StartTcpServe()  {
-	listener,err := net.Listen("tcp",":"+config.GetString("app.tcp_port"))
+func StartTcpServe() {
+	listener, err := net.Listen("tcp", ":"+config.GetString("app.tcp_port"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	pool.AntsPool.Submit(func() {
-	   broadcaster()
+		broadcaster()
 	})
-	for  {
-		conn,err := listener.Accept()
-		if err!= nil {
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
 			log.Fatal(err)
 			continue
 		}
@@ -86,7 +86,7 @@ func broadcaster() {
 		case cliSt := <-entering:
 			//用户上线了
 			var users []string
-			for _,user := range clients {
+			for _, user := range clients {
 				users = append(users, user.UserName)
 			}
 			if len(users) > 1 {
@@ -99,24 +99,25 @@ func broadcaster() {
 			delete(clients, cliSt.ID)
 			close(cliSt.Ch)
 		}
-		}
+	}
 }
+
 var (
 	err    error
-   claims *NewJwt.CustomClaims
+	claims *NewJwt.CustomClaims
 )
 
 //处理连接
-func  handleConn(conn net.Conn)  {
+func handleConn(conn net.Conn) {
 	//执行登录逻辑操作 读取用户输入账号和密码
-	token:= getToken(conn)
+	token := getToken(conn)
 
 	jwt := NewJwt.NewJWT()
 	claims, err = jwt.ParseToken(token)
 	fmt.Println(claims)
 
 	if err != nil {
-		data := fmt.Sprintf(`{"code":401,"msg":"%s","errMsg":"%s"}`, "用户身份验证失败",err.Error())
+		data := fmt.Sprintf(`{"code":401,"msg":"%s","errMsg":"%s"}`, "用户身份验证失败", err.Error())
 		conn.Write([]byte(data))
 		conn.Close()
 		return
@@ -128,9 +129,9 @@ func  handleConn(conn net.Conn)  {
 	//password:= clientRegisterPwd(conn)
 	//执行登录操作
 	tcpDao := new(service.TcpDao)
-	users,err :=tcpDao.GetUser(claims.ID)
+	users, err := tcpDao.GetUser(claims.ID)
 
-	if err!= nil {
+	if err != nil {
 		conn.Close()
 	}
 	//断开清理用户连接
@@ -138,15 +139,15 @@ func  handleConn(conn net.Conn)  {
 		conn.Close()
 	}()
 	//用户信息存储
-	Manager.ClientMap[users.ID] = &TcpClient{ID: users.ID,UserName: users.Name }
+	Manager.ClientMap[users.ID] = &TcpClient{ID: users.ID, UserName: users.Name}
 	//客户端消息写入
 	ch := make(chan string)
-	go clientWriter(conn,ch)
+	go clientWriter(conn, ch)
 	//用户信息结构体
-	chl := TcpClient{ID: users.ID,UserName: users.Name,Ch: ch}
+	chl := TcpClient{ID: users.ID, UserName: users.Name, Ch: ch}
 
-	ch <- "你是-"+users.Name
-	messages <- users.Name+"登录成功"
+	ch <- "你是-" + users.Name
+	messages <- users.Name + "登录成功"
 	entering <- chl
 	inputFunc := func(sig chan<- struct{}) {
 		input := bufio.NewScanner(conn)
@@ -188,7 +189,6 @@ func getToken(conn net.Conn) (who string) {
 	return who
 }
 
-
 // 获取用户账号
 func clientRegisterUser(conn net.Conn) (who string) {
 	inputFunc := func(sig chan<- struct{}) {
@@ -210,6 +210,7 @@ func clientRegisterUser(conn net.Conn) (who string) {
 	inputWithTimeout(conn, 15*time.Second, inputFunc)
 	return who
 }
+
 //获取用户密码
 func clientRegisterPwd(conn net.Conn) (who string) {
 	inputFunc := func(sig chan<- struct{}) {
@@ -255,11 +256,11 @@ func inputWithTimeout(conn net.Conn, timeout time.Duration, input func(sig chan<
 	})
 	<-done
 }
+
 //客户端消息写入
-func clientWriter(conn net.Conn,ch<-chan string)  {
+func clientWriter(conn net.Conn, ch <-chan string) {
 	for msg := range ch {
 		fmt.Println(msg)
 		fmt.Fprintln(conn, msg+"\r") // 注意，忽略网络层面的错误
 	}
 }
-

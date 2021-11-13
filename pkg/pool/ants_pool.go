@@ -12,7 +12,7 @@ import (
 
 var AntsPool *ants.Pool
 
-func ConnectPool() *ants.Pool  {
+func ConnectPool() *ants.Pool {
 	//设置数量
 	AntsPool, _ = ants.NewPool(config.GetInt("app.go_coroutines"))
 	return AntsPool

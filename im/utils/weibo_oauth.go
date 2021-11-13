@@ -10,20 +10,20 @@ import (
 	"go_im/pkg/config"
 	"go_im/pkg/helpler"
 	"log"
-
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
-var client_id = config.GetString("oauth.wb_client_id")
-var client_secret = config.GetString("oauth.wb_client_secret")
-var redirect_uri = config.GetString("oauth.wb_redirect_uri")
-var access_token_url = "https://api.weibo.com/oauth2/access_token"
-var user_info_url = "https://api.weibo.com/2/users/show.json"
-var get_token_info="https://api.weibo.com/oauth2/get_token_info"
-
+var  (
+ client_id = config.GetString("oauth.wb_client_id")
+ client_secret = config.GetString("oauth.wb_client_secret")
+ redirect_uri = config.GetString("oauth.wb_redirect_uri")
+ access_token_url = "https://api.weibo.com/oauth2/access_token"
+ user_info_url = "https://api.weibo.com/2/users/show.json"
+ get_token_info="https://api.weibo.com/oauth2/get_token_info"
+)
 
 // Result represents a json value that is returned from GetUserInfo().
 

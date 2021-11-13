@@ -10,10 +10,10 @@ import (
 	user2 "go_im/im/http/models/user"
 )
 
-func ValidateLoginForm(data user2.Users)  map[string][]string  {
+func ValidateLoginForm(data user2.Users) map[string][]string {
 	rules := govalidator.MapData{
-		"name":             []string{"required"},
-		"password":         []string{"required", "min:5"},
+		"name":     []string{"required"},
+		"password": []string{"required", "min:5"},
 	}
 	messages := govalidator.MapData{
 		"name": []string{

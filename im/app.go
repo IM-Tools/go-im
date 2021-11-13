@@ -14,12 +14,12 @@ import (
 	"go_im/router"
 )
 
-func StartHttp()  {
+func StartHttp() {
 	app := gin.Default()
 	// 初始化各种池
 	SetupPool()
 	// 启动ws服务
-	go  ws.ImManager.ImStart()
+	go ws.ImManager.ImStart()
 	// 启动rpc服务
 	go grpc2.StartRpc()
 	//注册路由
@@ -31,4 +31,3 @@ func StartHttp()  {
 	_ = app.Run(":" + conf.GetString("app.port"))
 
 }
-

@@ -10,10 +10,11 @@ import (
 	"net/http"
 	"runtime/debug"
 )
+
 //全局异常处理
-func Recover(c *gin.Context)  {
+func Recover(c *gin.Context) {
 	defer func() {
-		if r:=recover();r!=nil {
+		if r := recover(); r != nil {
 			debug.PrintStack()
 			errors := errorToString(r)
 			//写入日志
@@ -28,6 +29,7 @@ func Recover(c *gin.Context)  {
 	}()
 	c.Next()
 }
+
 // recover错误，转string
 func errorToString(r interface{}) string {
 	switch v := r.(type) {
@@ -37,4 +39,3 @@ func errorToString(r interface{}) string {
 		return r.(string)
 	}
 }
-

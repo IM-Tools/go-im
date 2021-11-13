@@ -16,20 +16,20 @@ import (
 	userModel "go_im/im/http/models/user"
 	"go_im/im/http/validates"
 	"go_im/pkg/helpler"
-	log2 "go_im/pkg/zaplog"
 	"go_im/pkg/model"
 	"go_im/pkg/response"
+	log2 "go_im/pkg/zaplog"
 	"net/http"
 	"reflect"
 )
 
-
 type (
-	GroupController struct {}
-	Groups struct {
+	GroupController struct{}
+	Groups          struct {
 		GroupId string `json:"group_id"`
 	}
 )
+
 // @BasePath /api
 
 // @Summary 获取群聊列表
@@ -42,30 +42,32 @@ type (
 // @Produce json
 // @Success 200
 // @Router /GetGroupList [get]
-func (*GroupController) List(c *gin.Context){
+func (*GroupController) List(c *gin.Context) {
 
-	user :=userModel.AuthUser
+	user := userModel.AuthUser
 	var groupId []Groups
-	err :=model.DB.Table("im_group_users").
-		Where("user_id=?",user.ID).
+	err := model.DB.Table("im_group_users").
+		Where("user_id=?", user.ID).
 		Group("group_id").
-		Find(&groupId).Error; if err !=nil{
+		Find(&groupId).Error
+	if err != nil {
 		fmt.Println(err)
 	}
 	v := reflect.ValueOf(groupId)
 	group_slice := make([]string, v.Len())
-	for key,value := range groupId {
+	for key, value := range groupId {
 		group_slice[key] = value.GroupId
 	}
-	list,err :=group.GetGroupUserList(group_slice)
+	list, err := group.GetGroupUserList(group_slice)
 	if err != nil {
-		log2.ZapLogger.Error("获取群聊列表异常",zap.Error(err))
-		response.FailResponse(http.StatusInternalServerError,"服务器错误")
+		log2.ZapLogger.Error("获取群聊列表异常", zap.Error(err))
+		response.FailResponse(http.StatusInternalServerError, "服务器错误")
 		return
 	}
 	response.SuccessResponse(list).ToJson(c)
 	return
 }
+
 // @BasePath /api
 
 // @Summary 创建群聊
@@ -80,16 +82,16 @@ func (*GroupController) List(c *gin.Context){
 // @Produce json
 // @Success 200
 // @Router /CreateGroup [post]
-func (*GroupController) Create(c *gin.Context){
-	user :=userModel.AuthUser
+func (*GroupController) Create(c *gin.Context) {
+	user := userModel.AuthUser
 
 	_groups := validates.CreateGroupParams{
 		GroupName: c.PostForm("group_name"),
-		UserId:c.PostFormMap("user_id") ,
+		UserId:    c.PostFormMap("user_id"),
 	}
 	fmt.Println(_groups)
 	rules := govalidator.MapData{
-		"group_name": []string{"required","between:2,20"},
+		"group_name": []string{"required", "between:2,20"},
 		//"user_id": []string{"required"},
 	}
 	opts := govalidator.Options{
@@ -99,30 +101,32 @@ func (*GroupController) Create(c *gin.Context){
 	}
 	errs := govalidator.New(opts).ValidateStruct()
 
-	if len(errs) >0 {
+	if len(errs) > 0 {
 
 		data, _ := json.MarshalIndent(errs, "", "  ")
-		var  result =  helpler.JsonToMap(data)
-		response.ErrorResponse(http.StatusInternalServerError,"参数不合格",result).ToJson(c)
+		var result = helpler.JsonToMap(data)
+		response.ErrorResponse(http.StatusInternalServerError, "参数不合格", result).ToJson(c)
 		return
 	}
 	if len(_groups.UserId) > 50 {
-		response.ErrorResponse(http.StatusInternalServerError,"默认只能邀请50人入群").ToJson(c)
+		response.ErrorResponse(http.StatusInternalServerError, "默认只能邀请50人入群").ToJson(c)
 	}
 
-	id,err :=group.Created(user.ID,_groups.GroupName);if err != nil {
-		response.ErrorResponse(http.StatusInternalServerError,"创建异常").ToJson(c)
+	id, err := group.Created(user.ID, _groups.GroupName)
+	if err != nil {
+		response.ErrorResponse(http.StatusInternalServerError, "创建异常").ToJson(c)
 		return
 	}
-	err = group_user.CreatedAll(_groups.UserId,id,user.ID)
+	err = group_user.CreatedAll(_groups.UserId, id, user.ID)
 	if err != nil {
-		log2.ZapLogger.Error("创建群聊异常",zap.Error(err))
-		response.ErrorResponse(http.StatusInternalServerError,"创建异常").ToJson(c)
+		log2.ZapLogger.Error("创建群聊异常", zap.Error(err))
+		response.ErrorResponse(http.StatusInternalServerError, "创建异常").ToJson(c)
 		return
 	}
 	response.SuccessResponse().ToJson(c)
 	return
 }
+
 // @BasePath /api
 
 // @Summary 删除群聊
@@ -136,20 +140,18 @@ func (*GroupController) Create(c *gin.Context){
 // @Produce json
 // @Success 200
 // @Router /RemoveGroup [post]
-func (*GroupController) RemoveGroup(c *gin.Context){
+func (*GroupController) RemoveGroup(c *gin.Context) {
 	group_id := c.PostForm("group_id")
 	if len(group_id) == 0 {
-		response.ErrorResponse(http.StatusInternalServerError,"参数不合格").ToJson(c)
+		response.ErrorResponse(http.StatusInternalServerError, "参数不合格").ToJson(c)
 		return
 	}
-	model.DB.Where("id=?",group_id).Delete(&group.ImGroups{});
-	model.DB.Where("group_id=?",group_id).Delete(&group_user.ImGroupUsers{});
+	model.DB.Where("id=?", group_id).Delete(&group.ImGroups{})
+	model.DB.Where("group_id=?", group_id).Delete(&group_user.ImGroupUsers{})
 	response.SuccessResponse().ToJson(c)
 	return
 }
 
-func (*GroupController) DeleteUser(c *gin.Context){
+func (*GroupController) DeleteUser(c *gin.Context) {
 
 }
-
-

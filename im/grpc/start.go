@@ -13,10 +13,10 @@ import (
 )
 
 //启动rpc服务
-func StartRpc()  {
+func StartRpc() {
 	rpcServer := grpc.NewServer()
 
-	RegisterImRpcServiceServer(rpcServer, new(ImRpcServer));
+	RegisterImRpcServiceServer(rpcServer, new(ImRpcServer))
 
 	listener, err := net.Listen("tcp", ":"+conf.GetString("app.grpc_port"))
 	if err != nil {

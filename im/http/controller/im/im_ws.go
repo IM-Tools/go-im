@@ -5,7 +5,6 @@
 **/
 package im
 
-
 import (
 	"github.com/gin-gonic/gin"
 	ws2 "go_im/im/ws"
@@ -36,7 +35,3 @@ func (*IMService) Connect(c *gin.Context) {
 		client.ImWrite()
 	})
 }
-
-
-
-

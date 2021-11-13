@@ -14,7 +14,7 @@ import (
 	"os"
 )
 
-func StartTcpClient()  {
+func StartTcpClient() {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", ":"+config.GetString("app.tcp_port"))
 	if err != nil {
 		log.Fatal(err)
@@ -35,7 +35,7 @@ func StartTcpClient()  {
 	<-done // 等待后台 goroutine 完成
 }
 
-func mustCopy(dst io.Writer,src io.Reader)  {
+func mustCopy(dst io.Writer, src io.Reader) {
 	if _, err := io.Copy(dst, src); err != nil {
 		log.Fatal(err)
 	}

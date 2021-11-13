@@ -18,7 +18,7 @@ import (
 	"time"
 )
 
-func GinLogger() gin.HandlerFunc  {
+func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		// 请求路径
@@ -44,6 +44,7 @@ func GinLogger() gin.HandlerFunc  {
 		}
 	}
 }
+
 //GinRecovery recover掉项目可能出现的panic，并使用zap记录相关日志
 func GinRecovery(stack bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -90,4 +91,3 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 		c.Next()
 	}
 }
-

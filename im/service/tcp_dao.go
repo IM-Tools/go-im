@@ -12,14 +12,14 @@ import (
 	"net"
 )
 
-type TcpDao struct {}
+type TcpDao struct{}
 
 /**
 tcp用户登录认证
- */
-func (*TcpDao)Login(conn net.Conn,username string,password string) (user userModel.Users,err error)  {
+*/
+func (*TcpDao) Login(conn net.Conn, username string, password string) (user userModel.Users, err error) {
 	var users userModel.Users
-	model.DB.Model(&userModel.Users{}).Where("name = ?",username).Find(&users)
+	model.DB.Model(&userModel.Users{}).Where("name = ?", username).Find(&users)
 	if users.ID == 0 {
 		conn.Write([]byte(`用户不存在`))
 		conn.Close()
@@ -30,11 +30,11 @@ func (*TcpDao)Login(conn net.Conn,username string,password string) (user userMod
 		conn.Close()
 		return
 	}
-	return users,nil
+	return users, nil
 }
 
-func (*TcpDao)GetUser(uid string) (user userModel.Users,err error)  {
+func (*TcpDao) GetUser(uid string) (user userModel.Users, err error) {
 	var users userModel.Users
-	model.DB.Model(&userModel.Users{}).Where("id = ?",uid).Find(&users)
-	return users,nil
+	model.DB.Model(&userModel.Users{}).Where("id = ?", uid).Find(&users)
+	return users, nil
 }

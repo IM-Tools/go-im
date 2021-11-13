@@ -13,7 +13,7 @@ import (
 
 //byte -> map
 func EnMessage(message []byte) (msg *Message) {
-	err := json.Unmarshal([]byte(string(message)),&msg)
+	err := json.Unmarshal([]byte(string(message)), &msg)
 	if err != nil {
 		fmt.Printf("err:%s\n", err.Error())
 	}
@@ -21,13 +21,11 @@ func EnMessage(message []byte) (msg *Message) {
 }
 
 //get chat group user id
-func GetGroupUid(group_id int) ([]GroupId,error) {
+func GetGroupUid(group_id int) ([]GroupId, error) {
 	var groups []GroupId
-	err := model.DB.Table("im_group_users").Where("group_id=?",group_id).Find(&groups).Error;if err != nil {
-		return groups,err
+	err := model.DB.Table("im_group_users").Where("group_id=?", group_id).Find(&groups).Error
+	if err != nil {
+		return groups, err
 	}
-	return groups,nil
+	return groups, nil
 }
-
-
-

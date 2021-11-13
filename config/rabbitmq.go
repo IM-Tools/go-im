@@ -7,13 +7,11 @@ package config
 
 import "go_im/pkg/config"
 
-func init()  {
+func init() {
 	config.Add("rabbitmq", config.StrMap{
-		"host": config.Env("RABBITMQ_HOST", "localhost"),
-		"port": config.Env("RABBITMQ_PORT", "5672"),
-		"user": config.Env("RABBITMQ_USER", "guest"),
+		"host":     config.Env("RABBITMQ_HOST", "localhost"),
+		"port":     config.Env("RABBITMQ_PORT", "5672"),
+		"user":     config.Env("RABBITMQ_USER", "guest"),
 		"password": config.Env("RABBITMQ_PASSWORD", "guest"),
 	})
 }
-
-

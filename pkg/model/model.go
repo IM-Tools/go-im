@@ -19,6 +19,7 @@ var DB *gorm.DB
 type BaseModel struct {
 	ID uint64
 }
+
 // 初始化 grom
 func ConnectDB() *gorm.DB {
 	var (
@@ -29,7 +30,7 @@ func ConnectDB() *gorm.DB {
 		password = config.GetString("database.mysql.password")
 		charset  = config.GetString("database.mysql.charset")
 		//loc  = config.GetString("database.mysql.loc")
-		err      error
+		err error
 	)
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s",
 		username, password, host, port, database, charset)

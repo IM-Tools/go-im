@@ -11,9 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"go_im/im/utils"
 	"go_im/pkg/config"
-	log2 "go_im/pkg/zaplog"
 	"go_im/pkg/redis"
 	"go_im/pkg/response"
+	log2 "go_im/pkg/zaplog"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -22,7 +22,7 @@ import (
 
 type (
 	SmApiController struct{}
-	ResponseData struct {
+	ResponseData    struct {
 		Success   bool   `json:"success"`
 		Code      string `json:"code"`
 		Message   string `json:"message"`
@@ -59,7 +59,6 @@ var username = config.GetString("app.sm_name")
 var password = config.GetString("app.sm_password")
 var sm_token = config.GetString("app.sm_token")
 
-
 func (*SmApiController) GetApiToken(c *gin.Context) {
 	stringCmd := redis.RedisDB.Get("sm_token")
 	if len(stringCmd.Val()) != 0 {
@@ -87,7 +86,6 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 	c.JSON(200, resp)
 }
 
-
 // @BasePath /api
 
 // @Summary 图片上传接口
@@ -104,7 +102,7 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 func (*SmApiController) UploadImg(c *gin.Context) {
 	file, _ := c.FormFile("Smfile")
 	dir := utils.GetCurrentDirectory()
-	path :=dir+"/docs/"+file.Filename
+	path := dir + "/docs/" + file.Filename
 	err := c.SaveUploadedFile(file, path)
 	log2.LogError(err)
 	header := new(utils.Header)
@@ -117,4 +115,3 @@ func (*SmApiController) UploadImg(c *gin.Context) {
 	json.Unmarshal(bodyC, data)
 	c.JSON(200, data)
 }
-

@@ -17,26 +17,26 @@ import (
 	"time"
 )
 
-
 type (
-	UsersController struct {}
-	UsersList struct {
-		ID        uint64 `json:"id"`
-		Email     string `json:"email"`
-		Avatar    string `json:"avatar"`
-		Name      string `json:"name"`
-		Msg       string `json:"msg"`
-		Status       int `json:"status"`
-		IsRead     int `json:"is_read"`
-		SendTime     string `json:"send_time"`
-		SendMsg     string `json:"send_msg"`
-		MsgTotal     int `json:"msg_total"`
-		ClientType     int `json:"client_type"`
-		Bio     int `json:"bio"`
-		Sex     int `json:"sex"`
+	UsersController struct{}
+	UsersList       struct {
+		ID            uint64    `json:"id"`
+		Email         string    `json:"email"`
+		Avatar        string    `json:"avatar"`
+		Name          string    `json:"name"`
+		Msg           string    `json:"msg"`
+		Status        int       `json:"status"`
+		IsRead        int       `json:"is_read"`
+		SendTime      string    `json:"send_time"`
+		SendMsg       string    `json:"send_msg"`
+		MsgTotal      int       `json:"msg_total"`
+		ClientType    int       `json:"client_type"`
+		Bio           int       `json:"bio"`
+		Sex           int       `json:"sex"`
 		LastLoginTime time.Time `gorm:"type:time" json:"last_login_time"`
 	}
 )
+
 // @BasePath /api
 
 // @Summary 获取非好友用户列表
@@ -55,21 +55,22 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 	user := userModel.AuthUser
 	var Users []UsersList
 	subQuery := model.DB.Select("f_id").
-		Where("m_id=?",user.ID).
+		Where("m_id=?", user.ID).
 		Table("im_friends")
 	//将自己信息排除掉
 	query := model.DB.Model(userModel.Users{}).
 		Order("last_login_time desc").
 		Where("id <> ?", user.ID).
-		Having("id not in (?)",subQuery)
+		Having("id not in (?)", subQuery)
 	if len(name) > 0 {
 		query = query.Where("name like ?", "%"+name+"%")
 	}
-	 query.Select("id", "name", "avatar", "status", "created_at").Find(&Users)
+	query.Select("id", "name", "avatar", "status", "created_at").Find(&Users)
 	response.SuccessResponse(map[string]interface{}{
 		"list": Users,
 	}, 200).ToJson(c)
 }
+
 // @Summary 历史消息读取[废弃]
 // @Description 历史消息读取
 // @Tags 历史消息读取
@@ -84,9 +85,6 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 func (*UsersController) ReadMessage(c *gin.Context) {
 	user := userModel.AuthUser
 	channel_a, channel_b := helpler.ProduceChannelName(strconv.Itoa(int(user.ID)), c.Query("to_id"))
-	messageModel.ReadMsg(channel_a,channel_b)
+	messageModel.ReadMsg(channel_a, channel_b)
 	response.SuccessResponse(gin.H{}, 200).ToJson(c)
 }
-
-
-

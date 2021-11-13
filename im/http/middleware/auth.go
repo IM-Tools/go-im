@@ -21,7 +21,6 @@ var (
 	claims *NewJwt.CustomClaims
 )
 
-
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token = c.DefaultQuery("token", c.GetHeader("authorization"))

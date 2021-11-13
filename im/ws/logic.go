@@ -118,7 +118,6 @@ func MqGroupConsumption(conn *ImClient,user_id int64)  {
 		log.Fatal(err)
 	}
 	defer ch.Close()
-
 	q, err := ch.QueueDeclare(
 		"group_"+strconv.Itoa(int(user_id)), // name
 		false,   // durable
@@ -127,7 +126,6 @@ func MqGroupConsumption(conn *ImClient,user_id int64)  {
 		false,   // no-wait
 		nil,     // arguments
 	)
-
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer

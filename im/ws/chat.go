@@ -21,29 +21,29 @@ import (
 var mutexKey sync.Mutex
 
 func (manager *ImClientManager) ImStart() {
-	for  {
+	for {
 		select {
 		case conn := <-ImManager.Register:
 			//新增锁 防止并发写
 			mutexKey.Lock()
-			manager.ImClientMap[conn.ID] = &ImClient{ID: conn.ID,Socket: conn.Socket,Send:conn.Send}
+			manager.ImClientMap[conn.ID] = &ImClient{ID: conn.ID, Socket: conn.Socket, Send: conn.Send}
 			mutexKey.Unlock()
-			jsonMessage, _ := json.Marshal(&ImOnlineMsg{Code: connOk, Msg: "用户上线啦", ID: conn.ID,ChannelType:3})
+			jsonMessage, _ := json.Marshal(&ImOnlineMsg{Code: connOk, Msg: "用户上线啦", ID: conn.ID, ChannelType: 3})
 			id, _ := strconv.ParseInt(conn.ID, 10, 64)
 			user.SetUserStatus(uint64(id), 1)
-			for _,wsConn := range manager.ImClientMap {
-				wsConn.Socket.WriteMessage(websocket.TextMessage,jsonMessage)
+			for _, wsConn := range manager.ImClientMap {
+				wsConn.Socket.WriteMessage(websocket.TextMessage, jsonMessage)
 			}
 			manager.ImSend(jsonMessage, conn)
 			//用户上线通知
 			pool.AntsPool.Submit(func() {
-				MqPersonalConsumption(conn,id)
-				MqGroupConsumption(conn,id)
-				PushUserOnlineNotification(conn,id)
+				MqPersonalConsumption(conn, id)
+				MqGroupConsumption(conn, id)
+				PushUserOnlineNotification(conn, id)
 			})
 		case conn := <-ImManager.Unregister:
 
-			PushUserOfflineNotification(manager,conn)
+			PushUserOfflineNotification(manager, conn)
 		case message := <-ImManager.Broadcast:
 			data := EnMessage(message)
 			msg := new(Msg)
@@ -51,37 +51,36 @@ func (manager *ImClientManager) ImStart() {
 			if err != nil {
 				fmt.Println(err)
 			}
-			msgs ,_ := url.QueryUnescape(msg.Msg)
+			msgs, _ := url.QueryUnescape(msg.Msg)
 			msg.Msg = msgs
-			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg:msg.Msg ,
+			jsonMessage_from, _ := json.Marshal(&Msg{Code: SendOk, Msg: msg.Msg,
 				FromId: msg.FromId,
-				ToId:   msg.ToId, Status:1, MsgType: msg.MsgType,ChannelType: msg.ChannelType})
+				ToId:   msg.ToId, Status: 1, MsgType: msg.MsgType, ChannelType: msg.ChannelType})
 
 			if msg.ChannelType == 1 {
 				conn_id := strconv.Itoa(msg.ToId)
-				if data,ok :=manager.ImClientMap[conn_id];ok {
+				if data, ok := manager.ImClientMap[conn_id]; ok {
 					//pool.AntsPool.Submit(func() {
 					//	PutData(msg, 1,msg.ChannelType)
 					//})
 					data.Send <- jsonMessage_from
-					PutData(msg, 1,msg.ChannelType)
-
+					PutData(msg, 1, msg.ChannelType)
 
 				} else {
 
 					pool.AntsPool.Submit(func() {
-						MqPersonalPublish(jsonMessage_from,msg.ToId)
-						PutData(msg, 1,msg.ChannelType)
+						MqPersonalPublish(jsonMessage_from, msg.ToId)
+						PutData(msg, 1, msg.ChannelType)
 					})
 				}
 			} else {
 				//群聊消息消费
-				groups,_ := GetGroupUid(msg.ToId)
-				PutGroupData(msg, 1,msg.ChannelType)
-				for _,value :=range groups {
-					if data,ok := manager.ImClientMap[value.UserId];ok {
+				groups, _ := GetGroupUid(msg.ToId)
+				PutGroupData(msg, 1, msg.ChannelType)
+				for _, value := range groups {
+					if data, ok := manager.ImClientMap[value.UserId]; ok {
 						pool.AntsPool.Submit(func() {
-							MqGroupPublish(jsonMessage_from,msg.ToId)
+							MqGroupPublish(jsonMessage_from, msg.ToId)
 						})
 						data.Send <- jsonMessage_from
 					}
@@ -92,11 +91,12 @@ func (manager *ImClientManager) ImStart() {
 }
 
 func (manager *ImClientManager) ImSend(message []byte, ignore *ImClient) {
-	data,ok := manager.ImClientMap[ignore.ID]
+	data, ok := manager.ImClientMap[ignore.ID]
 	if ok {
 		data.Send <- message
 	}
 }
+
 //消息投递
 func (c *ImClient) ImRead() {
 	//关闭客户端注册 关闭socket连接
@@ -117,7 +117,7 @@ func (c *ImClient) ImRead() {
 		}
 		msg := new(Msg)
 		err = json.Unmarshal(message, &msg)
-		if err !=nil {
+		if err != nil {
 			log.Fatal(err)
 		}
 
@@ -127,7 +127,7 @@ func (c *ImClient) ImRead() {
 		} else {
 			if msg.ChannelType == 1 {
 				data := fmt.Sprintf(`{"code":200,"msg":"%s","from_id":%v,"to_id":%v,"status":"0","msg_type":%v,"channel_type":%v}`,
-					msg.Msg, msg.FromId,msg.ToId,msg.MsgType,msg.ChannelType)
+					msg.Msg, msg.FromId, msg.ToId, msg.MsgType, msg.ChannelType)
 				c.Socket.WriteMessage(websocket.TextMessage, []byte(data))
 			}
 
@@ -155,4 +155,3 @@ func (c *ImClient) ImWrite() {
 		}
 	}
 }
-

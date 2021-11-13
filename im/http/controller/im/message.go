@@ -19,26 +19,22 @@ import (
 	"strconv"
 )
 
-
 type (
-	MessageController struct {}
-	ImMessage struct {
-		ID        uint64 `json:"id"`
-		Msg       string `json:"msg"`
-		CreatedAt string  `json:"created_at"`
-		FromId uint64 `json:"user_id"`
-		ToId uint64 `json:"send_id"`
-		Channel string `json:"channel"`
-		Status int `json:"status"`
-		IsRead     int `json:"is_read"`
-		MsgType int `json:"msg_type"`
-		ChannelType int  `json:"channel_type"`
-		Users userModel.Users `json:"users,omitempty" gorm:"foreignKey:FromId;references:ID"`
-		Group group_user.ImGroupUsers `json:"group,omitempty" gorm:"foreignKey:FromId;references:ID"`
+	MessageController struct{}
+	ImMessage         struct {
+		ID          uint64                  `json:"id"`
+		Msg         string                  `json:"msg"`
+		CreatedAt   string                  `json:"created_at"`
+		FromId      uint64                  `json:"user_id"`
+		ToId        uint64                  `json:"send_id"`
+		Channel     string                  `json:"channel"`
+		Status      int                     `json:"status"`
+		IsRead      int                     `json:"is_read"`
+		MsgType     int                     `json:"msg_type"`
+		ChannelType int                     `json:"channel_type"`
+		Users       userModel.Users         `json:"users,omitempty" gorm:"foreignKey:FromId;references:ID"`
+		Group       group_user.ImGroupUsers `json:"group,omitempty" gorm:"foreignKey:FromId;references:ID"`
 	}
-
-
-
 )
 
 var total int64
@@ -60,9 +56,9 @@ var total int64
 // @Router /InformationHistory [get]
 func (*MessageController) InformationHistory(c *gin.Context) {
 	to_id := c.Query("to_id")
-	pageSize,_ := strconv.Atoi(c.DefaultQuery("pageSize","40"))
-	page,_ := strconv.Atoi(c.DefaultQuery("page","1"))
-	channel_type := c.DefaultQuery("channel_type","1")
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "40"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	channel_type := c.DefaultQuery("channel_type", "1")
 	user := userModel.AuthUser
 	from_id := cast.ToString(user.ID)
 	if len(to_id) < 0 {
@@ -70,8 +66,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	}
 
 	var Users []userModel.Users
-	model.DB.Where("id=?",to_id).First(&Users)
-
+	model.DB.Where("id=?", to_id).First(&Users)
 
 	var MsgList []ImMessage
 	//生成频道标识符号 用户查询用户信息
@@ -80,12 +75,12 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	query := model.DB.
 		Table("im_messages").
 
-		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b,channel_type)
+		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b, channel_type)
 
 	query.Count(&total)
 
 	list := query.
-		Offset((page-1)*pageSize).
+		Offset((page - 1) * pageSize).
 		Limit(pageSize).
 		Select("id,msg,created_at,from_id,to_id,channel,msg_type").
 		Find(&MsgList)
@@ -104,27 +99,26 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	}
 	SortByAge(MsgList)
 	response.SuccessResponse(gin.H{
-		"list":MsgList,
-		"user":Users[0],
-		"mate":gin.H{
-			"pageSize":pageSize,
-			"page":page,
-			"total":total,
+		"list": MsgList,
+		"user": Users[0],
+		"mate": gin.H{
+			"pageSize": pageSize,
+			"page":     page,
+			"total":    total,
 		}}, 200).ToJson(c)
 }
 
-func SortByAge(list []ImMessage)  {
+func SortByAge(list []ImMessage) {
 	sort.Slice(list, func(i, j int) bool {
 		return list[i].ID < list[j].ID
 	})
 }
 
-func SortGroupByAge(list []msg.ImMessage)  {
+func SortGroupByAge(list []msg.ImMessage) {
 	sort.Slice(list, func(i, j int) bool {
 		return list[i].ID < list[j].ID
 	})
 }
-
 
 // @BasePath /api
 
@@ -139,9 +133,9 @@ func SortGroupByAge(list []msg.ImMessage)  {
 // @Produce json
 // @Success 200
 // @Router /GetGroupMessageList [get]
-func (*MessageController)GetGroupMessageList(c *gin.Context)  {
+func (*MessageController) GetGroupMessageList(c *gin.Context) {
 	to_id := c.Query("to_id")
-	channel_type := c.DefaultQuery("channel_type","2")
+	channel_type := c.DefaultQuery("channel_type", "2")
 	user := userModel.AuthUser
 
 	if len(to_id) < 0 {
@@ -153,7 +147,7 @@ func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 
 	list := model.DB.
 		Preload("Users").
-		Where("channel =? and channel_type=?    order by created_at desc", channel_a,channel_type).
+		Where("channel =? and channel_type=?    order by created_at desc", channel_a, channel_type).
 		Limit(40).
 		Select("id,msg,created_at,from_id,to_id,channel,msg_type").
 		Find(&MsgList)
@@ -173,18 +167,17 @@ func (*MessageController)GetGroupMessageList(c *gin.Context)  {
 		}
 	}
 	SortGroupByAge(MsgList)
-	response.SuccessResponse( MsgList, 200).ToJson(c)
+	response.SuccessResponse(MsgList, 200).ToJson(c)
 }
 
-func (*MessageController) GetList(c *gin.Context)  {
+func (*MessageController) GetList(c *gin.Context) {
 	user := userModel.AuthUser
 	var MsgList []ImMessage
 	model.DB.Table("im_messages").
-		Where("from_id=?",user.ID).
+		Where("from_id=?", user.ID).
 		Order("created_at").
 		Find(&MsgList)
 
-	response.SuccessResponse( MsgList, 200).ToJson(c)
+	response.SuccessResponse(MsgList, 200).ToJson(c)
 	return
 }
-
