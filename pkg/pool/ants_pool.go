@@ -7,7 +7,7 @@ package pool
 
 import (
 	"github.com/panjf2000/ants/v2"
-	"go_im/pkg/config"
+	"im_app/pkg/config"
 )
 
 var AntsPool *ants.Pool

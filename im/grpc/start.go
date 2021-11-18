@@ -6,7 +6,7 @@
 package grpc
 
 import (
-	conf "go_im/pkg/config"
+	conf "im_app/pkg/config"
 	"google.golang.org/grpc"
 	"log"
 	"net"

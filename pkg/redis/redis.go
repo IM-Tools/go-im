@@ -7,9 +7,8 @@ package redis
 
 import (
 	"github.com/go-redis/redis"
-	"go_im/pkg/config"
+	"im_app/pkg/config"
 	"log"
-
 	"time"
 )
 

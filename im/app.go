@@ -7,11 +7,11 @@ package im
 
 import (
 	"github.com/gin-gonic/gin"
-	grpc2 "go_im/im/grpc"
-	"go_im/im/ws"
-	conf "go_im/pkg/config"
-	"go_im/pkg/zaplog"
-	"go_im/router"
+	grpc2 "im_app/im/grpc"
+	"im_app/im/ws"
+	conf "im_app/pkg/config"
+	"im_app/pkg/zaplog"
+	"im_app/router"
 )
 
 func StartHttp() {

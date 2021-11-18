@@ -6,8 +6,8 @@
 package tcp
 
 import (
-	"go_im/pkg/config"
-	"go_im/pkg/pool"
+	"im_app/pkg/config"
+	"im_app/pkg/pool"
 	"io"
 	"log"
 	"net"

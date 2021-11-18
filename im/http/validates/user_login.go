@@ -7,7 +7,7 @@ package validates
 
 import (
 	"github.com/thedevsaddam/govalidator"
-	user2 "go_im/im/http/models/user"
+	user2 "im_app/im/http/models/user"
 )
 
 func ValidateLoginForm(data user2.Users) map[string][]string {

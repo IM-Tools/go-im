@@ -9,14 +9,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"go_im/im/http/models/user"
-	"go_im/pkg/pool"
-	"go_im/pkg/wordsfilter"
+	"im_app/im/http/models/user"
+	"im_app/pkg/pool"
+	"im_app/pkg/wordsfilter"
 	"log"
 	"net/url"
 	"strconv"
 	"sync"
 )
+
+type ImServiceHandler interface {
+	ImWrite()
+	ImRead()
+}
 
 var mutexKey sync.Mutex
 
@@ -60,18 +65,14 @@ func (manager *ImClientManager) ImStart() {
 			if msg.ChannelType == 1 {
 				conn_id := strconv.Itoa(msg.ToId)
 				if data, ok := manager.ImClientMap[conn_id]; ok {
-					//pool.AntsPool.Submit(func() {
-					//	PutData(msg, 1,msg.ChannelType)
-					//})
 					data.Send <- jsonMessage_from
 					PutData(msg, 1, msg.ChannelType)
-
 				} else {
-
-					pool.AntsPool.Submit(func() {
-						MqPersonalPublish(jsonMessage_from, msg.ToId)
-						PutData(msg, 1, msg.ChannelType)
-					})
+					PutData(msg, 1, msg.ChannelType)
+					//pool.AntsPool.Submit(func() {
+					//	MqPersonalPublish(jsonMessage_from, msg.ToId)
+					//	PutData(msg, 1, msg.ChannelType)
+					//})
 				}
 			} else {
 				//群聊消息消费
@@ -124,13 +125,12 @@ func (c *ImClient) ImRead() {
 		if wordsfilter.MsgFilter(msg.Msg) {
 			c.Socket.WriteMessage(websocket.TextMessage, []byte(`{"code":401,"data":"禁止发送敏感词！"}`))
 			continue
-		} else {
-			if msg.ChannelType == 1 {
-				data := fmt.Sprintf(`{"code":200,"msg":"%s","from_id":%v,"to_id":%v,"status":"0","msg_type":%v,"channel_type":%v}`,
-					msg.Msg, msg.FromId, msg.ToId, msg.MsgType, msg.ChannelType)
-				c.Socket.WriteMessage(websocket.TextMessage, []byte(data))
-			}
+		}
 
+		if msg.ChannelType == 1 {
+			data := fmt.Sprintf(`{"code":200,"msg":"%s","from_id":%v,"to_id":%v,"status":"0","msg_type":%v,"channel_type":%v}`,
+				msg.Msg, msg.FromId, msg.ToId, msg.MsgType, msg.ChannelType)
+			c.Socket.WriteMessage(websocket.TextMessage, []byte(data))
 		}
 
 		jsonMessage, _ := json.Marshal(&Message{Sender: c.ID, Content: string(message)})
@@ -141,9 +141,7 @@ func (c *ImClient) ImRead() {
 //从客户端消费消息
 func (c *ImClient) ImWrite() {
 	//关闭socket连接
-	defer func() {
-		c.Socket.Close()
-	}()
+	defer c.Socket.Close()
 	for {
 		select {
 		case message, ok := <-c.Send:
@@ -155,3 +153,5 @@ func (c *ImClient) ImWrite() {
 		}
 	}
 }
+
+

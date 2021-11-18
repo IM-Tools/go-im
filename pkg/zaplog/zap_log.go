@@ -8,8 +8,8 @@ package zaplog
 import (
 	"fmt"
 	"go.uber.org/zap"
-	"go_im/pkg/config"
-	"go_im/pkg/helpler"
+	"im_app/pkg/config"
+	"im_app/pkg/helpler"
 )
 
 var (
@@ -26,4 +26,8 @@ func InitZapLogger() {
 	logg, _ := cfg.Build()
 	zap.ReplaceGlobals(logg) // 替换zap包中全局的logger实例
 	ZapLogger = logg         // 注册到全局变量中
+}
+
+func Z()  {
+
 }

@@ -6,19 +6,18 @@
 package auth
 
 import (
-	jwtGo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
-	"go_im/im/http/dao"
-	userModel "go_im/im/http/models/user"
-	"go_im/im/http/validates"
-	"go_im/im/utils"
-	"go_im/im/ws"
-	"go_im/pkg/config"
-	"go_im/pkg/helpler"
-	"go_im/pkg/jwt"
-	"go_im/pkg/model"
-	"go_im/pkg/response"
+	"im_app/im/http/dao"
+	userModel "im_app/im/http/models/user"
+	"im_app/im/http/validates"
+	"im_app/im/utils"
+	"im_app/im/ws"
+	"im_app/pkg/config"
+	"im_app/pkg/helpler"
+	"im_app/pkg/jwt"
+	"im_app/pkg/model"
+	"im_app/pkg/response"
 	"strconv"
 	"time"
 )
@@ -131,9 +130,9 @@ func (that *AuthController) Login(c *gin.Context) {
 	if(users.Status == 1) {
 		ws.CrowdedOffline(strconv.Itoa(int(users.ID)))
 	}
-
-
-	generateToken(c, &users)
+	token := jwt.GenerateToken(users.ID,users.Name,users.Avatar,users.Email,ClientType)
+	data :=getMe(token,&users)
+	response.SuccessResponse(data, 200).ToJson(c)
 }
 
 
@@ -168,10 +167,16 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 			//执行默认添加好友逻辑
 			dao := new(dao.UserService)
 			dao.AddDefaultFriend(users.ID)
-			generateToken(c, &userData)
+			token := jwt.GenerateToken(users.ID,users.Name,users.Avatar,users.Email,0)
+			data :=getMe(token,&users)
+			response.SuccessResponse(data, 200).ToJson(c)
 		}
 	} else {
-		generateToken(c, &users)
+		token := jwt.GenerateToken(users.ID,users.Name,users.Avatar,users.Email,0)
+		data :=getMe(token,&users)
+		response.SuccessResponse(data, 200).ToJson(c)
+
+		//generateToken(c, &users)
 	}
 }
 
@@ -180,38 +185,55 @@ func (*AuthController) WxCallback(c *gin.Context)  {
 	return
 }
 
-func generateToken(c *gin.Context, user *userModel.Users) {
-	sign_key := config.GetString("app.jwt.sign_key")
+func getMe(token string, user *userModel.Users) *Me  {
 	expiration_time := config.GetInt64("app.jwt.expiration_time")
-
-	j := &jwt.JWT{
-		[]byte(sign_key),
-	}
-	claims := jwt.CustomClaims{strconv.FormatUint(user.ID, 10),
-		user.Name,
-		user.Avatar,
-		user.Email,
-		jwtGo.StandardClaims{
-			NotBefore: time.Now().Unix() - 1000,
-			ExpiresAt: time.Now().Unix() + expiration_time,
-			Issuer:    sign_key,
-		}}
-	token, err := j.CreateToken(claims)
-	if err != nil {
-		response.FailResponse(403, "jwt token颁发失败~").ToJson(c)
-		return
-	} else {
-		data := new(Me)
-		data.ID = user.ID
-		data.Name = user.Name
-		data.Avatar = user.Avatar
-		data.Email = user.Email
-		data.Token = token
-		data.ExpirationTime = expiration_time
-		data.Bio = user.Bio
-		data.Sex = user.Sex
-		data.ClientType = user.ClientType
-		response.SuccessResponse(data, 200).ToJson(c)
-		return
-	}
+	data := new(Me)
+	data.ID = user.ID
+	data.Name = user.Name
+	data.Avatar = user.Avatar
+	data.Email = user.Email
+	data.Token = token
+	data.ExpirationTime = expiration_time
+	data.Bio = user.Bio
+	data.Sex = user.Sex
+	data.ClientType = user.ClientType
+	return data
 }
+
+
+//func generateToken(c *gin.Context, user *userModel.Users) {
+//	sign_key := config.GetString("app.jwt.sign_key")
+//	expiration_time := config.GetInt64("app.jwt.expiration_time")
+//
+//	j := &jwt.JWT{
+//		[]byte(sign_key),
+//	}
+//	claims := jwt.CustomClaims{strconv.FormatUint(user.ID, 10),
+//		user.Name,
+//		user.Avatar,
+//		user.Email,
+//		user.ClientType,
+//		jwtGo.StandardClaims{
+//			NotBefore: time.Now().Unix() - 1000,
+//			ExpiresAt: time.Now().Unix() + expiration_time,
+//			Issuer:    sign_key,
+//		}}
+//	token, err := j.CreateToken(claims)
+//	if err != nil {
+//		response.FailResponse(403, "jwt token颁发失败~").ToJson(c)
+//		return
+//	} else {
+//		data := new(Me)
+//		data.ID = user.ID
+//		data.Name = user.Name
+//		data.Avatar = user.Avatar
+//		data.Email = user.Email
+//		data.Token = token
+//		data.ExpirationTime = expiration_time
+//		data.Bio = user.Bio
+//		data.Sex = user.Sex
+//		data.ClientType = user.ClientType
+//		response.SuccessResponse(data, 200).ToJson(c)
+//		return
+//	}
+//}

@@ -8,7 +8,9 @@ package jwt
 import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
-	"go_im/pkg/config"
+	"im_app/pkg/config"
+	"im_app/pkg/zaplog"
+	"strconv"
 	"time"
 )
 
@@ -31,6 +33,7 @@ type CustomClaims struct {
 	ID           string `json:"userId"`
 	Name, Avatar string
 	Email        string `valid:"email"`
+	ClientType int `json:"client_type"` //用户设备
 	jwt.StandardClaims
 }
 
@@ -60,6 +63,33 @@ func (j *JWT) CreateToken(claims CustomClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(j.SigningKey)
 }
+
+func GenerateToken(uid uint64,Name string,avatar string,email string,ClientType int) (token string)  {
+	sign_key := config.GetString("app.jwt.sign_key")
+	expiration_time := config.GetInt64("app.jwt.expiration_time")
+	j := &JWT{
+		[]byte(sign_key),
+	}
+	claims := CustomClaims{strconv.FormatUint(uid, 10),
+		Name,
+		avatar,
+		email,
+		ClientType,
+		jwt.StandardClaims{
+			NotBefore: time.Now().Unix() - 1000,
+			ExpiresAt: time.Now().Unix() + expiration_time,
+			Issuer:    sign_key,
+		}}
+	token,err := j.CreateToken(claims)
+
+	if err != nil {
+		zaplog.ZapLogger.Error("token颁发失败")
+	}
+
+	return token
+
+}
+
 
 // 解析Tokne
 func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {

@@ -6,8 +6,8 @@
 package group
 
 import (
-	"go_im/im/http/models/group_user"
-	"go_im/pkg/model"
+	"im_app/im/http/models/group_user"
+	"im_app/pkg/model"
 	"time"
 )
 

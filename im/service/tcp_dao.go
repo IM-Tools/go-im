@@ -6,9 +6,9 @@
 package service
 
 import (
-	userModel "go_im/im/http/models/user"
-	"go_im/pkg/helpler"
-	"go_im/pkg/model"
+	userModel "im_app/im/http/models/user"
+	"im_app/pkg/helpler"
+	"im_app/pkg/model"
 	"net"
 )
 

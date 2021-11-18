@@ -8,7 +8,7 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"go_im/pkg/model"
+	"im_app/pkg/model"
 )
 
 //byte -> map

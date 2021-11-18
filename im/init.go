@@ -6,11 +6,11 @@
 package im
 
 import (
-	"go_im/pkg/config"
-	"go_im/pkg/model"
-	"go_im/pkg/mq"
-	"go_im/pkg/pool"
-	"go_im/pkg/redis"
+	"im_app/pkg/config"
+	"im_app/pkg/model"
+	"im_app/pkg/mq"
+	"im_app/pkg/pool"
+	"im_app/pkg/redis"
 	"time"
 )
 

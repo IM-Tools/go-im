@@ -8,7 +8,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"go_im/pkg/zaplog"
+	"im_app/pkg/zaplog"
 	"net"
 	"net/http"
 	"net/http/httputil"

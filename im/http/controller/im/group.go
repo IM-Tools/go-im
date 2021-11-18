@@ -11,14 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"go.uber.org/zap"
-	"go_im/im/http/models/group"
-	"go_im/im/http/models/group_user"
-	userModel "go_im/im/http/models/user"
-	"go_im/im/http/validates"
-	"go_im/pkg/helpler"
-	"go_im/pkg/model"
-	"go_im/pkg/response"
-	log2 "go_im/pkg/zaplog"
+	"im_app/im/http/models/group"
+	"im_app/im/http/models/group_user"
+	userModel "im_app/im/http/models/user"
+	"im_app/im/http/validates"
+	"im_app/pkg/helpler"
+	"im_app/pkg/model"
+	"im_app/pkg/response"
+	log2 "im_app/pkg/zaplog"
 	"net/http"
 	"reflect"
 )
@@ -58,7 +58,9 @@ func (*GroupController) List(c *gin.Context) {
 	for key, value := range groupId {
 		group_slice[key] = value.GroupId
 	}
+	fmt.Println(group_slice)
 	list, err := group.GetGroupUserList(group_slice)
+
 	if err != nil {
 		log2.ZapLogger.Error("获取群聊列表异常", zap.Error(err))
 		response.FailResponse(http.StatusInternalServerError, "服务器错误")

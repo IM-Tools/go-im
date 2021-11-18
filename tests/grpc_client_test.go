@@ -8,8 +8,8 @@ package tests
 import (
 	"context"
 	"fmt"
-	"go_im/config"
-	grpc2 "go_im/im/grpc"
+	"im_app/config"
+	grpc2 "im_app/im/grpc"
 	"google.golang.org/grpc"
 	"log"
 	"testing"
@@ -39,4 +39,5 @@ func TestGrpcClient(t *testing.T) {
 	fmt.Println("调用gRPC方法成功，ProdStock=",resp)
 	return
 }
+
 

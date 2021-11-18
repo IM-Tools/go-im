@@ -7,7 +7,7 @@ package mq
 
 import (
 	"github.com/streadway/amqp"
-	"go_im/pkg/config"
+	"im_app/pkg/config"
 	"log"
 )
 

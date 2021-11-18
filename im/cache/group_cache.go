@@ -7,6 +7,12 @@ package cache
 
 import "strconv"
 
+var (
+
+)
+
+
+
 func getGroupIdsStr(group_id int) string {
 	return "group_ids_"+strconv.Itoa(group_id)
 }

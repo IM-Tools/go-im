@@ -5,7 +5,7 @@
 **/
 package config
 
-import "go_im/pkg/config"
+import "im_app/pkg/config"
 
 func init() {
 	config.Add("database", config.StrMap{

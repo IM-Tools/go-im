@@ -7,7 +7,7 @@ package user
 
 import (
 	"encoding/json"
-	"go_im/pkg/model"
+	"im_app/pkg/model"
 	"time"
 )
 

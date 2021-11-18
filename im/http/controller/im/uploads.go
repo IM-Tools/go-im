@@ -7,9 +7,9 @@ package im
 
 import (
 	"github.com/gin-gonic/gin"
-	"go_im/im/utils"
-	"go_im/pkg/config"
-	"go_im/pkg/response"
+	"im_app/im/utils"
+	"im_app/pkg/config"
+	"im_app/pkg/response"
 )
 
 type UploadController struct{}

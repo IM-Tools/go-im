@@ -8,7 +8,7 @@ package zaplog
 import (
 	"encoding/json"
 	"fmt"
-	"go_im/im/utils"
+	"im_app/im/utils"
 	"os"
 	"path/filepath"
 	"runtime"

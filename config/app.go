@@ -6,7 +6,7 @@
 package config
 
 import (
-	"go_im/pkg/config"
+	"im_app/pkg/config"
 )
 
 func init() {

@@ -7,8 +7,8 @@ package msg
 
 import (
 	"fmt"
-	userModel "go_im/im/http/models/user"
-	"go_im/pkg/model"
+	userModel "im_app/im/http/models/user"
+	"im_app/pkg/model"
 )
 
 type ImMessage struct {

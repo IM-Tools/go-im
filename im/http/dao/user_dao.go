@@ -6,8 +6,8 @@
 package dao
 
 import (
-	"go_im/im/http/models/friend"
-	"go_im/pkg/model"
+	"im_app/im/http/models/friend"
+	"im_app/pkg/model"
 	"time"
 )
 

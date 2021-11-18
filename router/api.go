@@ -11,10 +11,10 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"go_im/docs"
-	Auth "go_im/im/http/controller/auth"
-	"go_im/im/http/controller/im"
-	"go_im/im/http/middleware"
+	"im_app/docs"
+	Auth "im_app/im/http/controller/auth"
+	"im_app/im/http/controller/im"
+	"im_app/im/http/middleware"
 )
 
 func RegisterApiRoutes(router *gin.Engine) {

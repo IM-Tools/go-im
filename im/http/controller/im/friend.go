@@ -9,12 +9,12 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"go_im/im/http/models/friend"
-	"go_im/im/http/models/friend_record"
-	userModel "go_im/im/http/models/user"
-	"go_im/pkg/model"
-	"go_im/pkg/response"
-	log2 "go_im/pkg/zaplog"
+	"im_app/im/http/models/friend"
+	"im_app/im/http/models/friend_record"
+	userModel "im_app/im/http/models/user"
+	"im_app/pkg/model"
+	"im_app/pkg/response"
+	log2 "im_app/pkg/zaplog"
 	"net/http"
 	"reflect"
 )
@@ -94,6 +94,7 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 
 	err := friend_record.AddRecords(userModel.AuthUser.ID, f_id, information)
 	if err != nil {
+		fmt.Println(err)
 		response.FailResponse(500, "添加失败").ToJson(c)
 		return
 	}
@@ -113,7 +114,7 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 // @Success 200
 // @Router /ByFriendRequest [post]
 func (*FriendController) ByFriendRequest(c *gin.Context) {
-	friend_records := friend_record.ImFriendRecord{}
+	friend_records := friend_record.ImFriendRecords{}
 	id := c.PostForm("id")
 	result := model.DB.Table("im_friend_records").
 		Where("id=?", id).
@@ -122,8 +123,8 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 		response.FailResponse(500, "查询数据异常").ToJson(c)
 		return
 	}
-	friend.AddFriends(friend_records.UserId, friend_records.Fid)
-	friend.AddFriends(friend_records.Fid, friend_records.UserId)
+	friend.AddFriends(friend_records.UserId, friend_records.FId)
+	friend.AddFriends(friend_records.FId, friend_records.UserId)
 	//投递一条消息
 	response.SuccessResponse().ToJson(c)
 	return

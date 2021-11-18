@@ -8,7 +8,7 @@ package model
 
 import (
 	"fmt"
-	"go_im/pkg/config"
+	"im_app/pkg/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"

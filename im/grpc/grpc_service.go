@@ -9,7 +9,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"go_im/im/ws"
+	"im_app/im/ws"
 	"strconv"
 )
 

@@ -1,5 +1,4 @@
-module go_im
-
+module im_app
 go 1.15
 
 require (

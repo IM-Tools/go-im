@@ -6,8 +6,8 @@
 package friend
 
 import (
-	"go_im/im/http/models/user"
-	"go_im/pkg/model"
+	"im_app/im/http/models/user"
+	"im_app/pkg/model"
 	"time"
 )
 

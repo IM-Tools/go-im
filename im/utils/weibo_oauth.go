@@ -7,8 +7,8 @@ package utils
 
 import (
 	"github.com/tidwall/gjson"
-	"go_im/pkg/config"
-	"go_im/pkg/helpler"
+	"im_app/pkg/config"
+	"im_app/pkg/helpler"
 	"log"
 	"io/ioutil"
 	"net/http"

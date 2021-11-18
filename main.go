@@ -17,11 +17,11 @@ package main
 
 import (
 	"flag"
-	"go_im/config"
-	"go_im/im"
-	"go_im/im/tcp"
-	"go_im/pkg/wordsfilter"
-	"go_im/pkg/zaplog"
+	"im_app/config"
+	"im_app/im"
+	"im_app/im/tcp"
+	"im_app/pkg/wordsfilter"
+	"im_app/pkg/zaplog"
 )
 
 func init() {
