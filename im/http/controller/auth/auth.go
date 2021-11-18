@@ -6,8 +6,12 @@
 package auth
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
+
 	"im_app/im/http/dao"
 	userModel "im_app/im/http/models/user"
 	"im_app/im/http/validates"
@@ -18,22 +22,21 @@ import (
 	"im_app/pkg/jwt"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
-	"strconv"
-	"time"
 )
+
 type (
-	AuthController struct{}
+	AuthController  struct{}
 	WeiBoController struct{}
-	Me struct {
+	Me              struct {
 		ID             uint64 `json:"id"`
 		Name           string `json:"name"`
 		Avatar         string `json:"avatar"`
 		Email          string `json:"email"`
 		Token          string `json:"token"`
 		ExpirationTime int64  `json:"expiration_time"`
-		Sex int  `json:"sex"`
-		ClientType int  `json:"client_type"`
-		Bio string  `json:"bio"`
+		Sex            int    `json:"sex"`
+		ClientType     int    `json:"client_type"`
+		Bio            string `json:"bio"`
 	}
 )
 
@@ -66,22 +69,21 @@ func (*AuthController) Me(c *gin.Context) {
 // @Param bio formData string false "个性签名"
 // @Param six formData int false "性别"
 
-
 // @Produce json
 // @Success 200
 // @Router /Update [put]
-func (*AuthController) Update(c *gin.Context){
+func (*AuthController) Update(c *gin.Context) {
 	bio := c.PostForm("bio")
 	sex := c.PostForm("sex")
 	user := userModel.AuthUser
-	var users  userModel.Users
+	var users userModel.Users
 	if len(sex) != 0 {
-		sex,_ :=strconv.Atoi(sex)
+		sex, _ := strconv.Atoi(sex)
 		users.Sex = sex
 	}
-	users.Bio =bio
+	users.Bio = bio
 
-	model.DB.Table("users").Where("id",user.ID).First(&users)
+	model.DB.Table("users").Where("id", user.ID).First(&users)
 	users.Bio = bio
 	model.DB.Save(&users)
 	response.SuccessResponse().WriteTo(c)
@@ -102,15 +104,15 @@ func (*AuthController) Update(c *gin.Context){
 // @Router /login [post]
 func (that *AuthController) Login(c *gin.Context) {
 	_user := userModel.Users{
-		Name: c.PostForm("name"),
+		Name:     c.PostForm("name"),
 		Password: c.PostForm("password"),
 	}
 
-    ClientType,_ := strconv.Atoi(c.DefaultPostForm("client_type","0"))
+	ClientType, _ := strconv.Atoi(c.DefaultPostForm("client_type", "0"))
 
 	errs := validates.ValidateLoginForm(_user)
-	if len(errs) >0 {
-		response.ErrorResponse(500,"参数错误",errs).WriteTo(c)
+	if len(errs) > 0 {
+		response.ErrorResponse(500, "参数错误", errs).WriteTo(c)
 		return
 	}
 	var users userModel.Users
@@ -126,15 +128,14 @@ func (that *AuthController) Login(c *gin.Context) {
 
 	users.ClientType = ClientType
 	model.DB.Model(&userModel.Users{}).Save(&users)
-	//挤下线操作
-	if(users.Status == 1) {
+	// 挤下线操作
+	if users.Status == 1 {
 		ws.CrowdedOffline(strconv.Itoa(int(users.ID)))
 	}
-	token := jwt.GenerateToken(users.ID,users.Name,users.Avatar,users.Email,ClientType)
-	data :=getMe(token,&users)
+	token := jwt.GenerateToken(users.ID, users.Name, users.Avatar, users.Email, ClientType)
+	data := getMe(token, &users)
 	response.SuccessResponse(data, 200).ToJson(c)
 }
-
 
 func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 	code := c.Query("code")
@@ -144,7 +145,7 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 	access_token := utils.GetWeiBoAccessToken(&code)
 	UserInfo := utils.GetWeiBoUserInfo(&access_token)
 	users := userModel.Users{}
-	oauth_id := gjson.Get(UserInfo,"id").Raw
+	oauth_id := gjson.Get(UserInfo, "id").Raw
 	isThere := model.DB.Where("oauth_id = ?", oauth_id).First(&users)
 	if isThere.Error != nil {
 		userData := userModel.Users{
@@ -159,33 +160,31 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		}
 		result := model.DB.Create(&userData)
 
-
-
 		if result.Error != nil {
 			response.FailResponse(500, "用户微博授权失败").ToJson(c)
 		} else {
-			//执行默认添加好友逻辑
+			// 执行默认添加好友逻辑
 			dao := new(dao.UserService)
 			dao.AddDefaultFriend(users.ID)
-			token := jwt.GenerateToken(users.ID,users.Name,users.Avatar,users.Email,0)
-			data :=getMe(token,&users)
+			token := jwt.GenerateToken(users.ID, users.Name, users.Avatar, users.Email, 0)
+			data := getMe(token, &users)
 			response.SuccessResponse(data, 200).ToJson(c)
 		}
 	} else {
-		token := jwt.GenerateToken(users.ID,users.Name,users.Avatar,users.Email,0)
-		data :=getMe(token,&users)
+		token := jwt.GenerateToken(users.ID, users.Name, users.Avatar, users.Email, 0)
+		data := getMe(token, &users)
 		response.SuccessResponse(data, 200).ToJson(c)
 
-		//generateToken(c, &users)
+		// generateToken(c, &users)
 	}
 }
 
-func (*AuthController) WxCallback(c *gin.Context)  {
+func (*AuthController) WxCallback(c *gin.Context) {
 	response.SuccessResponse().ToJson(c)
 	return
 }
 
-func getMe(token string, user *userModel.Users) *Me  {
+func getMe(token string, user *userModel.Users) *Me {
 	expiration_time := config.GetInt64("app.jwt.expiration_time")
 	data := new(Me)
 	data.ID = user.ID
@@ -200,40 +199,39 @@ func getMe(token string, user *userModel.Users) *Me  {
 	return data
 }
 
-
-//func generateToken(c *gin.Context, user *userModel.Users) {
-//	sign_key := config.GetString("app.jwt.sign_key")
-//	expiration_time := config.GetInt64("app.jwt.expiration_time")
+// func generateToken(c *gin.Context, user *userModel.Users) {
+// 	sign_key := config.GetString("app.jwt.sign_key")
+// 	expiration_time := config.GetInt64("app.jwt.expiration_time")
 //
-//	j := &jwt.JWT{
-//		[]byte(sign_key),
-//	}
-//	claims := jwt.CustomClaims{strconv.FormatUint(user.ID, 10),
-//		user.Name,
-//		user.Avatar,
-//		user.Email,
-//		user.ClientType,
-//		jwtGo.StandardClaims{
-//			NotBefore: time.Now().Unix() - 1000,
-//			ExpiresAt: time.Now().Unix() + expiration_time,
-//			Issuer:    sign_key,
-//		}}
-//	token, err := j.CreateToken(claims)
-//	if err != nil {
-//		response.FailResponse(403, "jwt token颁发失败~").ToJson(c)
-//		return
-//	} else {
-//		data := new(Me)
-//		data.ID = user.ID
-//		data.Name = user.Name
-//		data.Avatar = user.Avatar
-//		data.Email = user.Email
-//		data.Token = token
-//		data.ExpirationTime = expiration_time
-//		data.Bio = user.Bio
-//		data.Sex = user.Sex
-//		data.ClientType = user.ClientType
-//		response.SuccessResponse(data, 200).ToJson(c)
-//		return
-//	}
-//}
+// 	j := &jwt.JWT{
+// 		[]byte(sign_key),
+// 	}
+// 	claims := jwt.CustomClaims{strconv.FormatUint(user.ID, 10),
+// 		user.Name,
+// 		user.Avatar,
+// 		user.Email,
+// 		user.ClientType,
+// 		jwtGo.StandardClaims{
+// 			NotBefore: time.Now().Unix() - 1000,
+// 			ExpiresAt: time.Now().Unix() + expiration_time,
+// 			Issuer:    sign_key,
+// 		}}
+// 	token, err := j.CreateToken(claims)
+// 	if err != nil {
+// 		response.FailResponse(403, "jwt token颁发失败~").ToJson(c)
+// 		return
+// 	} else {
+// 		data := new(Me)
+// 		data.ID = user.ID
+// 		data.Name = user.Name
+// 		data.Avatar = user.Avatar
+// 		data.Email = user.Email
+// 		data.Token = token
+// 		data.ExpirationTime = expiration_time
+// 		data.Bio = user.Bio
+// 		data.Sex = user.Sex
+// 		data.ClientType = user.ClientType
+// 		response.SuccessResponse(data, 200).ToJson(c)
+// 		return
+// 	}
+// }

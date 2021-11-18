@@ -7,14 +7,16 @@ package auth
 
 import "C"
 import (
+	"strconv"
+	"time"
+
 	"github.com/gin-gonic/gin"
+
 	messageModel "im_app/im/http/models/msg"
 	userModel "im_app/im/http/models/user"
 	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
-	"strconv"
-	"time"
 )
 
 type (
@@ -36,8 +38,8 @@ type (
 		LastLoginTime time.Time `gorm:"type:time" json:"last_login_time"`
 	}
 	NotFriendList struct {
-		Name string `json:"name"`
-		ID uint64 `json:"id"`
+		Name   string `json:"name"`
+		ID     uint64 `json:"id"`
 		Avatar string `json:"avatar"`
 		Status string `json:"status"`
 	}
@@ -64,32 +66,29 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 	var NotFriendList []NotFriendList
 
 	subQuery := model.DB.Select("f_id").
-		Where("m_id=?",user.ID).
+		Where("m_id=?", user.ID).
 		Table("im_friends")
 
-	if len(name) >0 {
+	if len(name) > 0 {
 
 		model.DB.Model(&Users).
 			Select("im_users.id,im_users.name,im_users.avatar,im_friend_records.status").
-			Joins("left join im_friend_records on im_friend_records.f_id=im_users.id" +
-				" and im_users.id not in(?) and im_users.id!=? and im_users.name like '%?%' limit 10 ",subQuery,user.ID,name).
+			Joins("left join im_friend_records on im_friend_records.f_id=im_users.id"+
+				" and im_users.id not in(?) and im_users.id!=? and im_users.name like '%?%' limit 10 ", subQuery, user.ID, name).
 			Scan(&NotFriendList)
-	}else {
+	} else {
 
 		model.DB.Model(&Users).
 			Select("im_users.id,im_users.name,im_users.avatar,im_friend_records.status").
-			Joins("left join im_friend_records on im_friend_records.f_id=im_users.id" +
-				" and im_users.id not in(?) and im_users.id!=? limit 10 ",subQuery,user.ID).
+			Joins("left join im_friend_records on im_friend_records.f_id=im_users.id"+
+				" and im_users.id not in(?) and im_users.id!=? limit 10 ", subQuery, user.ID).
 			Scan(&NotFriendList)
 	}
-
 
 	response.SuccessResponse(map[string]interface{}{
 		"list": NotFriendList,
 	}, 200).ToJson(c)
 }
-
-
 
 // @Summary 历史消息读取[废弃]
 // @Description 历史消息读取

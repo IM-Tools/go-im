@@ -6,17 +6,19 @@
 package im
 
 import (
+	"sort"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon"
 	"github.com/spf13/cast"
+
 	"im_app/im/http/models/group_user"
 	"im_app/im/http/models/msg"
 	userModel "im_app/im/http/models/user"
 	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
-	"sort"
-	"strconv"
 )
 
 type (
@@ -69,12 +71,11 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	model.DB.Where("id=?", to_id).First(&Users)
 
 	var MsgList []ImMessage
-	//生成频道标识符号 用户查询用户信息
+	// 生成频道标识符号 用户查询用户信息
 	channel_a, channel_b := helpler.ProduceChannelName(from_id, to_id)
 
 	query := model.DB.
 		Table("im_messages").
-
 		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b, channel_type)
 
 	query.Count(&total)
@@ -142,7 +143,7 @@ func (*MessageController) GetGroupMessageList(c *gin.Context) {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
 	}
 	var MsgList []msg.ImMessage
-	//生成频道标识符号 用户查询用户信息
+	// 生成频道标识符号 用户查询用户信息
 	channel_a := helpler.ProduceChannelGroupName(to_id)
 
 	list := model.DB.

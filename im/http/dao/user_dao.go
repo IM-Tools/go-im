@@ -6,14 +6,15 @@
 package dao
 
 import (
+	"time"
+
 	"im_app/im/http/models/friend"
 	"im_app/pkg/model"
-	"time"
 )
 
 type UserService struct{}
 
-//添加默认好友关系
+// 添加默认好友关系
 func (*UserService) AddDefaultFriend(m_id uint64) {
 	model.DB.Create(&friend.ImFriends{FId: m_id, MId: 1, Status: 1, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
 

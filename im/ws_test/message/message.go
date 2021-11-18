@@ -6,9 +6,7 @@
 package message
 
 type Messages struct {
-	Code int  `json:"code"`
-	Message string `json:"message"`
-	DeviceType int `json:"device_type"`
+	Code       int    `json:"code"`
+	Message    string `json:"message"`
+	DeviceType int    `json:"device_type"`
 }
-
-

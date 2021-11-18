@@ -7,8 +7,9 @@ package user
 
 import (
 	"encoding/json"
-	"im_app/pkg/model"
 	"time"
+
+	"im_app/pkg/model"
 )
 
 type Users struct {
@@ -88,7 +89,7 @@ func GetFriendListV2(user_id []uint64) ([]Users, error) {
 	return users, nil
 }
 
-//设置用户上下线状态
+// 设置用户上下线状态
 func SetUserStatus(id uint64, status int) {
 	model.DB.Model(&Users{}).Where("id=?", id).Updates(Users{Status: status,
 		LastLoginTime: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})

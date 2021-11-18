@@ -6,10 +6,11 @@
 package group_user
 
 import (
-	"im_app/im/http/models/user"
-	"im_app/pkg/model"
 	"strconv"
 	"time"
+
+	"im_app/im/http/models/user"
+	"im_app/pkg/model"
 )
 
 type ImGroupUsers struct {
@@ -19,7 +20,7 @@ type ImGroupUsers struct {
 	GroupId   uint64 `json:"group_id"`
 	Remark    string `json:"remark"`
 	Avatar    string `json:"avatar"`
-	Name    string `json:"name"`
+	Name      string `json:"name"`
 }
 
 func (ImGroupUsers) TableName() string {
@@ -48,7 +49,7 @@ func CreatedAll(user_ids map[string]string, group_id uint64, u_id uint64) (err e
 			CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
 			Remark:    value.Email,
 			Avatar:    value.Avatar,
-			Name:    value.Name,
+			Name:      value.Name,
 		}
 		i++
 	}

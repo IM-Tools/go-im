@@ -7,12 +7,14 @@ package middleware
 
 import (
 	"errors"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
+
 	"im_app/im/http/models/user"
 	NewJwt "im_app/pkg/jwt"
 	"im_app/pkg/response"
-	"strings"
 )
 
 var (

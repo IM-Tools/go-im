@@ -8,9 +8,13 @@ package im
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"reflect"
+
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"go.uber.org/zap"
+
 	"im_app/im/http/models/group"
 	"im_app/im/http/models/group_user"
 	userModel "im_app/im/http/models/user"
@@ -19,8 +23,6 @@ import (
 	"im_app/pkg/model"
 	"im_app/pkg/response"
 	log2 "im_app/pkg/zaplog"
-	"net/http"
-	"reflect"
 )
 
 type (
@@ -94,7 +96,7 @@ func (*GroupController) Create(c *gin.Context) {
 	fmt.Println(_groups)
 	rules := govalidator.MapData{
 		"group_name": []string{"required", "between:2,20"},
-		//"user_id": []string{"required"},
+		// "user_id": []string{"required"},
 	}
 	opts := govalidator.Options{
 		Data:          &_groups,

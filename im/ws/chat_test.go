@@ -8,18 +8,19 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
-	"im_app/pkg/wordsfilter"
 	"log"
+
+	"github.com/gorilla/websocket"
+
+	"im_app/pkg/wordsfilter"
 )
 
-
-func init()  {
+func init() {
 
 }
 
 func (manager *ImClientManager) ImStart() {
-	for  {
+	for {
 		select {
 		case conn := <-ImManager.Register:
 			manager.ImSend([]byte(string("用户上线了")), conn)
@@ -42,7 +43,7 @@ func (manager *ImClientManager) ImSend(message []byte, ignore *ImClient) {
 }
 
 func (c *ImClient) ImRead() {
-	//关闭客户端注册 关闭socket连接
+	// 关闭客户端注册 关闭socket连接
 	defer func() {
 		ImManager.Unregister <- c
 		c.Socket.Close()
@@ -81,7 +82,6 @@ func (c *ImClient) ImRead() {
 	}
 }
 
-
 func (c *ImClient) ImWrite() {
 	defer Close(c)
 
@@ -97,6 +97,6 @@ func (c *ImClient) ImWrite() {
 	}
 }
 
-func Close(c *ImClient) error  {
+func Close(c *ImClient) error {
 	return c.Socket.Close()
 }

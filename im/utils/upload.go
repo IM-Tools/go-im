@@ -20,18 +20,18 @@ type Header struct {
 	Token         string
 }
 
-//POST /api/UploadImg HTTP/1.1
-//Host: 127.0.0.1:9502
-//Authorization: nk4NHLbNuERuGompX
-//Content-Length: 247
-//Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+// POST /api/UploadImg HTTP/1.1
+// Host: 127.0.0.1:9502
+// Authorization: nk4NHLbNuERuGompX
+// Content-Length: 247
+// Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 //
-//----WebKitFormBoundary7MA4YWxkTrZu0gW
-//Content-Disposition: form-data; name="smfile"; filename="aHR0cHM6Ly9xaW5pdS5nYW9iaW56aGFuLmNvbS8yMDIwLzA0LzI3LzFkZGQ2ODIxY2UwYTkucG5n.png"
-//Content-Type: image/png
+// ----WebKitFormBoundary7MA4YWxkTrZu0gW
+// Content-Disposition: form-data; name="smfile"; filename="aHR0cHM6Ly9xaW5pdS5nYW9iaW56aGFuLmNvbS8yMDIwLzA0LzI3LzFkZGQ2ODIxY2UwYTkucG5n.png"
+// Content-Type: image/png
 //
-//(data)
-//----WebKitFormBoundary7MA4YWxkTrZu0gW
+// (data)
+// ----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 func PostFile(filename string, target_url string, headers *Header) (*http.Response, error) {
 	body_buf := bytes.NewBufferString("")

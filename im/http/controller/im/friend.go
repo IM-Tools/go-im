@@ -7,16 +7,18 @@ package im
 
 import (
 	"fmt"
+	"net/http"
+	"reflect"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
 	"im_app/im/http/models/friend"
 	"im_app/im/http/models/friend_record"
 	userModel "im_app/im/http/models/user"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
 	log2 "im_app/pkg/zaplog"
-	"net/http"
-	"reflect"
 )
 
 type FriendController struct{}
@@ -67,6 +69,7 @@ func (*FriendController) GetList(c *gin.Context) {
 // @Success 200
 // @Router /GetFriendForRecord [get]
 func (*FriendController) GetFriendForRecord(c *gin.Context) {
+
 	list, err := friend_record.GetFriendRecordList(userModel.AuthUser.ID)
 	if err != nil {
 		response.FailResponse(500, "获取好友申请记录异常").ToJson(c)
@@ -87,7 +90,7 @@ func (*FriendController) GetFriendForRecord(c *gin.Context) {
 // @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
 // @Param information formData string true "请求描述"
 // @Param f_id formData string true "用户id"
-// @Param client_type formData string false "客户端类型 0.网页端登录 1.设备端登录"
+// @Param client_type formData string false "客户端类型 0.网页端登录 1.设备端登录 2.app端"
 // @Success 200
 // @Router /SendFriendRequest [post]
 func (*FriendController) SendFriendRequest(c *gin.Context) {
@@ -129,7 +132,7 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 	}
 	friend.AddFriends(friend_records.UserId, friend_records.FId)
 	friend.AddFriends(friend_records.FId, friend_records.UserId)
-	//投递一条消息
+	// 投递一条消息
 	response.SuccessResponse().ToJson(c)
 	return
 }

@@ -6,22 +6,21 @@
 package friend_record
 
 import (
-	"im_app/pkg/model"
 	"strconv"
 	"time"
+
+	"im_app/pkg/model"
 )
 
 type ImFriendRecords struct {
-	ID          uint64    `json:"id"`
-	UserId      uint64    `json:"user_id"`
-	FId         uint64    `json:"f_id"`
-	Status      int64     `json:"status"`
-	CreatedAt   string    `json:"created_at"`
-	Information string    `json:"information"`
-	//Users       user.User `json:"users" gorm:"foreignKey:UserId;references:ID"`
+	ID          uint64 `json:"id"`
+	UserId      uint64 `json:"user_id"`
+	FId         uint64 `json:"f_id"`
+	Status      int64  `json:"status"`
+	CreatedAt   string `json:"created_at"`
+	Information string `json:"information"`
+	// Users       user.User `json:"users" gorm:"foreignKey:UserId;references:ID"`
 }
-
-
 
 func (*ImFriendRecords) TableName() string {
 	return "im_friend_records"
@@ -29,7 +28,7 @@ func (*ImFriendRecords) TableName() string {
 
 func GetFriendRecordList(user_id uint64) ([]ImFriendRecords, error) {
 	var friends []ImFriendRecords
-	err := model.DB.Preload("Users").Where("Fid=?", user_id).Find(&friends).Error
+	err := model.DB.Preload("Users").Where("f_id=?", user_id).Find(&friends).Error
 	if err != nil {
 		return friends, err
 	}

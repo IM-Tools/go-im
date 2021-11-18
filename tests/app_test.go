@@ -48,7 +48,7 @@ func TestApp(t *testing.T) {
 		client.Conn = c
 		data := fmt.Sprintf(`{"msg":"%s","from_id":%v,"to_id":%v,"status":0,"msg_type":%v}`,
 			"test", i,30,  1)
-		client.Conn.WriteMessage(websocket.TextMessage,[]byte(data))
+
 		//jsonMessage, _ := json.Marshal(&ws.Message{Sender: strconv.Itoa(i), Content: string(data)})
 		//ws.ImManager.Broadcast <- jsonMessage
 		//ConnMap.client[i] = client

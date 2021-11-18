@@ -9,18 +9,23 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"im_app/im/ws"
-	"google.golang.org/grpc"
 	"log"
 	"net/url"
+
+	"google.golang.org/grpc"
+
+	"im_app/im/ws"
 )
 
 type ImRPCHandler interface {
 	SendRpcMsg(message []byte, node string)
 }
 
-// 投递消息
-func SendRpcMsg(message []byte, node string) {
+type ImRpcClient struct {
+}
+
+// 使用rpc开始投递消息
+func (prc *ImRpcClient) SendRpcMsg(message []byte, node string) {
 	data := ws.EnMessage(message)
 	msg := new(ws.Msg)
 	err := json.Unmarshal([]byte(data.Content), &msg)

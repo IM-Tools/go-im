@@ -5,18 +5,34 @@
 **/
 package cache
 
-import "strconv"
+import (
+	"encoding/json"
+	"log"
+	"strconv"
 
-var (
-
+	"im_app/pkg/redis"
 )
 
-
-
 func getGroupIdsStr(group_id int) string {
-	return "group_ids_"+strconv.Itoa(group_id)
+	return "im:group:" + strconv.Itoa(group_id)
 }
 
-func delGroupId()  {
-	
+// 让我在想想这个方法怎么写 对go还不是很熟练
+
+func getGroup(group_id int) map[int]int {
+
+	groupId := make(map[int]int)
+	str := getGroupIdsStr(group_id)
+	data := redis.RedisDB.Get(str)
+	if len(data.Val()) > 0 {
+		by_data, err := data.Bytes()
+		if err != nil {
+			log.Fatal(err)
+		}
+		json.Unmarshal(by_data, groupId)
+	} else {
+
+	}
+
+	return groupId
 }

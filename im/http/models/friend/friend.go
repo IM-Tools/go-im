@@ -6,9 +6,10 @@
 package friend
 
 import (
+	"time"
+
 	"im_app/im/http/models/user"
 	"im_app/pkg/model"
-	"time"
 )
 
 type ImFriends struct {

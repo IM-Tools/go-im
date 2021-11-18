@@ -8,16 +8,18 @@ package im
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"time"
+
 	"github.com/gin-gonic/gin"
+
 	"im_app/im/utils"
 	"im_app/pkg/config"
 	"im_app/pkg/redis"
 	"im_app/pkg/response"
 	log2 "im_app/pkg/zaplog"
-	"io/ioutil"
-	"net/http"
-	"net/url"
-	"time"
 )
 
 type (

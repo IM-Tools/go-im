@@ -9,11 +9,36 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"im_app/im/ws"
+	"log"
+	"net"
 	"strconv"
+
+	"google.golang.org/grpc"
+
+	"im_app/im/ws"
+	conf "im_app/pkg/config"
 )
 
+var RpcServer = grpc.NewServer()
+
+type ImRpcServerHandler interface {
+	StartRpc()
+}
+
 type ImRpcServer struct {
+}
+
+// 启动rpc服务
+func StartRpc() {
+
+	RegisterImRpcServiceServer(RpcServer, new(ImRpcServer))
+
+	listener, err := net.Listen("tcp", ":"+conf.GetString("app.grpc_port"))
+	if err != nil {
+		log.Fatal("服务监听端口失败", err)
+	}
+	_ = RpcServer.Serve(listener)
+
 }
 
 // rpc消息投递
