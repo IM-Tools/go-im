@@ -83,6 +83,8 @@ func (*FriendController) GetFriendForRecord(c *gin.Context) {
 // @Tags 发送好友请求接口
 // @Accept multipart/form-data
 // @Produce json
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
 // @Param information formData string true "请求描述"
 // @Param f_id formData string true "用户id"
 // @Param client_type formData string false "客户端类型 0.网页端登录 1.设备端登录"
@@ -110,6 +112,8 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 // @Tags 同意好友请求接口
 // @Accept multipart/form-data
 // @Produce json
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
 // @Param id formData string true "请求记录id"
 // @Success 200
 // @Router /ByFriendRequest [post]

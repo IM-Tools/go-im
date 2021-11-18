@@ -47,6 +47,13 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "请求记录id",
                         "name": "id",
                         "in": "formData",
@@ -336,6 +343,13 @@ var doc = `{
                 ],
                 "summary": "发送好友请求",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "请求描述",

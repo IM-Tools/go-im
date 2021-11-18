@@ -17,6 +17,11 @@ paths:
       - multipart/form-data
       description: 同意好友请求接口
       parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: 请求记录id
         in: formData
         name: id
@@ -210,6 +215,11 @@ paths:
       - multipart/form-data
       description: 发送好友请求接口
       parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: 请求描述
         in: formData
         name: information
