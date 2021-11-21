@@ -16,7 +16,6 @@ import (
 	ws2 "im_app/im/ws"
 	client2 "im_app/im/ws_test/client"
 	"im_app/pkg/jwt"
-	"im_app/pkg/pool"
 	"im_app/pkg/ws"
 )
 
@@ -43,13 +42,16 @@ func (*IMService) Connect(c *gin.Context) {
 	ws2.ImManager.Register <- client
 
 	// 开始投递任务
-	pool.AntsPool.Submit(func() {
-		client.ImRead()
-	})
+	//pool.AntsPool.Submit(func() {
+	//
+	//})
+	go client.ImRead()
 
-	pool.AntsPool.Submit(func() {
-		client.ImWrite()
-	})
+	go client.ImWrite()
+
+	//pool.AntsPool.Submit(func() {
+	//
+	//})
 }
 
 func (*IMService) Connect2(c *gin.Context) {

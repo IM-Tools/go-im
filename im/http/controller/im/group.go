@@ -13,8 +13,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
-	"go.uber.org/zap"
-
 	"im_app/im/http/models/group"
 	"im_app/im/http/models/group_user"
 	userModel "im_app/im/http/models/user"
@@ -22,7 +20,7 @@ import (
 	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
-	log2 "im_app/pkg/zaplog"
+	"im_app/pkg/zaplog"
 )
 
 type (
@@ -64,7 +62,7 @@ func (*GroupController) List(c *gin.Context) {
 	list, err := group.GetGroupUserList(group_slice)
 
 	if err != nil {
-		log2.ZapLogger.Error("获取群聊列表异常", zap.Error(err))
+		zaplog.Error("----获取群聊列表异常",err)
 		response.FailResponse(http.StatusInternalServerError, "服务器错误")
 		return
 	}
@@ -123,7 +121,7 @@ func (*GroupController) Create(c *gin.Context) {
 	}
 	err = group_user.CreatedAll(_groups.UserId, id, user.ID)
 	if err != nil {
-		log2.ZapLogger.Error("创建群聊异常", zap.Error(err))
+		zaplog.Error("----创建群聊异常",err)
 		response.ErrorResponse(http.StatusInternalServerError, "创建异常").ToJson(c)
 		return
 	}

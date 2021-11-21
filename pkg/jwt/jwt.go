@@ -83,7 +83,7 @@ func GenerateToken(uid uint64,Name string,avatar string,email string,ClientType 
 	token,err := j.CreateToken(claims)
 
 	if err != nil {
-		zaplog.ZapLogger.Error("token颁发失败")
+		zaplog.Error("----token颁发失败",err)
 	}
 
 	return token

@@ -175,7 +175,6 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		data := getMe(token, &users)
 		response.SuccessResponse(data, 200).ToJson(c)
 
-		// generateToken(c, &users)
 	}
 }
 
@@ -198,40 +197,3 @@ func getMe(token string, user *userModel.Users) *Me {
 	data.ClientType = user.ClientType
 	return data
 }
-
-// func generateToken(c *gin.Context, user *userModel.Users) {
-// 	sign_key := config.GetString("app.jwt.sign_key")
-// 	expiration_time := config.GetInt64("app.jwt.expiration_time")
-//
-// 	j := &jwt.JWT{
-// 		[]byte(sign_key),
-// 	}
-// 	claims := jwt.CustomClaims{strconv.FormatUint(user.ID, 10),
-// 		user.Name,
-// 		user.Avatar,
-// 		user.Email,
-// 		user.ClientType,
-// 		jwtGo.StandardClaims{
-// 			NotBefore: time.Now().Unix() - 1000,
-// 			ExpiresAt: time.Now().Unix() + expiration_time,
-// 			Issuer:    sign_key,
-// 		}}
-// 	token, err := j.CreateToken(claims)
-// 	if err != nil {
-// 		response.FailResponse(403, "jwt token颁发失败~").ToJson(c)
-// 		return
-// 	} else {
-// 		data := new(Me)
-// 		data.ID = user.ID
-// 		data.Name = user.Name
-// 		data.Avatar = user.Avatar
-// 		data.Email = user.Email
-// 		data.Token = token
-// 		data.ExpirationTime = expiration_time
-// 		data.Bio = user.Bio
-// 		data.Sex = user.Sex
-// 		data.ClientType = user.ClientType
-// 		response.SuccessResponse(data, 200).ToJson(c)
-// 		return
-// 	}
-// }

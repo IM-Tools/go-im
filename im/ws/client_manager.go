@@ -6,7 +6,7 @@
 package ws
 
 import (
-	"strconv"
+	"im_app/pkg/pool"
 	"sync"
 )
 
@@ -28,16 +28,27 @@ var ImManager = ImClientManager{
 	Unregister:  make(chan *ImClient),
 }
 
+// 客户端管理 方法集合
+
 type ClientHandler interface {
-	SetClientInfo(conn *ImClient)            // 设置客户端信息
-	DelClient(conn *ImClient)                // 删除客户端信息
-	Start()                                  // 启动服务
-	ImSend(message []byte, ignore *ImClient) // 给指定客户端投递消息 该方法可能用不着了..
+	SetClientInfo(conn *ImClient)                   // 设置客户端信息
+	DelClient(conn *ImClient)                       // 删除客户端信息
+	Start()                                         // 启动服务
+	ImSend(message []byte, ignore *ImClient)        // 给指定客户端投递消息 该方法可能用不着了..
+	LaunchOnlineMsg(id string)                      // 用户上线通知方法
+	LaunchMessage(msg_byte []byte)                  // 消息下发用户
 }
 
-func (manager *ImClientManager) SetClientInfo(conn *ImClient) {
+// 客户端方法集合
 
-	// 关于加锁的问题 可能有更好的方法 以后学会了在优化 先这样吧
+type ImClientHandler interface {
+	PullMessageHandler(message []byte)              // 拉取消息处理入队
+	ImRead()                                        // 读消息
+	ImWrite()                                       // 写消息
+}
+
+// 关于加锁的问题 可能有更好的方法 以后学会了在优化 先这样吧
+func (manager *ImClientManager) SetClientInfo(conn *ImClient) {
 
 	mutexKey.Lock()
 	manager.ImClientMap[conn.ID] = &ImClient{ID: conn.ID, Socket: conn.Socket, Send: conn.Send}
@@ -46,9 +57,7 @@ func (manager *ImClientManager) SetClientInfo(conn *ImClient) {
 }
 
 func (manager *ImClientManager) DelClient(conn *ImClient) {
-
 	close(conn.Send)
-	// 清理map应该要加锁
 	mutexKey.Lock()
 	delete(manager.ImClientMap, conn.ID)
 	mutexKey.Unlock()
@@ -59,30 +68,15 @@ func (manager *ImClientManager) Start() {
 	for {
 		select {
 		case conn := <-ImManager.Register:
-
-			// 设置客户端信息
-			manager.SetClientInfo(conn)
-
-			id, _ := strconv.ParseInt(conn.ID, 10, 64)
-
-			// 用户在线消息下发
-			LaunchOnlineMsg(conn.ID, manager)
-
-			// 更新用户在线状态
-			PushUserOnlineNotification(conn, id)
-
+			manager.SetClientInfo(conn)                // 设置客户端信息
+			manager.LaunchOnlineMsg(conn.ID)           // 用户在线下发通知
 		case conn := <-ImManager.Unregister:
-
-			// 设置用户离线
-			PushUserOfflineNotification(manager, conn)
-
+			PushUserOfflineNotification(manager, conn) // 设置用户离线状态
 		case message := <-ImManager.Broadcast:
+			pool.AntsPool.Submit(func() {
+				manager.LaunchMessage(message)         // 协程池任务调度 抢占式消息下发
+			})
 
-			// 消息投递
-
-			LaunchMessage(message, manager)
-
-			// 关于离线消息是否需要存到 mq
 		}
 	}
 }

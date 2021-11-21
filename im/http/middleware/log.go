@@ -33,7 +33,8 @@ func GinLogger() gin.HandlerFunc {
 		// 若response的状态码不是200为异常
 		if c.Writer.Status() != 200 {
 			// 记录异常信息
-			zaplog.ZapLogger.Info(path,
+
+			zaplog.Zap.Info(path,
 				zap.Int("status", c.Writer.Status()),
 				zap.String("method", c.Request.Method),
 				zap.String("path", path),
@@ -65,7 +66,7 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 
 				httpRequest, _ := httputil.DumpRequest(c.Request, false)
 				if brokenPipe {
-					zaplog.ZapLogger.Error(c.Request.URL.Path,
+					zaplog.Zap.Error(c.Request.URL.Path,
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 					)

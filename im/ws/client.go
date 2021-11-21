@@ -6,19 +6,15 @@
 package ws
 
 import (
-	"encoding/json"
-	"fmt"
-
+	"sync"
 	"github.com/gorilla/websocket"
-
-	"im_app/pkg/wordsfilter"
-	"im_app/pkg/zaplog"
 )
 
 type ImClient struct {
-	ID     string
-	Socket *websocket.Conn
+	ID     string //客户端id
+	Socket *websocket.Conn //
 	Send   chan []byte
+	Mux sync.RWMutex
 }
 
 type ImOnlineMsg struct {
@@ -90,9 +86,9 @@ type GroupMap struct {
 	GroupIds map[int]*GroupId
 }
 
+
 // 消息投递
 func (c *ImClient) ImRead() {
-	// 关闭客户端注册 关闭socket连接
 	defer func() {
 		ImManager.Unregister <- c
 		c.Socket.Close()
@@ -102,51 +98,21 @@ func (c *ImClient) ImRead() {
 		if err != nil {
 			ImManager.Unregister <- c
 			c.Socket.Close()
-			// 使用 break 打断for循环写入
 			break
 		}
-		if string(message) == "HeartBeat" {
-			c.Socket.WriteMessage(Text, []byte(`{"code":0,"data":"heartbeat ok"}`))
-			continue
-		}
-		msg := new(Msg)
-
-		if len(message) < 0 {
-			continue
-		}
-
-		err = json.Unmarshal(message, &msg)
-		if err != nil {
-			zaplog.ZapLogger.Named("常")
-			continue
-		}
-
-		if wordsfilter.MsgFilter(msg.Msg) {
-			c.Socket.WriteMessage(Text, []byte(`{"code":401,"data":"禁止发送敏感词！"}`))
-			continue
-		}
-
-		if msg.ChannelType == 1 {
-			data := fmt.Sprintf(`{"code":200,"msg":"%s","from_id":%v,"to_id":%v,"status":"0","msg_type":%v,"channel_type":%v}`,
-				msg.Msg, msg.FromId, msg.ToId, msg.MsgType, msg.ChannelType)
-			c.Socket.WriteMessage(Text, []byte(data))
-		}
-
-		jsonMessage, _ := json.Marshal(&Message{Sender: c.ID, Mes: msg})
-		ImManager.Broadcast <- jsonMessage
+		c.PullMessageHandler(message)
 
 	}
 }
 
 // 从客户端消费消息
 func (c *ImClient) ImWrite() {
-	// 关闭socket连接
+
 	defer c.Socket.Close()
 	for {
 		select {
 		case message, ok := <-c.Send:
 			if !ok {
-				// 关闭
 				c.Socket.WriteMessage(Clone, []byte{})
 				return
 			}

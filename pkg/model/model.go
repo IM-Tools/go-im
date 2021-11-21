@@ -46,5 +46,6 @@ func ConnectDB() *gorm.DB {
 		fmt.Println("Mysql 连接异常: ")
 		panic(err.Error())
 	}
+
 	return DB
 }

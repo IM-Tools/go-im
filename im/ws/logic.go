@@ -8,6 +8,7 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
+	"im_app/pkg/zaplog"
 	"log"
 	"strconv"
 	"time"
@@ -155,6 +156,7 @@ func PutData(msg *Msg, is_read int, channel_type int) {
 		CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
 		Channel:   channel_a, IsRead: is_read, MsgType: msg.MsgType, ChannelType: channel_type}
 	model.DB.Create(&user)
+
 	return
 }
 
@@ -162,7 +164,7 @@ func PushUserOnlineNotification(conn *ImClient, id int64) {
 	var msgList []ImMessage
 	list := model.DB.Where("to_id=? and is_read=?", id, 0).Find(&msgList)
 	if list.Error != nil {
-		fmt.Println(list.Error)
+		zaplog.Error("异常",list.Error)
 	}
 	for key, _ := range msgList {
 		data, _ := json.Marshal(&Msg{Code: SendOk, Msg: msgList[key].Msg,
@@ -201,14 +203,24 @@ func CrowdedOffline(user_id string) {
 	}
 }
 
-// byte -> map
+// byte -> struct
 func EnMessage(message []byte) (msg *Message) {
-	err := json.Unmarshal([]byte(string(message)), &msg)
+	err := json.Unmarshal(message, &msg)
 	if err != nil {
 		fmt.Printf("err:%s\n", err.Error())
 	}
 	return
 }
+
+
+func DeMessage(message *Msg) []byte {
+	byte_msg, err := json.Marshal(message)
+	if err != nil {
+		log.Fatal("异常", err)
+	}
+	return byte_msg
+}
+
 
 // get chat group user id
 func GetGroupUid(group_id int) ([]GroupId, error) {

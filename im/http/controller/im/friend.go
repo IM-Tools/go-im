@@ -11,14 +11,12 @@ import (
 	"reflect"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
-
 	"im_app/im/http/models/friend"
 	"im_app/im/http/models/friend_record"
 	userModel "im_app/im/http/models/user"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
-	log2 "im_app/pkg/zaplog"
+	"im_app/pkg/zaplog"
 )
 
 type FriendController struct{}
@@ -48,7 +46,7 @@ func (*FriendController) GetList(c *gin.Context) {
 	}
 	list, err := userModel.GetFriendListV2(group_slice)
 	if err != nil {
-		log2.ZapLogger.Error("获取好友列表异常", zap.Error(err))
+		zaplog.Error("----获取好友列表异常",err)
 		response.FailResponse(http.StatusInternalServerError, "服务器错误")
 		return
 	}
@@ -99,7 +97,7 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 
 	err := friend_record.AddRecords(userModel.AuthUser.ID, f_id, information)
 	if err != nil {
-		fmt.Println(err)
+		zaplog.Error("----添加失败",err)
 		response.FailResponse(500, "添加失败").ToJson(c)
 		return
 	}

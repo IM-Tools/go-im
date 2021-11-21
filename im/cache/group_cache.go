@@ -7,10 +7,9 @@ package cache
 
 import (
 	"encoding/json"
-	"log"
 	"strconv"
-
 	"im_app/pkg/redis"
+	"im_app/pkg/zaplog"
 )
 
 func getGroupIdsStr(group_id int) string {
@@ -27,7 +26,7 @@ func getGroup(group_id int) map[int]int {
 	if len(data.Val()) > 0 {
 		by_data, err := data.Bytes()
 		if err != nil {
-			log.Fatal(err)
+			zaplog.Error("----获取群组用户id失败",err)
 		}
 		json.Unmarshal(by_data, groupId)
 	} else {

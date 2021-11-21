@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	ZapLogger *zap.Logger
+	Zap *zap.Logger
+	sugar * zap.SugaredLogger
 )
 
 func InitZapLogger() {
@@ -23,11 +24,19 @@ func InitZapLogger() {
 		"stdout",
 	}
 	// 创建logger实例
-	logg, _ := cfg.Build()
-	zap.ReplaceGlobals(logg) // 替换zap包中全局的logger实例
-	ZapLogger = logg         // 注册到全局变量中
+	Zap, _ := cfg.Build()
+	zap.ReplaceGlobals(Zap) // 替换zap包中全局的logger实例
+	sugar = Zap.Sugar()
 }
 
-func Z()  {
-
+func Error(format string, logs ...interface{}) {
+	sugar.Errorf(format, logs...)
 }
+
+func Info(args ...interface{}) {
+	sugar.Info(args)
+}
+
+
+
+
