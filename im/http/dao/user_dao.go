@@ -15,7 +15,7 @@ import (
 type UserService struct{}
 
 // 添加默认好友关系
-func (*UserService) AddDefaultFriend(m_id uint64) {
+func (*UserService) AddDefaultFriend(m_id int64) {
 	model.DB.Create(&friend.ImFriends{FId: m_id, MId: 1, Status: 1, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
 
 	model.DB.Create(&friend.ImFriends{FId: 1, MId: m_id, Status: 1, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})

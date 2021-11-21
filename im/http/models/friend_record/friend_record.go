@@ -13,9 +13,9 @@ import (
 )
 
 type ImFriendRecords struct {
-	ID          uint64 `json:"id"`
-	UserId      uint64 `json:"user_id"`
-	FId         uint64 `json:"f_id"`
+	ID          int64 `json:"id"`
+	UserId      int64 `json:"user_id"`
+	FId         int64 `json:"f_id"`
 	Status      int64  `json:"status"`
 	CreatedAt   string `json:"created_at"`
 	Information string `json:"information"`
@@ -26,7 +26,7 @@ func (*ImFriendRecords) TableName() string {
 	return "im_friend_records"
 }
 
-func GetFriendRecordList(user_id uint64) ([]ImFriendRecords, error) {
+func GetFriendRecordList(user_id int64) ([]ImFriendRecords, error) {
 	var friends []ImFriendRecords
 	err := model.DB.Preload("Users").Where("f_id=?", user_id).Find(&friends).Error
 	if err != nil {
@@ -35,11 +35,11 @@ func GetFriendRecordList(user_id uint64) ([]ImFriendRecords, error) {
 	return friends, nil
 }
 
-func AddRecords(user_id uint64, f_id string, information string) error {
+func AddRecords(user_id int64, f_id string, information string) error {
 	friend_id, _ := strconv.Atoi(f_id)
 
 	result := model.DB.Create(&ImFriendRecords{UserId: user_id,
-		FId:         uint64(friend_id),
+		FId:         int64(friend_id),
 		Status:      0,
 		CreatedAt:   time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
 		Information: information,

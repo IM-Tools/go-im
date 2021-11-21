@@ -11,7 +11,7 @@ import (
 )
 
 type ImClient struct {
-	ID     string //客户端id
+	ID     int64 //客户端id
 	Socket *websocket.Conn //
 	Send   chan []byte
 	Mux sync.RWMutex
@@ -20,13 +20,13 @@ type ImClient struct {
 type ImOnlineMsg struct {
 	Code        int    `json:"code,omitempty"`
 	Msg         string `json:"msg,omitempty"`
-	ID          string `json:"id,omitempty"`
+	ID          int64 `json:"id,omitempty"`
 	ChannelType int    `json:"channel_type"` // 1 私聊 2 群聊 3 广播
 }
 
 // 消息结构体
 type Message struct {
-	Sender    string `json:"sender,omitempty"`
+	Sender    int64 `json:"sender,omitempty"`
 	Recipient string `json:"recipient,omitempty"`
 	Content   string `json:"content,omitempty"`
 	Mes       *Msg
@@ -43,7 +43,7 @@ type Msg struct {
 	ChannelType int    `json:"channel_type"`
 }
 type ImMessage struct {
-	ID          uint64 `json:"id"`
+	ID          int64 `json:"id"`
 	Msg         string `json:"msg"`
 	CreatedAt   string `json:"created_at"`
 	FromId      int    `json:"user_id"`
@@ -58,7 +58,7 @@ type ImMessage struct {
 type OnlineMsg struct {
 	Code        int    `json:"code,omitempty"`
 	Msg         string `json:"msg,omitempty"`
-	ID          string `json:"id,omitempty"`
+	ID          int64 `json:"id,omitempty"`
 	ChannelType int    `json:"channel_type"`
 }
 
@@ -78,7 +78,7 @@ var (
 
 // 存储房间号
 type GroupId struct {
-	UserId string `json:"user_id"`
+	UserId int64 `json:"user_id"`
 }
 
 // 根据房间号

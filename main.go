@@ -50,12 +50,14 @@ func main() {
 	flag.Parse()
 	switch serve {
 	case "http":
+		// 启动rpc服务
 		im.StartHttp()
 	case "tcp-serve":
 		tcp.StartTcpServe()
-	case "tcp-client":
+	case "tcp-rpc_client":
 		tcp.StartTcpClient()
 	default:
+		// 启动rpc服务
 		im.StartHttp()
 	}
 }

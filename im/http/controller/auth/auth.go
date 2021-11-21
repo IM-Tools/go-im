@@ -28,7 +28,7 @@ type (
 	AuthController  struct{}
 	WeiBoController struct{}
 	Me              struct {
-		ID             uint64 `json:"id"`
+		ID             int64 `json:"id"`
 		Name           string `json:"name"`
 		Avatar         string `json:"avatar"`
 		Email          string `json:"email"`
@@ -130,7 +130,7 @@ func (that *AuthController) Login(c *gin.Context) {
 	model.DB.Model(&userModel.Users{}).Save(&users)
 	// 挤下线操作
 	if users.Status == 1 {
-		ws.CrowdedOffline(strconv.Itoa(int(users.ID)))
+		ws.CrowdedOffline(int64(users.ID))
 	}
 	token := jwt.GenerateToken(users.ID, users.Name, users.Avatar, users.Email, ClientType)
 	data := getMe(token, &users)

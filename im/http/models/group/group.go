@@ -13,8 +13,8 @@ import (
 )
 
 type ImGroups struct {
-	ID          uint64                    `json:"id"`
-	UserId      uint64                    `json:"user_id" gorm:"index"`
+	ID          int64                    `json:"id"`
+	UserId      int64                    `json:"user_id" gorm:"index"`
 	GroupName   string                    `json:"group_name"`
 	Info        string                    `json:"info"`
 	CreatedAt   string                    `json:"created_at"`
@@ -34,7 +34,7 @@ func GetGroupUserList(group_id []string) ([]ImGroups, error) {
 	return group, nil
 }
 
-func Created(user_id uint64, group_name string) (id uint64, err error) {
+func Created(user_id int64, group_name string) (id int64, err error) {
 	group := ImGroups{
 		UserId:      user_id,
 		GroupName:   group_name,

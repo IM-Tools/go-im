@@ -22,7 +22,7 @@ import (
 type (
 	UsersController struct{}
 	UsersList       struct {
-		ID            uint64    `json:"id"`
+		ID            int64    `json:"id"`
 		Email         string    `json:"email"`
 		Avatar        string    `json:"avatar"`
 		Name          string    `json:"name"`
@@ -39,7 +39,7 @@ type (
 	}
 	NotFriendList struct {
 		Name   string `json:"name"`
-		ID     uint64 `json:"id"`
+		ID     int64 `json:"id"`
 		Avatar string `json:"avatar"`
 		Status string `json:"status"`
 	}
@@ -103,7 +103,9 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 // @Router /ReadMessage [get]
 func (*UsersController) ReadMessage(c *gin.Context) {
 	user := userModel.AuthUser
-	channel_a, channel_b := helpler.ProduceChannelName(strconv.Itoa(int(user.ID)), c.Query("to_id"))
+	to_id := c.Query("to_id")
+	toid ,_ := strconv.Atoi(to_id)
+	channel_a, channel_b := helpler.ProduceChannelName(int64(user.ID),int64(toid))
 	messageModel.ReadMsg(channel_a, channel_b)
 	response.SuccessResponse(gin.H{}, 200).ToJson(c)
 }

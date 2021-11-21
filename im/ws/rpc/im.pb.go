@@ -4,7 +4,7 @@
 // 	protoc        v3.15.6
 // source: im/grpc/proto/im.proto
 
-package grpc
+package rpc
 
 import (
 	context "context"
@@ -282,7 +282,7 @@ var _ grpc.ClientConnInterface
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion6
 
-// ImRpcServiceClient is the client API for ImRpcService service.
+// ImRpcServiceClient is the rpc_client API for ImRpcService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ImRpcServiceClient interface {

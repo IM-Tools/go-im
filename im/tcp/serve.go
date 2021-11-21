@@ -22,7 +22,7 @@ import (
 )
 
 type TcpClient struct {
-	ID       uint64 // 用户id
+	ID       int64 // 用户id
 	UserName string // 用户名称
 	Ch       client // 客户端消息通道
 }
@@ -32,12 +32,12 @@ type client chan<- string
 
 // Client manager
 type TcpClientManager struct {
-	ClientMap map[uint64]*TcpClient
+	ClientMap map[int64]*TcpClient
 	ch        chan string
 }
 
 var Manager = TcpClientManager{
-	ClientMap: make(map[uint64]*TcpClient),
+	ClientMap: make(map[int64]*TcpClient),
 }
 
 var (

@@ -47,7 +47,7 @@ func install(start int ,end int)  {
 	for i:=start;i<end;i++ {
 		name := fmt.Sprintf("测试%d",i)
 		age := random1()
-		user := user2.Users{ID: uint64(i),
+		user := user2.Users{ID: int64(i),
 			Name:name,
 			Avatar:"https://cdn.learnku.com/uploads/avatars/27407_1531668878.png!/both/100x100",
 			Password: helpler.HashAndSalt("123456"),

@@ -8,12 +8,12 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/websocket"
 	"im_app/pkg/wordsfilter"
 	"im_app/pkg/zaplog"
-	"strconv"
-
-	"github.com/gorilla/websocket"
 )
+
+
 
 // 消息投递下发
 func (manager *ImClientManager)LaunchMessage(msg_byte []byte) {
@@ -24,14 +24,18 @@ func (manager *ImClientManager)LaunchMessage(msg_byte []byte) {
 	msg     := DeMessage(message.Mes)
 
 	if message.Mes.ChannelType == 1 {
-		id := strconv.Itoa(message.Mes.ToId)
-		if conn, ok := manager.ImClientMap[id]; ok {
-			zaplog.Info("数据入库:",message.Mes)
+		if conn, ok := manager.ImClientMap[int64(message.Mes.ToId)]; ok {
 			PutData(message.Mes, 1, 1)
 			conn.Send <- msg
 		} else {
+			// 支持集群
+			boolNumber := pushNodeMessage(int64(message.Mes.ToId),msg)
+			if !boolNumber{
+				// 离线消息入库
+				MqPersonalConsumption(conn,int64(message.Mes.ToId))
+			}
+			// 数据入库
 			PutData(message.Mes, 0, 1)
-			MqPersonalConsumption(conn,int64(message.Mes.ToId))
 		}
 		return
 	}
@@ -48,8 +52,19 @@ func (manager *ImClientManager)LaunchMessage(msg_byte []byte) {
 	return
 }
 
+// 数据推送到节点
+
+func pushNodeMessage(to_id int64,msg []byte) bool {
+	ip := node.GetUserServiceNode(to_id)
+	boolNumber := IsIpPort(ip)
+	if boolNumber {
+		SendRpcMsg(msg, ip)
+	}
+	return boolNumber
+}
+
 // 上线消息通知
-func (manager *ImClientManager)LaunchOnlineMsg(id string) {
+func (manager *ImClientManager)LaunchOnlineMsg(id int64) {
 	message, _ := json.Marshal(&ImOnlineMsg{Code: connOk, Msg: "用户上线啦", ID: id, ChannelType: 3})
 	for _, conn := range manager.ImClientMap {
 		conn.Socket.WriteMessage(websocket.TextMessage, message)

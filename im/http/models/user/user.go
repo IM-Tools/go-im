@@ -13,7 +13,7 @@ import (
 )
 
 type Users struct {
-	ID              uint64 `json:"id"`
+	ID              int64 `json:"id"`
 	Email           string `valid:"email" json:"email"`
 	Password        string `valid:"password"`
 	Avatar          string `json:"avatar"`
@@ -31,7 +31,7 @@ type Users struct {
 }
 
 type UsersWhiteList struct {
-	ID            uint64 `json:"id"`
+	ID            int64 `json:"id"`
 	Email         string `valid:"email" json:"email"`
 	Avatar        string `json:"avatar"`
 	Name          string `json:"name" valid:"name"`
@@ -80,7 +80,7 @@ func (a Users) GetAvatar() string {
 	return a.Avatar
 }
 
-func GetFriendListV2(user_id []uint64) ([]Users, error) {
+func GetFriendListV2(user_id []int64) ([]Users, error) {
 	var users []Users
 	err := model.DB.Where("id in (?)", user_id).Find(&users).Error
 	if err != nil {
@@ -90,7 +90,7 @@ func GetFriendListV2(user_id []uint64) ([]Users, error) {
 }
 
 // 设置用户上下线状态
-func SetUserStatus(id uint64, status int) {
+func SetUserStatus(id int64, status int) {
 	model.DB.Model(&Users{}).Where("id=?", id).Updates(Users{Status: status,
 		LastLoginTime: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
 }

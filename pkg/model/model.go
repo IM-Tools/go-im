@@ -17,7 +17,7 @@ import (
 var DB *gorm.DB
 
 type BaseModel struct {
-	ID uint64
+	ID int64
 }
 
 // 初始化 grom

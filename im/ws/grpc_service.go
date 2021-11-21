@@ -3,20 +3,17 @@
   @data:2021/11/9
   @note
 **/
-package grpc
+package ws
 
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"google.golang.org/grpc"
+	"im_app/im/ws/rpc"
+	conf "im_app/pkg/config"
+	"im_app/pkg/zaplog"
 	"log"
 	"net"
-	"strconv"
-
-	"google.golang.org/grpc"
-
-	"im_app/im/ws"
-	conf "im_app/pkg/config"
 )
 
 var RpcServer = grpc.NewServer()
@@ -31,7 +28,7 @@ type ImRpcServer struct {
 // 启动rpc服务
 func StartRpc() {
 
-	RegisterImRpcServiceServer(RpcServer, new(ImRpcServer))
+	rpc.RegisterImRpcServiceServer(RpcServer, new(ImRpcServer))
 
 	listener, err := net.Listen("tcp", ":"+conf.GetString("app.grpc_port"))
 	if err != nil {
@@ -42,18 +39,16 @@ func StartRpc() {
 }
 
 // rpc消息投递
-func (ps *ImRpcServer) SendMessage(ctx context.Context, request *MessageRequest) (*MessageResponse, error) {
-	jsonMessage_from, _ := json.Marshal(&ws.Msg{Code: int(request.Code), Msg: request.Msg,
+func (ps *ImRpcServer) SendMessage(ctx context.Context, request *rpc.MessageRequest) (*rpc.MessageResponse, error) {
+	jsonMessage_from, _ := json.Marshal(&RpcMsg{Code: int(request.Code), Msg: request.Msg,
 		FromId: int(request.FromId),
 		ToId:   int(request.ToId), Status: 1, MsgType: int(request.MsgType), ChannelType: int(request.ChannelType)})
-	var manager ws.ImClientManager
-	fmt.Println(jsonMessage_from)
-	to_id := strconv.Itoa(int(request.ToId))
 
-	if data, ok := manager.ImClientMap[to_id]; ok {
+	zaplog.Info(jsonMessage_from)
+	if data, ok := ImManager.ImClientMap[int64(request.ToId)]; ok {
 		data.Send <- jsonMessage_from
 	} else {
-		ws.MqPersonalPublish(jsonMessage_from, int(request.ToId))
+		MqPersonalPublish(jsonMessage_from, int(request.ToId))
 	}
-	return &MessageResponse{Code: 200}, nil
+	return &rpc.MessageResponse{Code: 200}, nil
 }

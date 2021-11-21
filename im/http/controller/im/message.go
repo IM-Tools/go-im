@@ -11,8 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon"
-	"github.com/spf13/cast"
-
 	"im_app/im/http/models/group_user"
 	"im_app/im/http/models/msg"
 	userModel "im_app/im/http/models/user"
@@ -24,11 +22,11 @@ import (
 type (
 	MessageController struct{}
 	ImMessage         struct {
-		ID          uint64                  `json:"id"`
+		ID          int64                  `json:"id"`
 		Msg         string                  `json:"msg"`
 		CreatedAt   string                  `json:"created_at"`
-		FromId      uint64                  `json:"user_id"`
-		ToId        uint64                  `json:"send_id"`
+		FromId      int64                  `json:"user_id"`
+		ToId        int64                  `json:"send_id"`
 		Channel     string                  `json:"channel"`
 		Status      int                     `json:"status"`
 		IsRead      int                     `json:"is_read"`
@@ -62,7 +60,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	channel_type := c.DefaultQuery("channel_type", "1")
 	user := userModel.AuthUser
-	from_id := cast.ToString(user.ID)
+	from_id := user.ID
 	if len(to_id) < 0 {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
 	}
@@ -72,7 +70,8 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 
 	var MsgList []ImMessage
 	// 生成频道标识符号 用户查询用户信息
-	channel_a, channel_b := helpler.ProduceChannelName(from_id, to_id)
+	toid,_ :=strconv.Atoi(to_id)
+	channel_a, channel_b := helpler.ProduceChannelName(int64(from_id), int64(toid))
 
 	query := model.DB.
 		Table("im_messages").
@@ -89,10 +88,9 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	if list.Error != nil {
 		return
 	}
-	from_ids, _ := cast.ToUint64E(user.ID)
 	for key, value := range MsgList {
 		MsgList[key].CreatedAt = carbon.Parse(value.CreatedAt).SetLocale("zh-CN").DiffForHumans()
-		if value.FromId == from_ids {
+		if value.FromId == user.ID {
 			MsgList[key].Status = 0
 		} else {
 			MsgList[key].Status = 1
@@ -156,12 +154,11 @@ func (*MessageController) GetGroupMessageList(c *gin.Context) {
 	if list.Error != nil {
 		return
 	}
-	from_ids, _ := cast.ToUint64E(user.ID)
 	for key, value := range MsgList {
 
 		MsgList[key].CreatedAt = carbon.Parse(value.CreatedAt).SetLocale("zh-CN").DiffForHumans()
 
-		if value.FromId == from_ids {
+		if value.FromId == user.ID {
 			MsgList[key].Status = 0
 		} else {
 			MsgList[key].Status = 1

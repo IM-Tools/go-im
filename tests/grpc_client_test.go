@@ -8,9 +8,9 @@ package tests
 import (
 	"context"
 	"fmt"
-	"im_app/config"
-	grpc2 "im_app/im/grpc"
 	"google.golang.org/grpc"
+	"im_app/config"
+	grpc2 "im_app/im/ws/rpc"
 	"log"
 	"testing"
 )
@@ -30,7 +30,7 @@ func TestGrpcClient(t *testing.T) {
 
 	resp ,err := ImRpcServiceClient.
 		SendMessage(context.Background(),
-			&grpc2.MessageRequest{Code: 200,FromId: 1,Msg: "Grpc",ToId: 30,Status: 1,MsgType: 1,ChannelType: 1})
+			&grpc2.MessageRequest{Code: 200,FromId: 31,Msg: "Grpc",ToId: 30,Status: 1,MsgType: 1,ChannelType: 1})
 
 	if err != nil {
 		t.Error("调用gRPC方法错误:",err)

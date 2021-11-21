@@ -7,7 +7,7 @@ package cache
 
 import (
 	"strconv"
-
+	"sync"
 	"im_app/pkg/config"
 	"im_app/pkg/redis"
 )
@@ -25,6 +25,7 @@ type ServiceNodeHandler interface {
 }
 
 type ServiceNode struct {
+	mu sync.Mutex
 }
 
 func getUserIdStr(ID int64) string {
@@ -41,7 +42,9 @@ func (node *ServiceNode) GetUserServiceNode(ID int64) string {
 func (node *ServiceNode) SetUserServiceNode(ID int64) {
 	var key = getUserIdStr(ID)
 	var value = cache_node
+	node.mu.Lock()
 	redis.RedisDB.Set(key, value, 0)
+	node.mu.Unlock()
 }
 
 func (node *ServiceNode) DelUserServiceNode(ID int64) {

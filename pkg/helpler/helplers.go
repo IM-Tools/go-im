@@ -48,9 +48,9 @@ func ComparePasswords(hashedPwd string, plainPwd string) bool {
 	return true
 }
 
-func ProduceChannelName(f_id string, t_id string) (channel_a string, channel_b string) {
-	channel_a = "channel_" + f_id + "_" + t_id
-	channel_b = "channel_" + t_id + "_" + f_id
+func ProduceChannelName(f_id int64, t_id int64) (channel_a string, channel_b string) {
+	channel_a = fmt.Sprintf( "channel_%v_%v",f_id,t_id)
+	channel_b = fmt.Sprintf( "channel_%v_%v",t_id,f_id)
 	return channel_a, channel_b
 }
 func ProduceChannelGroupName(t_id string) string {

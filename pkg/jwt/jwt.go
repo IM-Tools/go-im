@@ -10,7 +10,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"im_app/pkg/config"
 	"im_app/pkg/zaplog"
-	"strconv"
 	"time"
 )
 
@@ -30,7 +29,7 @@ var (
 
 // 载荷，可以加一些自己需要的信息
 type CustomClaims struct {
-	ID           string `json:"userId"`
+	ID           int64 `json:"userId"`
 	Name, Avatar string
 	Email        string `valid:"email"`
 	ClientType int `json:"client_type"` //用户设备
@@ -64,13 +63,13 @@ func (j *JWT) CreateToken(claims CustomClaims) (string, error) {
 	return token.SignedString(j.SigningKey)
 }
 
-func GenerateToken(uid uint64,Name string,avatar string,email string,ClientType int) (token string)  {
+func GenerateToken(uid int64,Name string,avatar string,email string,ClientType int) (token string)  {
 	sign_key := config.GetString("app.jwt.sign_key")
 	expiration_time := config.GetInt64("app.jwt.expiration_time")
 	j := &JWT{
 		[]byte(sign_key),
 	}
-	claims := CustomClaims{strconv.FormatUint(uid, 10),
+	claims := CustomClaims{int64(uid),
 		Name,
 		avatar,
 		email,

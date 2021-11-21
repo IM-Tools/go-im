@@ -7,8 +7,6 @@ package im
 
 import (
 	"github.com/gin-gonic/gin"
-
-	grpc2 "im_app/im/grpc"
 	"im_app/im/ws"
 	conf "im_app/pkg/config"
 	"im_app/pkg/zaplog"
@@ -22,7 +20,7 @@ func StartHttp() {
 	// 启动ws服务
 	go ws.ImManager.Start()
 	// 启动rpc服务
-	go grpc2.StartRpc()
+	go ws.StartRpc()
 	// 注册路由
 	router.RegisterApiRoutes(app)
 	router.RegisterIMRouters(app)

@@ -40,7 +40,7 @@ func (*FriendController) GetList(c *gin.Context) {
 	}
 
 	v := reflect.ValueOf(friendId)
-	group_slice := make([]uint64, v.Len())
+	group_slice := make([]int64, v.Len())
 	for key, value := range friendId {
 		group_slice[key] = value.FId
 	}

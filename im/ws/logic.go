@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"im_app/pkg/zaplog"
 	"log"
+	"net"
 	"strconv"
 	"time"
 
@@ -28,8 +29,8 @@ import (
 // group message insert db
 func PutGroupData(msg *Msg, is_read int, channel_type int) {
 	channel_a := helpler.ProduceChannelGroupName(strconv.Itoa(msg.ToId))
-	fid := uint64(msg.FromId)
-	tid := uint64(msg.ToId)
+	fid := int64(msg.FromId)
+	tid := int64(msg.ToId)
 	user := messageModel.ImMessage{FromId: fid,
 		ToId:      tid,
 		Msg:       msg.Msg,
@@ -147,9 +148,9 @@ func MqGroupConsumption(conn *ImClient, user_id int64) {
 
 // The private chat insert db
 func PutData(msg *Msg, is_read int, channel_type int) {
-	channel_a, _ := helpler.ProduceChannelName(strconv.Itoa(msg.FromId), strconv.Itoa(msg.ToId))
-	fid := uint64(msg.FromId)
-	tid := uint64(msg.ToId)
+	channel_a, _ := helpler.ProduceChannelName(int64(msg.FromId), int64(msg.ToId))
+	fid := int64(msg.FromId)
+	tid := int64(msg.ToId)
 	user := messageModel.ImMessage{FromId: fid,
 		ToId:      tid,
 		Msg:       msg.Msg,
@@ -176,12 +177,12 @@ func PushUserOnlineNotification(conn *ImClient, id int64) {
 
 func PushUserOfflineNotification(manager *ImClientManager, conn *ImClient) {
 	if _, ok := manager.ImClientMap[conn.ID]; ok {
-		id, _ := strconv.ParseInt(conn.ID, 10, 64)
-		user.SetUserStatus(uint64(id), 0)
+
+		user.SetUserStatus(conn.ID, 0)
 		// conn.Socket.Close()
 	}
 	// 推送离线消息
-	jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了" + conn.ID, ID: conn.ID, ChannelType: 3})
+	jsonMessage, _ := json.Marshal(&OnlineMsg{Code: connOut, Msg: "用户离线了", ID: conn.ID, ChannelType: 3})
 	for _, wsConn := range manager.ImClientMap {
 		wsConn.Socket.WriteMessage(websocket.TextMessage, jsonMessage)
 	}
@@ -189,7 +190,7 @@ func PushUserOfflineNotification(manager *ImClientManager, conn *ImClient) {
 }
 
 // 用户被挤下线
-func CrowdedOffline(user_id string) {
+func CrowdedOffline(user_id int64) {
 	manager := new(ImClientManager)
 	if conn, ok := manager.ImClientMap[user_id]; ok {
 		jsonMessage, _ := json.Marshal(&ImOnlineMsg{Code: CrowdedOk, Msg: "账号已在别处登录", ID: conn.ID, ChannelType: 3})
@@ -230,4 +231,14 @@ func GetGroupUid(group_id int) ([]GroupId, error) {
 		return groups, err
 	}
 	return groups, nil
+}
+
+func IsIpPort(ip string) bool {
+	address := net.ParseIP(ip)
+	if address == nil {
+		return false
+	} else {
+		// 匹配上
+		return true
+	}
 }

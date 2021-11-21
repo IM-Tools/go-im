@@ -13,9 +13,9 @@ import (
 )
 
 type ImFriends struct {
-	ID        uint64     `json:"id"`
-	MId       uint64     `json:"m_id"`
-	FId       uint64     `json:"f_id"`
+	ID        int64     `json:"id"`
+	MId       int64     `json:"m_id"`
+	FId       int64     `json:"f_id"`
 	Status    int        `json:"status"`
 	CreatedAt string     `json:"created_at"`
 	Note      string     `json:"note"`
@@ -26,7 +26,7 @@ func (ImFriends) TableName() string {
 	return "im_friends"
 }
 
-func GetFriendList(user_id uint64) ([]ImFriends, error) {
+func GetFriendList(user_id int64) ([]ImFriends, error) {
 	var friends []ImFriends
 	err := model.DB.Preload("Users").Where("m_id=?", user_id).Find(&friends).Error
 	if err != nil {
@@ -35,7 +35,7 @@ func GetFriendList(user_id uint64) ([]ImFriends, error) {
 	return friends, nil
 }
 
-func AddFriends(mid uint64, fid uint64) error {
+func AddFriends(mid int64, fid int64) error {
 	result := model.DB.Create(ImFriends{MId: mid,
 		FId:       fid,
 		Status:    0,

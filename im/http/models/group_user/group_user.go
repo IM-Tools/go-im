@@ -14,10 +14,10 @@ import (
 )
 
 type ImGroupUsers struct {
-	ID        uint64 `json:"id"`
-	UserId    uint64 `json:"user_id"`
+	ID        int64 `json:"id"`
+	UserId    int64 `json:"user_id"`
 	CreatedAt string `json:"created_at"`
-	GroupId   uint64 `json:"group_id"`
+	GroupId   int64 `json:"group_id"`
 	Remark    string `json:"remark"`
 	Avatar    string `json:"avatar"`
 	Name      string `json:"name"`
@@ -27,7 +27,7 @@ func (ImGroupUsers) TableName() string {
 	return "im_group_users"
 }
 
-func CreatedAll(user_ids map[string]string, group_id uint64, u_id uint64) (err error) {
+func CreatedAll(user_ids map[string]string, group_id int64, u_id int64) (err error) {
 	var group_users = make([]*ImGroupUsers, len(user_ids)+1)
 	var userId = make([]int, len(user_ids)+1)
 	userId = append(userId, int(u_id))

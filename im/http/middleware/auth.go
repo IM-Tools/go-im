@@ -10,8 +10,6 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/cast"
-
 	"im_app/im/http/models/user"
 	NewJwt "im_app/pkg/jwt"
 	"im_app/pkg/response"
@@ -62,9 +60,8 @@ func ValidatedToken(token string) (error, string) {
 // setAuthUser 设置登录用户
 func setAuthUser(c *gin.Context) {
 	claims = c.MustGet("claims").(*NewJwt.CustomClaims)
-	id, _ := cast.ToUint64E(claims.ID)
 	user.AuthUser = &user.Users{
-		ID:     id,
+		ID:     claims.ID,
 		Email:  claims.Email,
 		Avatar: claims.Avatar,
 		Name:   claims.Name,
