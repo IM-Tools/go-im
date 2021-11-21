@@ -9,11 +9,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
+	"im_app/pkg/config"
 	"im_app/pkg/wordsfilter"
 	"im_app/pkg/zaplog"
 )
 
-
+var app_cluster_model = config.GetBool("app.app_cluster_model")
 
 // 消息投递下发
 func (manager *ImClientManager)LaunchMessage(msg_byte []byte) {
@@ -29,11 +30,17 @@ func (manager *ImClientManager)LaunchMessage(msg_byte []byte) {
 			conn.Send <- msg
 		} else {
 			// 支持集群
-			boolNumber := pushNodeMessage(int64(message.Mes.ToId),msg)
-			if !boolNumber{
-				// 离线消息入库
+			if app_cluster_model {
+				boolNumber := pushNodeMessage(int64(message.Mes.ToId),msg)
+				if !boolNumber{
+					// 离线消息入库
+					MqPersonalConsumption(conn,int64(message.Mes.ToId))
+				}
+
+			} else {
 				MqPersonalConsumption(conn,int64(message.Mes.ToId))
 			}
+
 			// 数据入库
 			PutData(message.Mes, 0, 1)
 		}
@@ -57,7 +64,7 @@ func (manager *ImClientManager)LaunchMessage(msg_byte []byte) {
 func pushNodeMessage(to_id int64,msg []byte) bool {
 	ip := node.GetUserServiceNode(to_id)
 	boolNumber := IsIpPort(ip)
-	if boolNumber {
+	if boolNumber  {
 		SendRpcMsg(msg, ip)
 	}
 	return boolNumber

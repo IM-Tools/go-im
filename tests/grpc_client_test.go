@@ -7,10 +7,10 @@ package tests
 
 import (
 	"context"
-	"fmt"
 	"google.golang.org/grpc"
 	"im_app/config"
 	grpc2 "im_app/im/ws/rpc"
+	"im_app/pkg/zaplog"
 	"log"
 	"testing"
 )
@@ -36,7 +36,7 @@ func TestGrpcClient(t *testing.T) {
 		t.Error("调用gRPC方法错误:",err)
 		return
 	}
-	fmt.Println("调用gRPC方法成功，ProdStock=",resp)
+	zaplog.Info("服务调用成功---",resp)
 	return
 }
 

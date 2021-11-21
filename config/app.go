@@ -41,5 +41,6 @@ func init() {
 		"app_yp_key":        config.Env("APP_YP_KEY"),
 		"app_yp_secret_key": config.Env("APP_YP_SECRET_KEY"),
 		"app_yp_sign_key":   config.Env("APP_YP_SIGN_KEY"),
+		"app_cluster_model":   config.Env("APP_CLUSTER_MODEL"), //是否开启集群
 	})
 }
