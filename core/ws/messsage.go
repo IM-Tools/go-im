@@ -22,9 +22,8 @@ func (manager *ImClientManager)LaunchMessage(msg_byte []byte) {
 	// json传输协议 格式转换比较消耗性能
 	// 当然这个方法也可以优惠避免多次转换
 	message := EnMessage(msg_byte)
+	message.Mes.Code=200
 	msg     := DeMessage(message.Mes)
-
-
 	if message.Mes.ChannelType == 1 {
 		if conn, ok := manager.ImClientMap[int64(message.Mes.ToId)]; ok {
 			PutData(message.Mes, 1, 1)
