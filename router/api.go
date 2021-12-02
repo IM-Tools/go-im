@@ -12,9 +12,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"im_app/docs"
-	Auth "im_app/im/http/controller/auth"
-	"im_app/im/http/controller/im"
-	"im_app/im/http/middleware"
+	Auth "im_app/core/http/controller/auth"
+	"im_app/core/http/controller/im"
+	"im_app/core/http/middleware"
 )
 
 func RegisterApiRoutes(router *gin.Engine) {
@@ -44,7 +44,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack) // weibo auth
 		apiRouter.GET("/getApiToken",  sm.GetApiToken)       // get sm token
 		apiRouter.GET("/WxCallback", auth.WxCallback) // get user list
-		apiRouter.Use(middleware.Auth(),middleware.GinLogger(),middleware.GinRecovery(true))
+		apiRouter.Use(middleware.Auth(),middleware.GinLogger()) //,middleware.GinRecovery(true)
 		{
 			apiRouter.POST("/me", auth.Me)                  // get user info
 			apiRouter.PUT("/user", auth.Update)                  // get user info

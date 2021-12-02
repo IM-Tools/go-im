@@ -32,6 +32,7 @@ func ConnectDB() *gorm.DB {
 		//loc  = config.GetString("database.mysql.loc")
 		err error
 	)
+	//&parseTime=True
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s",
 		username, password, host, port, database, charset)
 

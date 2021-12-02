@@ -9,7 +9,7 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"im_app/config"
-	grpc2 "im_app/im/ws/rpc"
+	grpc2 "im_app/core/ws/rpc"
 	"im_app/pkg/zaplog"
 	"log"
 	"testing"
@@ -20,7 +20,7 @@ func init()  {
 }
 
 func TestGrpcClient(t *testing.T) {
-	//conn,err := grpc.Dial(":"+ conf.GetString("app.grpc_port") ,grpc.WithInsecure())
+	//conn,err := grpc.Dial(":"+ conf.GetString("core.grpc_port") ,grpc.WithInsecure())
 	conn, err := grpc.Dial(":8002", grpc.WithInsecure())
 	if err != nil {
 		log.Fatal(err)

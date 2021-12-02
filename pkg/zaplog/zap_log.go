@@ -20,7 +20,7 @@ var (
 func InitZapLogger() {
 	cfg := zap.NewDevelopmentConfig()
 	cfg.OutputPaths = []string{
-		fmt.Sprintf("%slog_%s.zaplog", config.GetString("app.log_address"), helpler.GetNowFormatTodayTime()),
+		fmt.Sprintf("%slog_%s.zaplog", config.GetString("core.log_address"), helpler.GetNowFormatTodayTime()),
 		"stdout",
 	}
 	// 创建logger实例

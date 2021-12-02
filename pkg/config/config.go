@@ -52,7 +52,7 @@ func Add(name string, configuration map[string]interface{}) {
 	Viper.Set(name, configuration)
 }
 
-// Get 获取配置项，允许使用点式获取，如：app.name
+// Get 获取配置项，允许使用点式获取，如：core.name
 func Get(path string, defaultValue ...interface{}) interface{} {
 	// 不存在的情况
 	if !Viper.IsSet(path) {

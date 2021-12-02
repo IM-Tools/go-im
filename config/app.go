@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	config.Add("app", config.StrMap{
+	config.Add("core", config.StrMap{
 		// 应用名称，暂时没有使用到
 		"name": config.Env("APP_NAME", "GoIm"),
 		"ym":   config.Env("APP_YM"),

@@ -18,7 +18,7 @@ var doc = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "go-im",
+            "name": "go-core",
             "url": "https://im.pltrue.top",
             "email": "pltrueover@gmail.com"
         },
@@ -31,42 +31,6 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/ByFriendRequest": {
-            "post": {
-                "description": "同意好友请求接口",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "同意好友请求接口"
-                ],
-                "summary": "同意好友请求",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "请求记录id",
-                        "name": "id",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/CreateGroup": {
             "post": {
                 "description": "创建群聊",
@@ -117,32 +81,6 @@ var doc = `{
                     "获取好友列表"
                 ],
                 "summary": "获取好友列表",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/GetFriendForRecord": {
-            "get": {
-                "description": "获取好友申请记录",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "获取好友申请记录"
-                ],
-                "summary": "获取好友申请记录",
                 "parameters": [
                     {
                         "type": "string",
@@ -366,7 +304,7 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "客户端类型 0.网页端登录 1.设备端登录",
+                        "description": "客户端类型 0.网页端登录 1.设备端登录 2.app端",
                         "name": "client_type",
                         "in": "formData"
                     }
@@ -574,7 +512,7 @@ var SwaggerInfo = swaggerInfo{
 	Host:        "114.132.40.112:9502",
 	BasePath:    "/api",
 	Schemes:     []string{},
-	Title:       "go-im  接口文档",
+	Title:       "go-core  接口文档",
 	Description: "",
 }
 

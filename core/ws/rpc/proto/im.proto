@@ -1,0 +1,23 @@
+syntax ="proto3";
+
+package Message.SearchNode;
+option go_package = "./core/grpc";
+
+//定义一个远程消息投递的方法
+service ImRpcService{
+  rpc SendMessage(MessageRequest) returns (MessageResponse){}
+}
+
+message MessageRequest {
+  int32 code=1;
+  int32 from_id = 2;
+  string msg = 3;
+  int32 to_id = 4;
+  int32 status = 5;
+  int32 msg_type = 6;
+  int32 channel_type = 7;
+}
+
+message MessageResponse {
+  int32 code = 1;
+}

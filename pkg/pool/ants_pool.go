@@ -14,6 +14,6 @@ var AntsPool *ants.Pool
 
 func ConnectPool() *ants.Pool {
 	//设置数量
-	AntsPool, _ = ants.NewPool(config.GetInt("app.go_coroutines"))
+	AntsPool, _ = ants.NewPool(config.GetInt("core.go_coroutines"))
 	return AntsPool
 }

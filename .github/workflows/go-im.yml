@@ -1,9 +1,9 @@
-name: go-im
+name: go-core
 #监听动作
 on: [push,pull_request]
 jobs:
   build:
-    name: go-im
+    name: go-core
     # 系统环境
     runs-on: ubuntu
     services:
@@ -14,7 +14,7 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: im
+          MYSQL_DATABASE: core
           MYSQL_ROOT_PASSWORD: root
           options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
       redis:

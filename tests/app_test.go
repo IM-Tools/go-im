@@ -73,7 +73,7 @@ func (c *ConnMap)start(i int)  {
 	name := fmt.Sprintf("测试%d",i)
 	token := jwt.GenerateToken(int64(i), name, "test", "2540463097@qq.com", 1)
 
-	u := "ws://127.0.0.1:9502/im/connect?token="+token
+	u := "ws://127.0.0.1:9502/core/connect?token="+token
 	fmt.Println(name)
 	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
 	if err != nil {

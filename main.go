@@ -18,8 +18,8 @@ package main
 import (
 	"flag"
 	"im_app/config"
-	"im_app/im"
-	"im_app/im/tcp"
+	"im_app/core"
+	"im_app/core/tcp"
 	"im_app/pkg/wordsfilter"
 	"im_app/pkg/zaplog"
 )
@@ -30,11 +30,11 @@ func init() {
 	zaplog.InitZapLogger()
 }
 
-// @title go-im  接口文档
+// @title go-core  接口文档
 // @version 2.0
 // @description
 
-// @contact.name go-im
+// @contact.name go-core
 // @contact.url https://im.pltrue.top
 // @contact.email pltrueover@gmail.com
 
@@ -51,13 +51,13 @@ func main() {
 	switch serve {
 	case "http":
 		// 启动rpc服务
-		im.StartHttp()
+		core.StartHttp()
 	case "tcp-serve":
 		tcp.StartTcpServe()
 	case "tcp-rpc_client":
 		tcp.StartTcpClient()
 	default:
 		// 启动rpc服务
-		im.StartHttp()
+		core.StartHttp()
 	}
 }

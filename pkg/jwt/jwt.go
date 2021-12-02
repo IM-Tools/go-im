@@ -24,7 +24,7 @@ var (
 	TokenNotValidYet error  = errors.New("Token not active yet")
 	TokenMalformed   error  = errors.New("That's not even a token")
 	TokenInvalid     error  = errors.New("Couldn't handle this token:")
-	SignKey          string = config.GetString("app.jwt.sign_key")
+	SignKey          string = config.GetString("core.jwt.sign_key")
 )
 
 // 载荷，可以加一些自己需要的信息
@@ -64,8 +64,8 @@ func (j *JWT) CreateToken(claims CustomClaims) (string, error) {
 }
 
 func GenerateToken(uid int64,Name string,avatar string,email string,ClientType int) (token string)  {
-	sign_key := config.GetString("app.jwt.sign_key")
-	expiration_time := config.GetInt64("app.jwt.expiration_time")
+	sign_key := config.GetString("core.jwt.sign_key")
+	expiration_time := config.GetInt64("core.jwt.expiration_time")
 	j := &JWT{
 		[]byte(sign_key),
 	}

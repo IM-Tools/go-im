@@ -9,8 +9,8 @@ import (
 	"crypto/rand"
 	"fmt"
 	"im_app/config"
-	"im_app/im"
-	user2 "im_app/im/http/models/user"
+	"im_app/core"
+	user2 "im_app/core/http/models/user"
 	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"log"
@@ -27,7 +27,7 @@ func init()  {
 var wg sync.WaitGroup
 func TestSeedUsers(T *testing.T)  {
 	//设置池
-	im.SetupPool()
+	core.SetupPool()
 	wg.Add(7)
 	go install(6205,10000)
 	go install(10001,20000)

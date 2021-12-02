@@ -1,9 +1,9 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "go-im  接口文档",
+        "title": "go-core  接口文档",
         "contact": {
-            "name": "go-im",
+            "name": "go-core",
             "url": "https://im.pltrue.top",
             "email": "pltrueover@gmail.com"
         },
@@ -16,42 +16,6 @@
     "host": "114.132.40.112:9502",
     "basePath": "/api",
     "paths": {
-        "/ByFriendRequest": {
-            "post": {
-                "description": "同意好友请求接口",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "同意好友请求接口"
-                ],
-                "summary": "同意好友请求",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "请求记录id",
-                        "name": "id",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/CreateGroup": {
             "post": {
                 "description": "创建群聊",
@@ -102,32 +66,6 @@
                     "获取好友列表"
                 ],
                 "summary": "获取好友列表",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/GetFriendForRecord": {
-            "get": {
-                "description": "获取好友申请记录",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "获取好友申请记录"
-                ],
-                "summary": "获取好友申请记录",
                 "parameters": [
                     {
                         "type": "string",
@@ -351,7 +289,7 @@
                     },
                     {
                         "type": "string",
-                        "description": "客户端类型 0.网页端登录 1.设备端登录",
+                        "description": "客户端类型 0.网页端登录 1.设备端登录 2.app端",
                         "name": "client_type",
                         "in": "formData"
                     }
