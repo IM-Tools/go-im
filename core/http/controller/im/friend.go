@@ -66,7 +66,6 @@ func (*FriendController) GetList(c *gin.Context) {
 // @Produce json
 // @Success 200
 // @Router /GetFriendForRecord [get]
-
 func (*FriendController) GetFriendForRecord(c *gin.Context) {
 
 	list, err := friend_record.GetFriendRecordList(userModel.AuthUser.ID)
@@ -112,20 +111,21 @@ type ImFriendRecords struct {
 	Status      int  `json:"status"`
 }
 
+
 // @BasePath /api
 
-// @Summary 同意好友请求
+// @Summary 同意好友请求接口
 // @Description 同意好友请求接口
 // @Tags 同意好友请求接口
 // @Accept multipart/form-data
 // @Produce json
 // @Name Authorization
 // @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param information formData string true "请求描述"
 // @Param id formData string true "请求记录id"
-// @Param id formData bool true  "1.同意 0 拒绝"
+// @Param status formData bool true  "1.同意 0 拒绝"
 // @Success 200
 // @Router /ByFriendRequest [post]
-
 func (*FriendController) ByFriendRequest(c *gin.Context) {
 
 	id := c.PostForm("id")

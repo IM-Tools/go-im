@@ -16,6 +16,56 @@
     "host": "114.132.40.112:9502",
     "basePath": "/api",
     "paths": {
+        "/ByFriendRequest": {
+            "post": {
+                "description": "同意好友请求接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "同意好友请求接口"
+                ],
+                "summary": "同意好友请求接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "请求描述",
+                        "name": "information",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "请求记录id",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "1.同意 0 拒绝",
+                        "name": "status",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/CreateGroup": {
             "post": {
                 "description": "创建群聊",
@@ -66,6 +116,32 @@
                     "获取好友列表"
                 ],
                 "summary": "获取好友列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/GetFriendForRecord": {
+            "get": {
+                "description": "获取好友申请记录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "获取好友申请记录"
+                ],
+                "summary": "获取好友申请记录",
                 "parameters": [
                     {
                         "type": "string",
