@@ -8,7 +8,7 @@ info:
   license:
     name: MIT
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: go-core  接口文档
+  title: go-im  接口文档
   version: "2.0"
 paths:
   /ByFriendRequest:
@@ -324,6 +324,30 @@ paths:
       summary: 获取非好友用户列表
       tags:
       - 获取非好友用户列表
+  /bindingEmail:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 绑定用户邮箱接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 邮箱
+        in: formData
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 绑定用户邮箱
+      tags:
+      - 绑定用户邮箱
   /login:
     post:
       consumes:
@@ -369,4 +393,57 @@ paths:
       summary: 获取用户信息接口
       tags:
       - 获取用户信息接口
+  /registered:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 注册用户接口
+      parameters:
+      - description: 用户名
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 邮箱
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: 密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: 确认密码
+        in: formData
+        name: password_confirm
+        required: true
+        type: string
+      - description: 验证码
+        in: formData
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 注册用户
+      tags:
+      - 注册用户
+  /seedRegisteredEmail:
+    get:
+      description: 发送注册邮箱验证码接口
+      parameters:
+      - description: 邮箱
+        in: query
+        name: email
+        type: string
+      responses:
+        "200":
+          description: ""
+      summary: 发送注册邮箱验证码
+      tags:
+      - 发送注册邮箱验证码接口
 swagger: "2.0"

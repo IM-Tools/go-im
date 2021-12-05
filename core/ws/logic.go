@@ -8,20 +8,18 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"im_app/pkg/zaplog"
-	"log"
-	"net"
-	"strconv"
-	"time"
-
 	"github.com/gorilla/websocket"
 	"github.com/streadway/amqp"
-
 	messageModel "im_app/core/http/models/msg"
 	"im_app/core/http/models/user"
 	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"im_app/pkg/mq"
+	"im_app/pkg/zaplog"
+	"log"
+	"net"
+	"strconv"
+	"time"
 )
 
 // 这个文件里面代码很乱找时间梳理一下
@@ -39,6 +37,7 @@ func PutGroupData(msg *Msg, is_read int, channel_type int) {
 	model.DB.Create(&user)
 	return
 }
+
 //私人消息入队
 func MqPersonalPublish(msg []byte, to_id int) {
 	ch, err := mq.RabbitMq.Channel()
@@ -61,6 +60,7 @@ func MqPersonalPublish(msg []byte, to_id int) {
 		log.Fatalf("发送错误")
 	}
 }
+
 //组消息入库
 func MqGroupPublish(msg []byte, to_id int) {
 	ch, err := mq.RabbitMq.Channel()
@@ -85,6 +85,7 @@ func MqGroupPublish(msg []byte, to_id int) {
 	}
 	return
 }
+
 // 私人消息同步消费
 func MqPersonalConsumption(conn *ImClient, user_id int64) {
 	ch, err := mq.RabbitMq.Channel()
@@ -170,7 +171,7 @@ func PushUserOnlineNotification(conn *ImClient, id int64) {
 	var msgList []ImMessage
 	list := model.DB.Where("to_id=? and is_read=?", id, 0).Find(&msgList)
 	if list.Error != nil {
-		zaplog.Error("异常",list.Error)
+		zaplog.Error("异常", list.Error)
 	}
 	for key, _ := range msgList {
 		data, _ := json.Marshal(&Msg{Code: SendOk, Msg: msgList[key].Msg,
@@ -218,7 +219,6 @@ func EnMessage(message []byte) (msg *Message) {
 	return
 }
 
-
 func DeMessage(message *Msg) []byte {
 	byte_msg, err := json.Marshal(message)
 	if err != nil {
@@ -226,7 +226,6 @@ func DeMessage(message *Msg) []byte {
 	}
 	return byte_msg
 }
-
 
 // get chat group user id
 func GetGroupUid(group_id int) ([]GroupId, error) {

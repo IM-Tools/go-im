@@ -502,6 +502,42 @@ var doc = `{
                 }
             }
         },
+        "/bindingEmail": {
+            "post": {
+                "description": "绑定用户邮箱接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "绑定用户邮箱"
+                ],
+                "summary": "绑定用户邮箱",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "邮箱",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "登录接口",
@@ -569,6 +605,85 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/registered": {
+            "post": {
+                "description": "注册用户接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "注册用户"
+                ],
+                "summary": "注册用户",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "邮箱",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "密码",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "确认密码",
+                        "name": "password_confirm",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "验证码",
+                        "name": "code",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/seedRegisteredEmail": {
+            "get": {
+                "description": "发送注册邮箱验证码接口",
+                "tags": [
+                    "发送注册邮箱验证码接口"
+                ],
+                "summary": "发送注册邮箱验证码",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "邮箱",
+                        "name": "email",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
         }
     }
 }`
@@ -588,7 +703,7 @@ var SwaggerInfo = swaggerInfo{
 	Host:        "114.132.40.112:9502",
 	BasePath:    "/api",
 	Schemes:     []string{},
-	Title:       "go-core  接口文档",
+	Title:       "go-im  接口文档",
 	Description: "",
 }
 

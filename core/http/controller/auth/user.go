@@ -7,22 +7,20 @@ package auth
 
 import "C"
 import (
-	"strconv"
-	"time"
-
 	"github.com/gin-gonic/gin"
-
 	messageModel "im_app/core/http/models/msg"
 	userModel "im_app/core/http/models/user"
 	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
+	"strconv"
+	"time"
 )
 
 type (
 	UsersController struct{}
 	UsersList       struct {
-		ID            int64    `json:"id"`
+		ID            int64     `json:"id"`
 		Email         string    `json:"email"`
 		Avatar        string    `json:"avatar"`
 		Name          string    `json:"name"`
@@ -39,9 +37,12 @@ type (
 	}
 	NotFriendList struct {
 		Name   string `json:"name"`
-		ID     int64 `json:"id"`
+		ID     int64  `json:"id"`
 		Avatar string `json:"avatar"`
 		Status string `json:"status"`
+	}
+	Result struct {
+		FId int64 `json:"f_id"`
 	}
 )
 
@@ -66,6 +67,7 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 	var NotFriendList []NotFriendList
 
 	subQuery := model.DB.Select("f_id").
+		Group("f_id").
 		Where("m_id=?", user.ID).
 		Table("im_friends")
 
@@ -103,8 +105,8 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 func (*UsersController) ReadMessage(c *gin.Context) {
 	user := userModel.AuthUser
 	to_id := c.Query("to_id")
-	toid ,_ := strconv.Atoi(to_id)
-	channel_a, channel_b := helpler.ProduceChannelName(int64(user.ID),int64(toid))
+	toid, _ := strconv.Atoi(to_id)
+	channel_a, channel_b := helpler.ProduceChannelName(int64(user.ID), int64(toid))
 	messageModel.ReadMsg(channel_a, channel_b)
 	response.SuccessResponse(gin.H{}, 200).ToJson(c)
 }

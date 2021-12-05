@@ -6,16 +6,15 @@
 package friend
 
 import (
-	"time"
-
 	"im_app/core/http/models/user"
 	"im_app/pkg/model"
+	"time"
 )
 
 type ImFriends struct {
-	ID        int64     `json:"id"`
-	MId       int64     `json:"m_id"`
-	FId       int64     `json:"f_id"`
+	ID        int64      `json:"id"`
+	MId       int64      `json:"m_id"`
+	FId       int64      `json:"f_id"`
 	Status    int        `json:"status"`
 	CreatedAt string     `json:"created_at"`
 	Note      string     `json:"note"`
@@ -48,7 +47,7 @@ func AddFriends(mid int64, fid int64) error {
 	return nil
 }
 
-func  AddDefaultFriend(m_id int64) {
+func AddDefaultFriend(m_id int64) {
 	model.DB.Create(&ImFriends{FId: m_id, MId: 1, Status: 1, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
 
 	model.DB.Create(&ImFriends{FId: 1, MId: m_id, Status: 1, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})

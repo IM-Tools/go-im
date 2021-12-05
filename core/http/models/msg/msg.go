@@ -7,17 +7,16 @@ package msg
 
 import (
 	"fmt"
-
 	userModel "im_app/core/http/models/user"
 	"im_app/pkg/model"
 )
 
 type ImMessage struct {
-	ID          int64 `json:"id"`
+	ID          int64  `json:"id"`
 	Msg         string `json:"msg"`
 	CreatedAt   string `json:"created_at"`
-	FromId      int64 `json:"user_id"`
-	ToId        int64 `json:"send_id"`
+	FromId      int64  `json:"user_id"`
+	ToId        int64  `json:"send_id"`
 	Channel     string `json:"channel"`
 	Status      int    `json:"status"`
 	IsRead      int    `json:"is_read"`

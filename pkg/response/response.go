@@ -38,11 +38,11 @@ func (resp *JsonResponse) ToJson(ctx *gin.Context) {
 }
 
 //失败响应
-func FailResponse(code int, message string) *JsonResponse {
+func FailResponse(code int, message string, data ...interface{}) *JsonResponse {
 	return &JsonResponse{
 		Code:    code,
 		Message: message,
-		Data:    nil,
+		Data:    data,
 	}
 }
 

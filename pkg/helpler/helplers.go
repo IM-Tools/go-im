@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"math/rand"
 	"net/url"
 	"time"
 )
@@ -49,8 +50,8 @@ func ComparePasswords(hashedPwd string, plainPwd string) bool {
 }
 
 func ProduceChannelName(f_id int64, t_id int64) (channel_a string, channel_b string) {
-	channel_a = fmt.Sprintf( "channel_%v_%v",f_id,t_id)
-	channel_b = fmt.Sprintf( "channel_%v_%v",t_id,f_id)
+	channel_a = fmt.Sprintf("channel_%v_%v", f_id, t_id)
+	channel_b = fmt.Sprintf("channel_%v_%v", t_id, f_id)
 	return channel_a, channel_b
 }
 func ProduceChannelGroupName(t_id string) string {
@@ -64,4 +65,8 @@ func GetNowFormatTodayTime() string {
 		now.Day())
 
 	return dateStr
+}
+
+func CreateEmailCode() string {
+	return fmt.Sprintf("%04v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(10000))
 }

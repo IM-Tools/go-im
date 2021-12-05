@@ -6,29 +6,27 @@
 package ws
 
 import (
-	"sync"
 	"github.com/gorilla/websocket"
+	"sync"
 )
 
 type ImClient struct {
-	ID     int64 //客户端id
+	ID     int64           //客户端id
 	Socket *websocket.Conn //
 	Send   chan []byte
-	Mux sync.RWMutex
+	Mux    sync.RWMutex
 }
-
-
 
 type ImOnlineMsg struct {
 	Code        int    `json:"code,omitempty"`
 	Msg         string `json:"msg,omitempty"`
-	ID          int64 `json:"id,omitempty"`
+	ID          int64  `json:"id,omitempty"`
 	ChannelType int    `json:"channel_type"` // 1 私聊 2 群聊 3 广播
 }
 
 // 消息结构体
 type Message struct {
-	Sender    int64 `json:"sender,omitempty"`
+	Sender    int64  `json:"sender,omitempty"`
 	Recipient string `json:"recipient,omitempty"`
 	Content   string `json:"content,omitempty"`
 	Mes       *Msg
@@ -45,7 +43,7 @@ type Msg struct {
 	ChannelType int    `json:"channel_type"`
 }
 type ImMessage struct {
-	ID          int64 `json:"id"`
+	ID          int64  `json:"id"`
 	Msg         string `json:"msg"`
 	CreatedAt   string `json:"created_at"`
 	FromId      int    `json:"user_id"`
@@ -60,7 +58,7 @@ type ImMessage struct {
 type OnlineMsg struct {
 	Code        int    `json:"code,omitempty"`
 	Msg         string `json:"msg,omitempty"`
-	ID          int64 `json:"id,omitempty"`
+	ID          int64  `json:"id,omitempty"`
 	ChannelType int    `json:"channel_type"`
 }
 
@@ -88,7 +86,6 @@ type GroupMap struct {
 	GroupIds map[int]*GroupId
 }
 
-
 // 消息投递
 func (c *ImClient) ImRead() {
 	defer func() {
@@ -106,10 +103,6 @@ func (c *ImClient) ImRead() {
 
 	}
 }
-
-
-
-
 
 // 从客户端消费消息
 func (c *ImClient) ImWrite() {

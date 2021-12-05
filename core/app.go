@@ -12,23 +12,24 @@ import (
 	"im_app/pkg/zaplog"
 	"im_app/router"
 )
-var app_cluster_model = conf.GetBool("core.app_cluster_model")
+
+var appClusterModel = conf.GetBool("core.app_cluster_model")
 
 func StartHttp() {
+
 	app := gin.Default()
-	// 初始化各种池
+
 	SetupPool()
-	// 启动ws服务
+
 	go ws.ImManager.Start()
-	// 启动rpc服务
-	if app_cluster_model == true {
+
+	if appClusterModel == true {
 		go ws.StartRpc()
 	}
 
-	// 注册路由
 	router.RegisterApiRoutes(app)
 	router.RegisterIMRouters(app)
-	// 全局异常处理
+
 	app.Use(zaplog.Recover)
 
 	_ = app.Run(":" + conf.GetString("core.port"))

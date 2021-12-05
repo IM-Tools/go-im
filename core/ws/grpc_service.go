@@ -35,7 +35,6 @@ func StartRpc() {
 		log.Fatal("服务监听端口失败", err)
 	}
 	_ = RpcServer.Serve(listener)
-
 }
 
 // rpc消息投递

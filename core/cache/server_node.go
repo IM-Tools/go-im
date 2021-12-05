@@ -6,14 +6,14 @@
 package cache
 
 import (
-	"strconv"
-	"sync"
 	"im_app/pkg/config"
 	"im_app/pkg/redis"
+	"strconv"
+	"sync"
 )
 
 var (
-	cache_node = config.GetString("core.node") + ":" + config.GetString("core.grpc_port")
+	cacheNode = config.GetString("core.node") + ":" + config.GetString("core.grpc_port")
 )
 
 // 必须有一个结构体去实现该接口的方法
@@ -41,7 +41,7 @@ func (node *ServiceNode) GetUserServiceNode(ID int64) string {
 
 func (node *ServiceNode) SetUserServiceNode(ID int64) {
 	var key = getUserIdStr(ID)
-	var value = cache_node
+	var value = cacheNode
 	node.mu.Lock()
 	redis.RedisDB.Set(key, value, 0)
 	node.mu.Unlock()

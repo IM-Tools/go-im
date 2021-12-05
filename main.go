@@ -30,7 +30,7 @@ func init() {
 	zaplog.InitZapLogger()
 }
 
-// @title go-core  接口文档
+// @title go-im  接口文档
 // @version 2.0
 // @description
 

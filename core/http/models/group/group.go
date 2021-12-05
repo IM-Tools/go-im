@@ -6,15 +6,14 @@
 package group
 
 import (
-	"time"
-
 	"im_app/core/http/models/group_user"
 	"im_app/pkg/model"
+	"time"
 )
 
 type ImGroups struct {
-	ID          int64                    `json:"id"`
-	UserId      int64                    `json:"user_id" gorm:"index"`
+	ID          int64                     `json:"id"`
+	UserId      int64                     `json:"user_id" gorm:"index"`
 	GroupName   string                    `json:"group_name"`
 	Info        string                    `json:"info"`
 	CreatedAt   string                    `json:"created_at"`

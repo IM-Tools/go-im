@@ -7,13 +7,13 @@ package user
 
 import (
 	"encoding/json"
-	"time"
-
+	"gorm.io/gorm"
 	"im_app/pkg/model"
+	"time"
 )
 
 type Users struct {
-	ID              int64 `json:"id"`
+	ID              int64  `json:"id"`
 	Email           string `valid:"email" json:"email"`
 	Password        string `valid:"password"`
 	Avatar          string `json:"avatar"`
@@ -22,7 +22,7 @@ type Users struct {
 	Status          int `json:"status"`
 	OauthId         string
 	CreatedAt       string `json:"created_at"`
-	PasswordComfirm string ` gorm:"-" valid:"password_comfirm"`
+	PasswordConfirm string ` gorm:"-" valid:"password_confirm"`
 	LastLoginTime   string `json:"last_login_time"`
 	Bio             string `json:"bio"`
 	Sex             int    `json:"sex"`
@@ -31,7 +31,7 @@ type Users struct {
 }
 
 type UsersWhiteList struct {
-	ID            int64 `json:"id"`
+	ID            int64  `json:"id"`
 	Email         string `valid:"email" json:"email"`
 	Avatar        string `json:"avatar"`
 	Name          string `json:"name" valid:"name"`
@@ -73,11 +73,11 @@ func (Users) TableName() string {
 // 当前登录用户
 var AuthUser *Users
 
-func (a Users) GetAvatar() string {
+func (a *Users) AfterFind(tx *gorm.DB) (err error) {
 	if a.Avatar == "" {
-		return "https://learnku.com/users/27407"
+		a.Avatar = "https://cdn.learnku.com/uploads/avatars/27407_1531668878.png!/both/100x100"
 	}
-	return a.Avatar
+	return
 }
 
 func GetFriendListV2(user_id []int64) ([]Users, error) {

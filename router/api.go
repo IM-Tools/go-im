@@ -11,10 +11,10 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"im_app/docs"
 	Auth "im_app/core/http/controller/auth"
 	"im_app/core/http/controller/im"
 	"im_app/core/http/middleware"
+	"im_app/docs"
 )
 
 func RegisterApiRoutes(router *gin.Engine) {
@@ -26,43 +26,45 @@ func RegisterApiRoutes(router *gin.Engine) {
 	router.Use(cors.New(config))
 
 	weibo := new(Auth.WeiBoController)
-	auth  := new(Auth.AuthController)
+	auth := new(Auth.AuthController)
 	users := new(Auth.UsersController)
-	sm    := new(im.SmApiController)
+	sm := new(im.SmApiController)
 	uploads := new(im.UploadController)
 	group := new(im.GroupController)
 	message := new(im.MessageController)
 	friends := new(im.FriendController)
-
 
 	docs.SwaggerInfo.BasePath = "/api"
 
 	apiRouter := router.Group("/api")
 	apiRouter.Group("")
 	{
-		apiRouter.POST("/login", auth.Login)                 // account  login
+		apiRouter.POST("/login", auth.Login) // account  login
+		apiRouter.GET("/seedRegisteredEmail", auth.SeedRegisteredEmail)
+		apiRouter.POST("/registered", auth.Registered) //registered user account
+
 		apiRouter.GET("/WeiBoCallBack", weibo.WeiBoCallBack) // weibo auth
-		apiRouter.GET("/getApiToken",  sm.GetApiToken)       // get sm token
-		apiRouter.GET("/WxCallback", auth.WxCallback) // get user list
-		apiRouter.Use(middleware.Auth(),middleware.GinLogger(),middleware.GinRecovery(true))
+		apiRouter.GET("/getApiToken", sm.GetApiToken)        // get sm token
+		apiRouter.GET("/WxCallback", auth.WxCallback)        // get user list
+		apiRouter.Use(middleware.Auth(), middleware.GinLogger(), middleware.GinRecovery(true))
 		{
-			apiRouter.POST("/me", auth.Me)                  // get user info
-			apiRouter.PUT("/user", auth.Update)                  // get user info
-			apiRouter.GET("/UsersList", users.GetUsersList) // get user list
+			apiRouter.POST("/me", auth.Me)                     // get user info
+			apiRouter.PUT("/user", auth.Update)                // get user info
+			apiRouter.GET("/UsersList", users.GetUsersList)    // get user list
+			apiRouter.POST("/bindingEmail", auth.BindingEmail) //binding email
 
-
-			apiRouter.GET("/InformationHistory", message.InformationHistory) //get message list
+			apiRouter.GET("/InformationHistory", message.InformationHistory)   //get message list
 			apiRouter.GET("/GetGroupMessageList", message.GetGroupMessageList) //get message list
-			apiRouter.GET("/GetMessageList", message.GetList) //get message list
+			apiRouter.GET("/GetMessageList", message.GetList)                  //get message list
 
 			apiRouter.POST("/UploadImg", sm.UploadImg)                  //upload img
 			apiRouter.POST("/UploadVoiceFile", uploads.UploadVoiceFile) //upload voice file
 
-			apiRouter.GET("/ReadMessage", users.ReadMessage)            //read message
+			apiRouter.GET("/ReadMessage", users.ReadMessage) //read message
 
-			apiRouter.GET("/GetGroupList", group.List)                  //get group list
-			apiRouter.POST("/CreateGroup", group.Create)                //add group
-			apiRouter.POST("/RemoveGroup", group.RemoveGroup)                //add group
+			apiRouter.GET("/GetGroupList", group.List)        //get group list
+			apiRouter.POST("/CreateGroup", group.Create)      //add group
+			apiRouter.POST("/RemoveGroup", group.RemoveGroup) //add group
 
 			apiRouter.GET("/FriendList", friends.GetList) // get user list
 			apiRouter.GET("/GetFriendForRecord", friends.GetFriendForRecord)
