@@ -103,14 +103,23 @@ func SetUserStatus(id int64, status int) {
 		LastLoginTime: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
 }
 
-func GetNotFriendList(subQuery *gorm.DB, id int64) (userList []Users, err error) {
+func GetNotFriendList(subQuery *gorm.DB, id int64, name string) (userList []Users, err error) {
+
 	var UserList []Users
-	errs := model.DB.
-		Where("id not in (?) and id != ?", subQuery, id).
-		Limit(10).
-		Find(&userList).Error
-	if errs != nil {
-		return UserList, errs
+	if len(name) > 0 {
+		err = model.DB.
+			Where("id not in (?) and id != ? and name like '%?%'", subQuery, id, name).
+			Limit(10).
+			Find(&userList).Error
+	} else {
+		err = model.DB.
+			Where("id not in (?) and id != ?", subQuery, id).
+			Limit(10).
+			Find(&userList).Error
+	}
+
+	if err != nil {
+		return UserList, err
 	}
 
 	return userList, nil

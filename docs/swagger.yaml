@@ -175,6 +175,33 @@ paths:
       summary: 获取用户历史消息
       tags:
       - 获取用户历史消息
+  /JoinGroup:
+    post:
+      description: 添加用户到指定群聊
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: formData
+        name: group_id
+        required: true
+        type: string
+      - description: 用户id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 添加用户到指定群聊
+      tags:
+      - 添加用户到指定群聊
   /ReadMessage:
     get:
       description: 历史消息读取

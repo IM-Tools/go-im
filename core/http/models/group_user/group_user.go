@@ -14,10 +14,10 @@ import (
 )
 
 type ImGroupUsers struct {
-	ID        int64 `json:"id"`
-	UserId    int64 `json:"user_id"`
+	ID        int64  `json:"id"`
+	UserId    int64  `json:"user_id"`
 	CreatedAt string `json:"created_at"`
-	GroupId   int64 `json:"group_id"`
+	GroupId   int64  `json:"group_id"`
 	Remark    string `json:"remark"`
 	Avatar    string `json:"avatar"`
 	Name      string `json:"name"`
@@ -59,4 +59,15 @@ func CreatedAll(user_ids map[string]string, group_id int64, u_id int64) (err err
 		return err
 	}
 	return nil
+}
+
+func GetGroupUser(group_id string, user_id string) bool {
+	var count int64
+	model.DB.Table("im_group_users").
+		Where("group_id=? and user_id=?", group_id, user_id).
+		Count(&count)
+	if count == 0 {
+		return false
+	}
+	return true
 }

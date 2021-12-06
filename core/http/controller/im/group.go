@@ -8,9 +8,6 @@ package im
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"reflect"
-
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"im_app/core/http/models/group"
@@ -21,6 +18,10 @@ import (
 	"im_app/pkg/model"
 	"im_app/pkg/response"
 	"im_app/pkg/zaplog"
+	"net/http"
+	"reflect"
+	"strconv"
+	"time"
 )
 
 type (
@@ -170,11 +171,11 @@ func (*GroupController) RemoveGroup(c *gin.Context) {
 // @Router /RemovedUserFromGroup [post]
 func (*GroupController) RemovedUserFromGroup(c *gin.Context) {
 
-	_group := validates.RemoveUserFormGroupFrom{
+	_group := validates.GroupFrom{
 		GroupId: c.PostForm("group_id"),
 		UserId:  c.PostForm("user_id"),
 	}
-	errs := validates.ValidateRemoveGroupForm(_group)
+	errs := validates.ValidateGroupForm(_group)
 
 	if len(errs) > 0 {
 		response.FailResponse(401, "error", errs)
@@ -191,4 +192,67 @@ func (*GroupController) RemovedUserFromGroup(c *gin.Context) {
 
 	response.SuccessResponse().ToJson(c)
 	return
+}
+
+// @BasePath /api
+
+// @Summary 添加用户到指定群聊
+// @Description 添加用户到指定群聊
+// @Tags 添加用户到指定群聊
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param group_id formData string true "群聊id"
+// @Param user_id formData string true "用户id"
+// @Produce json
+// @Success 200
+// @Router /JoinGroup [post]
+func (*GroupController) JoinGroup(c *gin.Context) {
+
+	_group := validates.GroupFrom{
+		GroupId: c.PostForm("group_id"),
+		UserId:  c.PostForm("user_id"),
+	}
+	errs := validates.ValidateGroupForm(_group)
+
+	if len(errs) > 0 {
+		response.FailResponse(401, "error", errs).ToJson(c)
+		return
+	}
+
+	u_id, _ := group.GetGroupUserId(_group.GroupId)
+
+	if userModel.AuthUser.ID != u_id {
+		response.FailResponse(401, "没有资格邀群群成员！").ToJson(c)
+		return
+	}
+
+	bools := group_user.GetGroupUser(_group.GroupId, _group.UserId)
+
+	if bools == true {
+		response.FailResponse(401, "已经在群聊里面了！").ToJson(c)
+		return
+	}
+
+	var user userModel.Users
+	err := model.DB.First(&user, _group.UserId).Error
+	if err != nil {
+		fmt.Println(err)
+	}
+	userID, _ := strconv.Atoi(_group.UserId)
+	groupID, _ := strconv.Atoi(_group.GroupId)
+
+	model.DB.Table("im_group_users").Create(&group_user.ImGroupUsers{
+		UserId:    int64(userID),
+		GroupId:   int64(groupID),
+		Remark:    c.PostForm("remark"),
+		CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
+		Avatar:    user.Avatar,
+		Name:      user.Name,
+	})
+
+	response.SuccessResponse().ToJson(c)
+	return
+
 }

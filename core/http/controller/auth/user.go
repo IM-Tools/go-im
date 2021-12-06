@@ -62,42 +62,19 @@ type (
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")
 	user := userModel.AuthUser
-
-	var Users []userModel.Users
-	var NotFriendList []NotFriendList
-
 	subQuery := model.DB.Select("f_id").
 		Group("f_id").
 		Where("m_id=?", user.ID).
 		Table("im_friends")
 
-	if len(name) > 0 {
-		model.DB.Model(&Users).
-			Select("im_users.id,im_users.name,im_users.avatar,im_friend_records.status").
-			Joins("left join im_friend_records on im_friend_records.f_id=im_users.id"+
-				" and im_users.id not in(?) and im_users.id!=? and im_users.name LIKE ? limit 10 ", subQuery, user.ID, "%"+name+"%").
-			Scan(&NotFriendList)
-	} else {
-
-		userList, err := userModel.GetNotFriendList(subQuery, userModel.AuthUser.ID)
-		if err != nil {
-			response.FailResponse(500, "异常").ToJson(c)
-		}
-		response.SuccessResponse(map[string]interface{}{
-			"list": userList,
-		}, 200).ToJson(c)
-		return
-		//fmt.Println(subQuery)
-		//model.DB.Model(&Users).
-		//	Select("im_users.id,im_users.name,im_users.avatar,im_friend_records.status").
-		//	Joins("left join im_friend_records on im_users.id=im_friend_records.f_id"+
-		//		" and im_users.id not in(?) and im_users.id!=? limit 10 ", subQuery, user.ID).
-		//	Scan(&NotFriendList)
+	userList, err := userModel.GetNotFriendList(subQuery, userModel.AuthUser.ID, name)
+	if err != nil {
+		response.FailResponse(500, "异常").ToJson(c)
 	}
-
 	response.SuccessResponse(map[string]interface{}{
-		"list": NotFriendList,
+		"list": userList,
 	}, 200).ToJson(c)
+	return
 }
 
 // @Summary 历史消息读取[废弃]

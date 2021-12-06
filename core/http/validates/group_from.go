@@ -9,14 +9,14 @@ import (
 	"github.com/thedevsaddam/govalidator"
 )
 
-type RemoveUserFormGroupFrom struct {
+type GroupFrom struct {
 	GroupId string `valid:"group_id"`
 	UserId  string `valid:"user_id"`
 }
 
-func ValidateRemoveGroupForm(data RemoveUserFormGroupFrom) map[string][]string {
+func ValidateGroupForm(data GroupFrom) map[string][]string {
 	rules := govalidator.MapData{
-		"group_id": []string{"required", "between:3,20", "exists:im_groups,id"},
+		"group_id": []string{"required", "exists:im_groups,id"},
 		"user_id":  []string{"required"},
 	}
 	messages := govalidator.MapData{

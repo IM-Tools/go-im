@@ -277,6 +277,46 @@ var doc = `{
                 }
             }
         },
+        "/JoinGroup": {
+            "post": {
+                "description": "添加用户到指定群聊",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "添加用户到指定群聊"
+                ],
+                "summary": "添加用户到指定群聊",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "群聊id",
+                        "name": "group_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/ReadMessage": {
             "get": {
                 "description": "历史消息读取",
