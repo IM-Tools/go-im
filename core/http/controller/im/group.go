@@ -186,8 +186,9 @@ func (*GroupController) RemovedUserFromGroup(c *gin.Context) {
 		response.FailResponse(401, "没有权限删除群成员！").ToJson(c)
 		return
 	}
+
 	model.DB.Table("im_group_users").
-		Where("user_id", _group.UserId).
+		Where("user_id and group_id=?", _group.UserId, _group.GroupId).
 		Delete(&group_user.ImGroupUsers{})
 
 	response.SuccessResponse().ToJson(c)
