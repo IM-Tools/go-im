@@ -48,3 +48,13 @@ func Created(user_id int64, group_name string) (id int64, err error) {
 	}
 	return group.ID, nil
 }
+
+func GetGroupUserId(id string) (g_id int64, errs error) {
+	var group ImGroups
+	model.DB.Table("im_groups").Where("id=?", id).First(&group)
+
+	if errs != nil {
+		return group.ID, errs
+	}
+	return group.ID, nil
+}

@@ -79,11 +79,20 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 			Scan(&NotFriendList)
 	} else {
 
-		model.DB.Model(&Users).
-			Select("im_users.id,im_users.name,im_users.avatar,im_friend_records.status").
-			Joins("left join im_friend_records on im_friend_records.f_id=im_users.id"+
-				" and im_users.id not in(?) and im_users.id!=? limit 10 ", subQuery, user.ID).
-			Scan(&NotFriendList)
+		userList, err := userModel.GetNotFriendList(subQuery, userModel.AuthUser.ID)
+		if err != nil {
+			response.FailResponse(500, "异常").ToJson(c)
+		}
+		response.SuccessResponse(map[string]interface{}{
+			"list": userList,
+		}, 200).ToJson(c)
+		return
+		//fmt.Println(subQuery)
+		//model.DB.Model(&Users).
+		//	Select("im_users.id,im_users.name,im_users.avatar,im_friend_records.status").
+		//	Joins("left join im_friend_records on im_users.id=im_friend_records.f_id"+
+		//		" and im_users.id not in(?) and im_users.id!=? limit 10 ", subQuery, user.ID).
+		//	Scan(&NotFriendList)
 	}
 
 	response.SuccessResponse(map[string]interface{}{

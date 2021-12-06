@@ -46,7 +46,7 @@ func (*FriendController) GetList(c *gin.Context) {
 	}
 	list, err := userModel.GetFriendListV2(group_slice)
 	if err != nil {
-		zaplog.Error("----获取好友列表异常",err)
+		zaplog.Error("----获取好友列表异常", err)
 		response.FailResponse(http.StatusInternalServerError, "服务器错误")
 		return
 	}
@@ -92,25 +92,42 @@ func (*FriendController) GetFriendForRecord(c *gin.Context) {
 // @Success 200
 // @Router /SendFriendRequest [post]
 func (*FriendController) SendFriendRequest(c *gin.Context) {
+
 	information := c.PostForm("information")
 	f_id := c.PostForm("f_id")
+	fId, _ := strconv.Atoi(f_id)
 
-	err := friend_record.AddRecords(userModel.AuthUser.ID, f_id, information)
-	if err != nil {
-		response.FailResponse(500, "添加失败").ToJson(c)
+	if int64(fId) == userModel.AuthUser.ID {
+		response.FailResponse(401, "请勿添加自己为好友").ToJson(c)
 		return
 	}
-	response.SuccessResponse().ToJson(c)
-	return
+	var friend friend.ImFriends
+
+	model.DB.Table("im_friends").
+		Where("status=1 and f_id=? and m_id=?", f_id, userModel.AuthUser.ID).
+		Find(&friend)
+
+	if friend.ID == 0 {
+		err := friend_record.AddRecords(userModel.AuthUser.ID, f_id, information)
+		if err != nil {
+			response.FailResponse(500, "添加失败").ToJson(c)
+			return
+		}
+		response.SuccessResponse().ToJson(c)
+		return
+	} else {
+		response.FailResponse(401, "已经是好友关系了，请勿重复添加")
+		return
+	}
 
 }
+
 type ImFriendRecords struct {
-	ID          int64 `json:"id"`
-	UserId      int64 `json:"user_id"`
-	FId         int64 `json:"f_id"`
-	Status      int  `json:"status"`
+	ID     int64 `json:"id"`
+	UserId int64 `json:"user_id"`
+	FId    int64 `json:"f_id"`
+	Status int   `json:"status"`
 }
-
 
 // @BasePath /api
 
@@ -130,7 +147,7 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 
 	id := c.PostForm("id")
 	sta := c.PostForm("status")
-	status,_ := strconv.Atoi(sta)
+	status, _ := strconv.Atoi(sta)
 
 	var friends ImFriendRecords
 	err := model.DB.Where("id=?", id).
@@ -140,15 +157,15 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 		return
 	}
 
-	if status ==0 {
-		friends.Status=2
+	if status == 0 {
+		friends.Status = 2
 		model.DB.Save(&friends)
 		// 投递一条消息
 		response.FailResponse(500, "已经拒绝了~").ToJson(c)
 	} else {
 		friend.AddFriends(friends.UserId, friends.FId)
 		friend.AddFriends(friends.FId, friends.UserId)
-		friends.Status=1
+		friends.Status = 1
 		model.DB.Save(&friends)
 
 		// 投递一条消息

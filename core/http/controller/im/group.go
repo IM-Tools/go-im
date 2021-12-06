@@ -62,7 +62,7 @@ func (*GroupController) List(c *gin.Context) {
 	list, err := group.GetGroupUserList(group_slice)
 
 	if err != nil {
-		zaplog.Error("----获取群聊列表异常",err)
+		zaplog.Error("----获取群聊列表异常", err)
 		response.FailResponse(http.StatusInternalServerError, "服务器错误")
 		return
 	}
@@ -121,7 +121,7 @@ func (*GroupController) Create(c *gin.Context) {
 	}
 	err = group_user.CreatedAll(_groups.UserId, id, user.ID)
 	if err != nil {
-		zaplog.Error("----创建群聊异常",err)
+		zaplog.Error("----创建群聊异常", err)
 		response.ErrorResponse(http.StatusInternalServerError, "创建异常").ToJson(c)
 		return
 	}
@@ -154,6 +154,41 @@ func (*GroupController) RemoveGroup(c *gin.Context) {
 	return
 }
 
-func (*GroupController) DeleteUser(c *gin.Context) {
+// @BasePath /api
 
+// @Summary 移除群聊用户
+// @Description 移除群聊用户
+// @Tags 移除群聊用户
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param group_id formData string true "群聊id"
+// @Param user_id formData string true "用户id"
+// @Produce json
+// @Success 200
+// @Router /RemovedUserFromGroup [post]
+func (*GroupController) RemovedUserFromGroup(c *gin.Context) {
+
+	_group := validates.RemoveUserFormGroupFrom{
+		GroupId: c.PostForm("group_id"),
+		UserId:  c.PostForm("user_id"),
+	}
+	errs := validates.ValidateRemoveGroupForm(_group)
+
+	if len(errs) > 0 {
+		response.FailResponse(401, "error", errs)
+	}
+	g_id, _ := group.GetGroupUserId(_group.GroupId)
+
+	if userModel.AuthUser.ID != g_id {
+		response.FailResponse(401, "没有权限删除群成员！").ToJson(c)
+		return
+	}
+	model.DB.Table("im_group_users").
+		Where("user_id", _group.UserId).
+		Delete(&group_user.ImGroupUsers{})
+
+	response.SuccessResponse().ToJson(c)
+	return
 }

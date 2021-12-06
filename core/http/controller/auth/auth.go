@@ -168,9 +168,9 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 			response.FailResponse(500, "用户微博授权失败").ToJson(c)
 		} else {
 			// 执行默认添加好友逻辑
-			friend.AddDefaultFriend(users.ID)
-			token := jwt.GenerateToken(users.ID, users.Name, users.Avatar, users.Email, 0)
-			data := getMe(token, &users)
+			friend.AddDefaultFriend(userData.ID)
+			token := jwt.GenerateToken(userData.ID, userData.Name, userData.Avatar, userData.Email, 0)
+			data := getMe(token, &userData)
 			response.SuccessResponse(data, 200).ToJson(c)
 		}
 	} else {

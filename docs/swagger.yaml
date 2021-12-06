@@ -219,6 +219,33 @@ paths:
       summary: 删除群聊
       tags:
       - 删除群聊
+  /RemovedUserFromGroup:
+    post:
+      description: 移除群聊用户
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: formData
+        name: group_id
+        required: true
+        type: string
+      - description: 用户id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 移除群聊用户
+      tags:
+      - 移除群聊用户
   /SendFriendRequest:
     post:
       consumes:

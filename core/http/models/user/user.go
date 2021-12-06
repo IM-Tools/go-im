@@ -46,6 +46,14 @@ type UsersWhiteList struct {
 	LastLoginTime string `json:"last_login_time"`
 }
 
+type ImFriendRecords struct {
+	ID          int64  `json:"id"`
+	FId         int64  `json:"f_id"`
+	Status      int64  `json:"status"`
+	CreatedAt   string `json:"created_at"`
+	Information string `json:"information"`
+}
+
 // 字段过滤机制
 func (u *Users) MarshalJSON() ([]byte, error) {
 
@@ -93,4 +101,17 @@ func GetFriendListV2(user_id []int64) ([]Users, error) {
 func SetUserStatus(id int64, status int) {
 	model.DB.Model(&Users{}).Where("id=?", id).Updates(Users{Status: status,
 		LastLoginTime: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
+}
+
+func GetNotFriendList(subQuery *gorm.DB, id int64) (userList []Users, err error) {
+	var UserList []Users
+	errs := model.DB.
+		Where("id not in (?) and id != ?", subQuery, id).
+		Limit(10).
+		Find(&userList).Error
+	if errs != nil {
+		return UserList, errs
+	}
+
+	return userList, nil
 }
