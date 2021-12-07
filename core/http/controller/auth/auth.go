@@ -335,6 +335,49 @@ func (*AuthController) BindingEmail(c *gin.Context) {
 
 }
 
+// @BasePath /api
+
+// @Summary 更新密码
+// @Description 更新密码
+// @Tags 更新密码
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Accept multipart/form-data
+// @Produce json
+// @Param password formData string true "旧密码"
+// @Param new_password formData string true "新密码"
+// @Param password_confirm formData string true "重复密码"
+// @Success 200
+// @Router /updatePwd [post]
+func (*AuthController) UpdatePwd(c *gin.Context) {
+
+	user := userModel.AuthUser
+
+	_user := validates.PwdFrom{
+		Password:        c.PostForm("password"),
+		NewPassword:     c.PostForm("new_password"),
+		PasswordConfirm: c.PostForm("password_confirm"),
+	}
+
+	errs := validates.ValidatePwdFrom(_user)
+
+	if len(errs) > 0 {
+		response.FailResponse(500, "error", errs).ToJson(c)
+		return
+	}
+
+	if helpler.ComparePasswords(user.Password, _user.NewPassword) == false {
+		response.FailResponse(500, "旧密码错误--").ToJson(c)
+		return
+	}
+	model.DB.Model(&userModel.Users{}).Where("id=?", user.ID).
+		Update("password", helpler.HashAndSalt(_user.NewPassword))
+	response.SuccessResponse().ToJson(c)
+	return
+}
+
 func (*AuthController) WxCallback(c *gin.Context) {
 	response.SuccessResponse().ToJson(c)
 	return

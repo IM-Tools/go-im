@@ -18,9 +18,9 @@ type Users struct {
 	Password        string `valid:"password"`
 	Avatar          string `json:"avatar"`
 	Name            string `json:"name" valid:"name"`
-	OauthType       int
-	Status          int `json:"status"`
-	OauthId         string
+	OauthType       int    `json:"oauth_type"`
+	Status          int    `json:"status"`
+	OauthId         string `json:"oauth_id"`
 	CreatedAt       string `json:"created_at"`
 	PasswordConfirm string ` gorm:"-" valid:"password_confirm"`
 	LastLoginTime   string `json:"last_login_time"`
@@ -35,14 +35,14 @@ type UsersWhiteList struct {
 	Email         string `valid:"email" json:"email"`
 	Avatar        string `json:"avatar"`
 	Name          string `json:"name" valid:"name"`
-	OauthType     int
-	Status        int `json:"status"`
-	OauthId       string
+	OauthType     int    `json:"oauth_type"`
+	Status        int    `json:"status"`
+	OauthId       string `json:"oauth_id"`
 	CreatedAt     string `json:"created_at"`
 	Bio           string `json:"bio"`
 	Sex           int    `json:"sex"`
 	ClientType    int    `json:"client_type"`
-	Age           int    `json:"Age"`
+	Age           int    `json:"age"`
 	LastLoginTime string `json:"last_login_time"`
 }
 

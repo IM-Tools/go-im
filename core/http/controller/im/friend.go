@@ -162,6 +162,7 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 		model.DB.Save(&friends)
 		// 投递一条消息
 		response.FailResponse(500, "已经拒绝了~").ToJson(c)
+		return
 	} else {
 		friend.AddFriends(friends.UserId, friends.FId)
 		friend.AddFriends(friends.FId, friends.UserId)
@@ -174,4 +175,30 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 
 	}
 
+}
+
+// @BasePath /api
+
+// @Summary 删除好友接口
+// @Description 删除好友接口
+// @Tags 删除好友接口
+// @Accept multipart/form-data
+// @Produce json
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param user_id formData string true "好友id"
+// @Success 200
+// @Router /RemoveFriend [post]
+func (*FriendController) RemoveFriend(c *gin.Context) {
+	user_id := c.PostForm("user_id")
+
+	if len(user_id) == 0 {
+		response.FailResponse(500, "user_id不能为空~").ToJson(c)
+		return
+	}
+	user := userModel.AuthUser
+
+	model.DB.Where("m_id=? and f_id=?", user.ID, user_id).Delete(&userModel.Users{})
+	response.FailResponse(200, "删除成功~").ToJson(c)
+	return
 }

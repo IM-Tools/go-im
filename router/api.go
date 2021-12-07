@@ -49,6 +49,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 		apiRouter.Use(middleware.Auth(), middleware.GinLogger(), middleware.GinRecovery(true))
 		{
 			apiRouter.POST("/me", auth.Me)                     // get user info
+			apiRouter.POST("/updatePwd", auth.UpdatePwd)       // update Pwd
 			apiRouter.PUT("/user", auth.Update)                // get user info
 			apiRouter.GET("/UsersList", users.GetUsersList)    // get user list
 			apiRouter.POST("/bindingEmail", auth.BindingEmail) //binding email
@@ -72,6 +73,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.GET("/GetFriendForRecord", friends.GetFriendForRecord)
 			apiRouter.POST("/SendFriendRequest", friends.SendFriendRequest)
 			apiRouter.POST("/ByFriendRequest", friends.ByFriendRequest)
+			apiRouter.POST("/RemoveFriend", friends.RemoveFriend)
 		}
 
 	}
