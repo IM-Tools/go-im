@@ -350,7 +350,7 @@ func (*AuthController) BindingEmail(c *gin.Context) {
 // @Param new_password formData string true "新密码"
 // @Param password_confirm formData string true "重复密码"
 // @Success 200
-// @Router /updatePwd [post]
+// @Router /UpdatePwd [post]
 func (*AuthController) UpdatePwd(c *gin.Context) {
 
 	user := userModel.AuthUser
@@ -367,11 +367,18 @@ func (*AuthController) UpdatePwd(c *gin.Context) {
 		response.FailResponse(500, "error", errs).ToJson(c)
 		return
 	}
+	var users userModel.Users
 
-	if helpler.ComparePasswords(user.Password, _user.NewPassword) == false {
+	err := model.DB.Model(&userModel.Users{}).Where("id=?", user.ID).First(&users).Error
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if helpler.ComparePasswords(users.Password, _user.Password) == false {
 		response.FailResponse(500, "旧密码错误--").ToJson(c)
 		return
 	}
+
 	model.DB.Model(&userModel.Users{}).Where("id=?", user.ID).
 		Update("password", helpler.HashAndSalt(_user.NewPassword))
 	response.SuccessResponse().ToJson(c)

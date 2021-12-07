@@ -198,7 +198,7 @@ func (*FriendController) RemoveFriend(c *gin.Context) {
 	}
 	user := userModel.AuthUser
 
-	model.DB.Where("m_id=? and f_id=?", user.ID, user_id).Delete(&userModel.Users{})
+	model.DB.Where("m_id=? and f_id=?", user.ID, user_id).Delete(&friend.ImFriends{})
 	response.FailResponse(200, "删除成功~").ToJson(c)
 	return
 }

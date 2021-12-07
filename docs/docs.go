@@ -520,6 +520,56 @@ var doc = `{
                 }
             }
         },
+        "/UpdatePwd": {
+            "post": {
+                "description": "更新密码",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "更新密码"
+                ],
+                "summary": "更新密码",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "旧密码",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "新密码",
+                        "name": "new_password",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "重复密码",
+                        "name": "password_confirm",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/UploadImg": {
             "post": {
                 "description": "图片上传接口",
@@ -792,56 +842,6 @@ var doc = `{
                         "description": "邮箱",
                         "name": "email",
                         "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/updatePwd": {
-            "post": {
-                "description": "更新密码",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "更新密码"
-                ],
-                "summary": "更新密码",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "旧密码",
-                        "name": "password",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "新密码",
-                        "name": "new_password",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "重复密码",
-                        "name": "password_confirm",
-                        "in": "formData",
-                        "required": true
                     }
                 ],
                 "responses": {

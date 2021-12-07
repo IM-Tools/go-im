@@ -337,6 +337,40 @@ paths:
       responses:
         "200":
           description: ""
+  /UpdatePwd:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 更新密码
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 旧密码
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: 新密码
+        in: formData
+        name: new_password
+        required: true
+        type: string
+      - description: 重复密码
+        in: formData
+        name: password_confirm
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 更新密码
+      tags:
+      - 更新密码
   /UploadImg:
     post:
       description: 图片上传接口
@@ -524,38 +558,4 @@ paths:
       summary: 发送注册邮箱验证码
       tags:
       - 发送注册邮箱验证码接口
-  /updatePwd:
-    post:
-      consumes:
-      - multipart/form-data
-      description: 更新密码
-      parameters:
-      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: 旧密码
-        in: formData
-        name: password
-        required: true
-        type: string
-      - description: 新密码
-        in: formData
-        name: new_password
-        required: true
-        type: string
-      - description: 重复密码
-        in: formData
-        name: password_confirm
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ""
-      summary: 更新密码
-      tags:
-      - 更新密码
 swagger: "2.0"
