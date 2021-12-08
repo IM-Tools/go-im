@@ -220,7 +220,7 @@ var doc = `{
                     {
                         "type": "string",
                         "description": "群聊id",
-                        "name": "to_id",
+                        "name": "group_id",
                         "in": "query",
                         "required": true
                     }

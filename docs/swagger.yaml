@@ -134,7 +134,7 @@ paths:
         type: string
       - description: 群聊id
         in: query
-        name: to_id
+        name: group_id
         required: true
         type: string
       produces:
