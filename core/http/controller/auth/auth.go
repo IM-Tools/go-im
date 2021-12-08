@@ -133,7 +133,7 @@ func (that *AuthController) Login(c *gin.Context) {
 	model.DB.Model(&userModel.Users{}).Save(&users)
 	// 挤下线操作
 	if users.Status == 1 {
-		ws.CrowdedOffline(int64(users.ID))
+		ws.CrowdedOffline(users.ID)
 	}
 	token := jwt.GenerateToken(users.ID, users.Name, users.Avatar, users.Email, ClientType)
 	data := getMe(token, &users)
@@ -203,33 +203,37 @@ func (*AuthController) SeedRegisteredEmail(c *gin.Context) {
 
 	code := helpler.CreateEmailCode()
 	emailService := new(services.EmailService)
-	html := fmt.Sprintf(`<!DOCTYPE html>
+	html := fmt.Sprintf(`
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>IM注册邮件</title>
 </head>
 <style>
-    body {
-
-    }
     .mail{
         margin: 0 auto;
+        border-radius: 45px;
+        height: 400px;
+        padding: 10px;
+        background-color: #CC9933;
+        background: url("https://img-blog.csdnimg.cn/c32f12dfd48241babd35b15189dc5c78.png") no-repeat;
     }
-    span{
-        color: #fff;
+    .code {
+        color: #f6512b;
         font-weight: bold;
-        font-size: 15px;
-        background-color: #c56e57;
+        font-size: 30px;
         padding: 2px;
     }
 </style>
 <body>
 <div class="mail">
     <h3>您好:您正在注册im应用账号!</h3>
-    <p>下面是您的验证码:<span>%s</span>请注意查收!谢谢</p>
-    <h3>如果可以请给项目点个star,开源不易,你的star就是对我们最大的认可～<a target="_blank" href="https://github.com/pl1998/go-im">https://github.com/pl1998/go-im</a> </h3>
+    <p>下面是您的验证码:</p>
+        <p class="code">%s</p>
+        <p>请注意查收!谢谢</p>
 </div>
+<h3>如果可以请给项目点个star～<a target="_blank" href="https://github.com/pl1998/go-im">项目地址</a> </h3>
 </body>
 </html>`, code)
 

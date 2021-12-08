@@ -15,7 +15,6 @@ type ImFriends struct {
 	ID        int64      `json:"id"`
 	MId       int64      `json:"m_id"`
 	FId       int64      `json:"f_id"`
-	Status    int        `json:"status"`
 	CreatedAt string     `json:"created_at"`
 	Note      string     `json:"note"`
 	Users     user.Users `json:"users" gorm:"foreignKey:FId;references:ID"`
@@ -37,7 +36,6 @@ func GetFriendList(user_id int64) ([]ImFriends, error) {
 func AddFriends(mid int64, fid int64) error {
 	result := model.DB.Create(&ImFriends{MId: mid,
 		FId:       fid,
-		Status:    0,
 		CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
 	}).Error
 
@@ -48,8 +46,8 @@ func AddFriends(mid int64, fid int64) error {
 }
 
 func AddDefaultFriend(m_id int64) {
-	model.DB.Create(&ImFriends{FId: m_id, MId: 1, Status: 1, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
+	model.DB.Create(&ImFriends{FId: m_id, MId: 1, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
 
-	model.DB.Create(&ImFriends{FId: 1, MId: m_id, Status: 1, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
+	model.DB.Create(&ImFriends{FId: 1, MId: m_id, CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05")})
 
 }

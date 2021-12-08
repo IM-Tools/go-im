@@ -26,7 +26,7 @@ func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 	msg := DeMessage(message.Mes)
 	if message.Mes.ChannelType == 1 {
 		if conn, ok := manager.ImClientMap[int64(message.Mes.ToId)]; ok {
-			PutData(message.Mes, 1, 1)
+			AddUserMessage(message.Mes, 1, 1)
 			conn.Send <- msg
 		} else {
 			// 支持集群
@@ -39,7 +39,7 @@ func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 				}
 
 			} else {
-				PutData(message.Mes, 0, 1)
+				AddUserMessage(message.Mes, 0, 1)
 				MqPersonalPublish(msg, message.Mes.ToId)
 			}
 
@@ -47,9 +47,9 @@ func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 		return
 	}
 	// 群聊 获取群聊用户信息可以做数据缓存 --
-	groups, _ := GetGroupUid(message.Mes.ToId)
-	PutGroupData(message.Mes, 1, message.Mes.ChannelType)
 
+	AddGroupMessage(message.Mes)
+	groups, _ := GetGroupUid(message.Mes.ToId)
 	for _, value := range groups {
 		if data, ok := manager.ImClientMap[value.UserId]; ok {
 			MqGroupPublish(msg, message.Mes.ToId)

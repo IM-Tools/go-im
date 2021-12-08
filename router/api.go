@@ -74,6 +74,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/SendFriendRequest", friends.SendFriendRequest)
 			apiRouter.POST("/ByFriendRequest", friends.ByFriendRequest)
 			apiRouter.POST("/RemoveFriend", friends.RemoveFriend)
+
 		}
 
 	}

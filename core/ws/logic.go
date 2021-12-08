@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/streadway/amqp"
+	"im_app/core/http/models/group_message"
 	messageModel "im_app/core/http/models/msg"
 	"im_app/core/http/models/user"
 	"im_app/pkg/helpler"
@@ -25,16 +26,26 @@ import (
 // 这个文件里面代码很乱找时间梳理一下
 
 // group message insert db
-func PutGroupData(msg *Msg, is_read int, channel_type int) {
-	channel_a := helpler.ProduceChannelGroupName(strconv.Itoa(msg.ToId))
-	fid := int64(msg.FromId)
-	tid := int64(msg.ToId)
-	user := messageModel.ImMessage{FromId: fid,
-		ToId:      tid,
+func AddGroupMessage(msg *Msg) {
+
+	group_messages := group_message.ImGroupMessages{
+		FromId:    int64(msg.FromId),
+		GroupId:   int64(msg.ToId),
 		Msg:       msg.Msg,
+		MsgType:   msg.MsgType,
 		CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
-		Channel:   channel_a, IsRead: is_read, MsgType: msg.MsgType, ChannelType: channel_type}
-	model.DB.Create(&user)
+	}
+	model.DB.Create(&group_messages)
+
+	//channel_a := helpler.ProduceChannelGroupName(strconv.Itoa(msg.ToId))
+	//fid := int64(msg.FromId)
+	//tid := int64(msg.ToId)
+	//user := messageModel.ImMessage{FromId: fid,
+	//	ToId:      tid,
+	//	Msg:       msg.Msg,
+	//	CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
+	//	Channel:   channel_a, IsRead: is_read, MsgType: msg.MsgType, ChannelType: channel_type}
+	//model.DB.Create(&user)
 	return
 }
 
@@ -149,7 +160,7 @@ func MqGroupConsumption(conn *ImClient, user_id int64) {
 }
 
 // The private chat insert db
-func PutData(msg *Msg, is_read int, channel_type int) {
+func AddUserMessage(msg *Msg, is_read int, channel_type int) {
 
 	channel_a, _ := helpler.ProduceChannelName(int64(msg.FromId), int64(msg.ToId))
 	fid := int64(msg.FromId)
@@ -200,8 +211,6 @@ func CrowdedOffline(user_id int64) {
 	manager := new(ImClientManager)
 	if conn, ok := manager.ImClientMap[user_id]; ok {
 		jsonMessage, _ := json.Marshal(&ImOnlineMsg{Code: CrowdedOk, Msg: "账号已在别处登录", ID: conn.ID, ChannelType: 3})
-
-		fmt.Println(jsonMessage)
 		conn.Send <- jsonMessage
 
 		conn.Socket.Close()
@@ -227,7 +236,8 @@ func DeMessage(message *Msg) []byte {
 	return byte_msg
 }
 
-// get chat group user id
+// 这个方法需要优化 可以将数据序列化存入redis
+
 func GetGroupUid(group_id int) ([]GroupId, error) {
 	var groups []GroupId
 	err := model.DB.Table("im_group_users").Where("group_id=?", group_id).Find(&groups).Error

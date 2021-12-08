@@ -6,13 +6,13 @@
 package im
 
 import (
+	"im_app/core/http/models/group_message"
 	"sort"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon"
 	"im_app/core/http/models/group_user"
-	"im_app/core/http/models/msg"
 	userModel "im_app/core/http/models/user"
 	"im_app/pkg/helpler"
 	"im_app/pkg/model"
@@ -22,10 +22,10 @@ import (
 type (
 	MessageController struct{}
 	ImMessage         struct {
-		ID          int64                  `json:"id"`
+		ID          int64                   `json:"id"`
 		Msg         string                  `json:"msg"`
 		CreatedAt   string                  `json:"created_at"`
-		FromId      int64                  `json:"user_id"`
+		FromId      int64                   `json:"user_id"`
 		ToId        int64                   `json:"to_id"`
 		Channel     string                  `json:"channel"`
 		Status      int                     `json:"status"`
@@ -70,7 +70,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 
 	var MsgList []ImMessage
 	// 生成频道标识符号 用户查询用户信息
-	toid,_ :=strconv.Atoi(to_id)
+	toid, _ := strconv.Atoi(to_id)
 	channel_a, channel_b := helpler.ProduceChannelName(int64(from_id), int64(toid))
 
 	query := model.DB.
@@ -113,7 +113,7 @@ func SortByAge(list []ImMessage) {
 	})
 }
 
-func SortGroupByAge(list []msg.ImMessage) {
+func SortGroupByAge(list []group_message.ImGroupMessages) {
 	sort.Slice(list, func(i, j int) bool {
 		return list[i].ID < list[j].ID
 	})
@@ -128,35 +128,32 @@ func SortGroupByAge(list []msg.ImMessage) {
 // @In header
 // @Name Authorization
 // @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Param to_id query string true "群聊id"
+// @Param group_id query string true "群聊id"
 // @Produce json
 // @Success 200
 // @Router /GetGroupMessageList [get]
 func (*MessageController) GetGroupMessageList(c *gin.Context) {
-	to_id := c.Query("to_id")
-	channel_type := c.DefaultQuery("channel_type", "2")
-	user := userModel.AuthUser
 
-	if len(to_id) < 0 {
-		response.FailResponse(500, "用户id不能为空").ToJson(c)
+	group_id := c.Query("group_id")
+
+	user := userModel.AuthUser
+	if len(group_id) < 0 {
+		response.FailResponse(401, "group_id不能为空").ToJson(c)
+		return
 	}
-	var MsgList []msg.ImMessage
-	// 生成频道标识符号 用户查询用户信息
-	channel_a := helpler.ProduceChannelGroupName(to_id)
+	var MsgList []group_message.ImGroupMessages
 
 	list := model.DB.
 		Preload("Users").
-		Where("channel =? and channel_type=?    order by created_at desc", channel_a, channel_type).
+		Where("group_id =? order by created_at desc", group_id).
 		Limit(40).
-		Select("id,msg,created_at,from_id,to_id,channel,msg_type").
 		Find(&MsgList)
 
 	if list.Error != nil {
+		response.FailResponse(500, "数据查询错误").ToJson(c)
 		return
 	}
 	for key, value := range MsgList {
-
-		MsgList[key].CreatedAt = carbon.Parse(value.CreatedAt).SetLocale("zh-CN").DiffForHumans()
 
 		if value.FromId == user.ID {
 			MsgList[key].Status = 0
