@@ -27,6 +27,7 @@ func init() {
 		"swagger_port":  config.Env("SWAGGER_PORT", "8080"),
 		"log_address":   config.Env("LOG_ADDRESS"),
 		"gitee_api_key": config.Env("GITEE_API_KEY"),
+		"gaode_key":     config.Env("APP_GAODE_KEY"),
 		//jwt 授权登录
 		"jwt": map[string]interface{}{
 			"sign_key":        config.Env("JWT_SIGN_KEY"),
@@ -41,6 +42,6 @@ func init() {
 		"app_yp_key":        config.Env("APP_YP_KEY"),
 		"app_yp_secret_key": config.Env("APP_YP_SECRET_KEY"),
 		"app_yp_sign_key":   config.Env("APP_YP_SIGN_KEY"),
-		"app_cluster_model":   config.Env("APP_CLUSTER_MODEL"), //是否开启集群
+		"app_cluster_model": config.Env("APP_CLUSTER_MODEL"), //是否开启集群
 	})
 }

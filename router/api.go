@@ -33,6 +33,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 	group := new(im.GroupController)
 	message := new(im.MessageController)
 	friends := new(im.FriendController)
+	maps := new(im.MapController)
 
 	docs.SwaggerInfo.BasePath = "/api"
 
@@ -61,7 +62,8 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/UploadImg", sm.UploadImg)                  //upload img
 			apiRouter.POST("/UploadVoiceFile", uploads.UploadVoiceFile) //upload voice file
 
-			apiRouter.GET("/ReadMessage", users.ReadMessage) //read message
+			apiRouter.GET("/ReadMessage", users.ReadMessage)  //read message
+			apiRouter.GET("/GetLongitude", maps.GetLongitude) //read message
 
 			apiRouter.GET("/GetGroupList", group.List)                          //get group list
 			apiRouter.POST("/CreateGroup", group.Create)                        //add group
@@ -79,5 +81,5 @@ func RegisterApiRoutes(router *gin.Engine) {
 
 	}
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-
+	router.GET("/GetLongitude", maps.GetLongitude) //read message
 }

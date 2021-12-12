@@ -11,6 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"math/rand"
+	"net"
 	"net/url"
 	"time"
 )
@@ -69,4 +70,20 @@ func GetNowFormatTodayTime() string {
 
 func CreateEmailCode() string {
 	return fmt.Sprintf("%04v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(10000))
+}
+func GetLocalIP() string {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return ""
+	}
+
+	for _, address := range addrs {
+		// 检查ip地址判断是否回环地址
+		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String()
+			}
+		}
+	}
+	return ""
 }
