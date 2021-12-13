@@ -7,6 +7,7 @@ package user
 
 import (
 	"encoding/json"
+	"fmt"
 	"gorm.io/gorm"
 	"im_app/pkg/model"
 	"time"
@@ -28,6 +29,19 @@ type Users struct {
 	Sex             int    `json:"sex"`
 	ClientType      int    `json:"client_type"`
 	Age             int    `json:"age"`
+}
+
+type UserLists struct {
+	ID            int64  `json:"id"`
+	Email         string `valid:"email" json:"email"`
+	Avatar        string `json:"avatar"`
+	Name          string `json:"name" valid:"name"`
+	Status        int    `json:"status"`
+	CreatedAt     string `json:"created_at"`
+	LastLoginTime string `json:"last_login_time"`
+	Bio           string `json:"bio"`
+	TopStatus     int    `json:"top_status"`
+	Note          string `json:"note"`
 }
 
 type UsersWhiteList struct {
@@ -88,9 +102,15 @@ func (a *Users) AfterFind(tx *gorm.DB) (err error) {
 	return
 }
 
-func GetFriendListV2(user_id []int64) ([]Users, error) {
-	var users []Users
-	err := model.DB.Where("id in (?)", user_id).Find(&users).Error
+func GetFriendListV2(user_id int64) ([]UserLists, error) {
+	var users []UserLists
+
+	sql := fmt.Sprintf("select u.id,u.email,u.avatar,u.name,u.status,"+
+		"u.bio,u.client_type,u.last_login_time,f.status as top_status,f.note "+
+		"from im_users as u left join im_friends as f on f.f_id=u.id"+
+		" where f.m_id=%d order by f.status desc,f.top_time desc", user_id)
+
+	err := model.DB.Raw(sql).Scan(&users).Error
 	if err != nil {
 		return users, err
 	}

@@ -6,7 +6,6 @@
 package im
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"im_app/core/http/models/friend"
 	"im_app/core/http/models/friend_record"
@@ -15,8 +14,8 @@ import (
 	"im_app/pkg/response"
 	"im_app/pkg/zaplog"
 	"net/http"
-	"reflect"
 	"strconv"
+	"time"
 )
 
 type FriendController struct{}
@@ -33,18 +32,7 @@ type FriendController struct{}
 // @Router /FriendList [get]
 func (*FriendController) GetList(c *gin.Context) {
 	user := userModel.AuthUser
-	var friendId []friend.ImFriends
-	err := model.DB.Select("f_id").Where("m_id=?", user.ID).Find(&friendId).Error
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	v := reflect.ValueOf(friendId)
-	group_slice := make([]int64, v.Len())
-	for key, value := range friendId {
-		group_slice[key] = value.FId
-	}
-	list, err := userModel.GetFriendListV2(group_slice)
+	list, err := userModel.GetFriendListV2(user.ID)
 	if err != nil {
 		zaplog.Error("----获取好友列表异常", err)
 		response.FailResponse(http.StatusInternalServerError, "服务器错误")
@@ -200,5 +188,73 @@ func (*FriendController) RemoveFriend(c *gin.Context) {
 
 	model.DB.Where("m_id=? and f_id=?", user.ID, user_id).Delete(&friend.ImFriends{})
 	response.FailResponse(200, "删除成功~").ToJson(c)
+	return
+}
+
+// @BasePath /api
+
+// @Summary 好友置顶功能接口
+// @Description 好友置顶功能接口
+// @Tags 好友置顶功能接口
+// @Accept multipart/form-data
+// @Produce json
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param user_id formData string true "好友id"
+// @Param status formData int true "状态 1.置顶 0.取消置顶"
+// @Success 200
+// @Router /FriendPlacedTop [post]
+func (*FriendController) FriendPlacedTop(c *gin.Context) {
+
+	user_id := c.PostForm("user_id")
+	if len(user_id) < 1 {
+		response.ErrorResponse(500, "用户id不能为空").ToJson(c)
+		return
+	}
+
+	status := c.DefaultPostForm("status", "0")
+
+	_status, _ := strconv.Atoi(status)
+	newBool := _status != 0
+
+	id := userModel.AuthUser.ID
+
+	model.DB.Model(&friend.ImFriends{}).Where("m_id=? and f_id=? ", id, user_id).
+		Updates(map[string]interface{}{
+			"status": newBool, "TopTime": time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
+		})
+
+	response.SuccessResponse().ToJson(c)
+
+	return
+}
+
+// @BasePath /api
+
+// @Summary 更新好友备注接口
+// @Description 更新好友备注接口
+// @Tags 更新好友备注接口
+// @Accept multipart/form-data
+// @Produce json
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param user_id formData string true "好友id"
+// @Param note formData string true "备注"
+// @Success 200
+// @Router /UpdateFriendNote [post]
+func (*FriendController) UpdateFriendNote(c *gin.Context) {
+	user_id := c.PostForm("user_id")
+	note := c.PostForm("note")
+	if len(user_id) < 1 || len(note) > 20 || len(note) < 2 {
+		response.ErrorResponse(500, "参数不合格").ToJson(c)
+		return
+	}
+	id := userModel.AuthUser.ID
+
+	model.DB.Model(&friend.ImFriends{}).Where("m_id=? and f_id=? ", id, user_id).
+		Update("note", note)
+
+	response.SuccessResponse().ToJson(c)
+
 	return
 }

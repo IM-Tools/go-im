@@ -89,6 +89,35 @@ paths:
       summary: 获取好友列表
       tags:
       - 获取好友列表
+  /FriendPlacedTop:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 好友置顶功能接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: 状态 1.置顶 0.取消置顶
+        in: formData
+        name: status
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 好友置顶功能接口
+      tags:
+      - 好友置顶功能接口
   /GetFriendForRecord:
     get:
       description: 获取好友申请记录
@@ -337,6 +366,35 @@ paths:
       responses:
         "200":
           description: ""
+  /UpdateFriendNote:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 更新好友备注接口
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: 备注
+        in: formData
+        name: note
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 更新好友备注接口
+      tags:
+      - 更新好友备注接口
   /UpdatePwd:
     post:
       consumes:

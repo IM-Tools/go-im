@@ -6,10 +6,12 @@
 package helpler
 
 import (
+	crypto_rand "crypto/rand"
 	"encoding/json"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"math/big"
 	"math/rand"
 	"net"
 	"net/url"
@@ -86,4 +88,12 @@ func GetLocalIP() string {
 		}
 	}
 	return ""
+}
+func Random(m int64) int {
+	max := big.NewInt(m)
+	i, err := crypto_rand.Int(crypto_rand.Reader, max)
+	if err != nil {
+		log.Fatal("rand:", err)
+	}
+	return i.BitLen()
 }

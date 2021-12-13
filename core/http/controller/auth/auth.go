@@ -41,6 +41,16 @@ type (
 	}
 )
 
+// 定义用户随机头像
+var avatar = [...]string{
+	"https://cdn.learnku.com/uploads/images/201710/14/1/s5ehp11z6s.png",
+	"https://cdn.learnku.com/uploads/images/201710/14/1/Lhd1SHqu86.png",
+	"https://cdn.learnku.com/uploads/images/201710/14/1/LOnMrqbHJn.png",
+	"https://cdn.learnku.com/uploads/images/201710/14/1/xAuDMxteQy.png",
+	"https://cdn.learnku.com/uploads/images/201710/14/1/ZqM7iaP4CR.png",
+	"https://cdn.learnku.com/uploads/images/201710/14/1/NDnzMutoxX.png",
+}
+
 // @BasePath /api
 
 // @Summary 获取用户信息接口
@@ -284,6 +294,7 @@ func (*AuthController) Registered(c *gin.Context) {
 		Password:        helpler.HashAndSalt(_user.Password),
 		PasswordConfirm: helpler.HashAndSalt(_user.Password),
 		Name:            _user.Name,
+		Avatar:          avatar[helpler.Random(6)],
 		CreatedAt:       time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
 		LastLoginTime:   time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
 	}

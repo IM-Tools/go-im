@@ -147,6 +147,49 @@ var doc = `{
                 }
             }
         },
+        "/FriendPlacedTop": {
+            "post": {
+                "description": "好友置顶功能接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "好友置顶功能接口"
+                ],
+                "summary": "好友置顶功能接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "好友id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态 1.置顶 0.取消置顶",
+                        "name": "status",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/GetFriendForRecord": {
             "get": {
                 "description": "获取好友申请记录",
@@ -512,6 +555,49 @@ var doc = `{
             "put": {
                 "produces": [
                     "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/UpdateFriendNote": {
+            "post": {
+                "description": "更新好友备注接口",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "更新好友备注接口"
+                ],
+                "summary": "更新好友备注接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "好友id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "备注",
+                        "name": "note",
+                        "in": "formData",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "200": {
