@@ -30,11 +30,14 @@ type JsonResponse struct {
 
 //响应json
 func (resp *JsonResponse) ToJson(ctx *gin.Context) {
+
 	code := 200
-	if resp.Code != StatusSuccess {
-		code = resp.Code
+	if resp.Code > 500 {
+		code = 500
 	}
+
 	ctx.JSON(code, resp)
+
 }
 
 //失败响应
@@ -59,6 +62,7 @@ func SuccessResponse(data ...interface{}) *JsonResponse {
 }
 
 func ErrorResponse(status int, message string, data ...interface{}) *JsonResponse {
+
 	return &JsonResponse{
 		Code:    status,
 		Message: message,

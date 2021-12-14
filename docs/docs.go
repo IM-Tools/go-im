@@ -724,14 +724,14 @@ var doc = `{
         },
         "/UsersList": {
             "get": {
-                "description": "获取非好友用户列表",
+                "description": "根据昵称查询非好友用户列表",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "获取非好友用户列表"
+                    "根据昵称查询非好友用户列表"
                 ],
-                "summary": "获取非好友用户列表",
+                "summary": "根据昵称查询非好友用户列表",
                 "parameters": [
                     {
                         "type": "string",

@@ -475,7 +475,7 @@ paths:
       - 音频文件上传接口
   /UsersList:
     get:
-      description: 获取非好友用户列表
+      description: 根据昵称查询非好友用户列表
       parameters:
       - description: Bearer 31a165baebe6dec616b1f8f3207b4273
         in: header
@@ -491,9 +491,9 @@ paths:
       responses:
         "200":
           description: ""
-      summary: 获取非好友用户列表
+      summary: 根据昵称查询非好友用户列表
       tags:
-      - 获取非好友用户列表
+      - 根据昵称查询非好友用户列表
   /bindingEmail:
     post:
       consumes:

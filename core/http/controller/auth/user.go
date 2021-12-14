@@ -48,9 +48,9 @@ type (
 
 // @BasePath /api
 
-// @Summary 获取非好友用户列表
-// @Description 获取非好友用户列表
-// @Tags 获取非好友用户列表
+// @Summary 根据昵称查询非好友用户列表
+// @Description 根据昵称查询非好友用户列表
+// @Tags 根据昵称查询非好友用户列表
 // @SecurityDefinitions.apikey ApiKeyAuth
 // @In header
 // @Name Authorization
@@ -61,6 +61,11 @@ type (
 // @Router /UsersList [get]
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")
+	if len(name) < 1 {
+		response.FailResponse(500, "请输入需要添加好友的昵称").ToJson(c)
+		return
+	}
+
 	user := userModel.AuthUser
 	subQuery := model.DB.Select("f_id").
 		Group("f_id").
@@ -69,7 +74,8 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 
 	userList, err := userModel.GetNotFriendList(subQuery, userModel.AuthUser.ID, name)
 	if err != nil {
-		response.FailResponse(500, "异常").ToJson(c)
+		response.FailResponse(500, "接口查询异常").ToJson(c)
+		return
 	}
 	response.SuccessResponse(map[string]interface{}{
 		"list": userList,
