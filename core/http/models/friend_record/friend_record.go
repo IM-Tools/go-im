@@ -14,23 +14,20 @@ import (
 )
 
 type ImFriendRecords struct {
-	ID          int64 `json:"id"`
-	UserId      int64 `json:"user_id"`
-	FId         int64 `json:"f_id"`
-	Status      int64  `json:"status"`
-	CreatedAt   string `json:"created_at"`
-	Information string `json:"information"`
-	User ImUsers `json:"users" gorm:"foreignKey:UserId;references:ID"`
+	ID          int64   `json:"id"`
+	UserId      int64   `json:"user_id"`
+	FId         int64   `json:"f_id"`
+	Status      int64   `json:"status"`
+	CreatedAt   string  `json:"created_at"`
+	Information string  `json:"information"`
+	User        ImUsers `json:"users" gorm:"foreignKey:UserId;references:ID"`
 }
-
-
 
 type ImUsers struct {
-	Name string `json:"name"`
-	Avatar          string `json:"avatar"`
-	ID      int64 `json:"id"`
+	Name   string `json:"name"`
+	Avatar string `json:"avatar"`
+	ID     int64  `json:"id"`
 }
-
 
 func (*ImFriendRecords) TableName() string {
 	return "im_friend_records"
@@ -41,12 +38,11 @@ func (f *ImFriendRecords) AfterFind(tx *gorm.DB) (err error) {
 	return
 }
 
-
 func GetFriendRecordList(user_id int64) ([]ImFriendRecords, error) {
 	var friends []ImFriendRecords
 	err := model.DB.Preload("User").
 		Where("f_id=? and status=0", user_id).
-		Order("created_at desc").
+		Group("user_id").
 		Find(&friends).Error
 	if err != nil {
 		return friends, err
