@@ -11,8 +11,8 @@ import (
 )
 
 type SendFriendRequestFrom struct {
-	FId string `json:"f_id"`
-	MId string `json:"m_id"`
+	FId int64 `json:"f_id"`
+	MId int64 `json:"m_id"`
 }
 
 func ValidateSendFriendRequestFrom(data SendFriendRequestFrom) map[string][]string {

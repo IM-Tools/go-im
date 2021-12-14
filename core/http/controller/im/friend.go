@@ -10,6 +10,7 @@ import (
 	"im_app/core/http/models/friend"
 	"im_app/core/http/models/friend_record"
 	userModel "im_app/core/http/models/user"
+	"im_app/core/http/validates"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
 	"im_app/pkg/zaplog"
@@ -80,15 +81,25 @@ func (*FriendController) GetFriendForRecord(c *gin.Context) {
 // @Success 200
 // @Router /SendFriendRequest [post]
 func (*FriendController) SendFriendRequest(c *gin.Context) {
-
-	information := c.PostForm("information")
 	f_id := c.PostForm("f_id")
-	fId, _ := strconv.Atoi(f_id)
-
-	if int64(fId) == userModel.AuthUser.ID {
+	FId, _ := strconv.Atoi(f_id)
+	if int64(FId) == userModel.AuthUser.ID {
 		response.FailResponse(401, "请勿添加自己为好友").ToJson(c)
 		return
 	}
+	_send := validates.SendFriendRequestFrom{
+		MId: userModel.AuthUser.ID,
+		FId: int64(FId),
+	}
+	errs := validates.ValidateSendFriendRequestFrom(_send)
+
+	if len(errs) > 0 {
+		response.FailResponse(500, "error", errs).ToJson(c)
+		return
+	}
+
+	information := c.PostForm("information")
+
 	var friend friend.ImFriends
 
 	model.DB.Table("im_friends").
