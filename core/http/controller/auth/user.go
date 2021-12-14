@@ -61,10 +61,6 @@ type (
 // @Router /UsersList [get]
 func (*UsersController) GetUsersList(c *gin.Context) {
 	name := c.Query("name")
-	if len(name) < 1 {
-		response.FailResponse(500, "请输入需要添加好友的昵称").ToJson(c)
-		return
-	}
 
 	user := userModel.AuthUser
 	subQuery := model.DB.Select("f_id").
