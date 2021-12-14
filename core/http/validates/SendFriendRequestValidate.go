@@ -11,11 +11,12 @@ import (
 )
 
 type SendFriendRequestFrom struct {
-	FId int64 `json:"f_id"`
-	MId int64 `json:"m_id"`
+	FId string `valid:"f_id"`
+	MId string `valid:"m_id"`
 }
 
 func ValidateSendFriendRequestFrom(data SendFriendRequestFrom) map[string][]string {
+
 	rules := govalidator.MapData{
 		"f_id": []string{"required"},
 		"m_id": []string{"required"},

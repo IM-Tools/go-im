@@ -88,8 +88,8 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 		return
 	}
 	_send := validates.SendFriendRequestFrom{
-		MId: userModel.AuthUser.ID,
-		FId: int64(FId),
+		MId: strconv.Itoa(int(userModel.AuthUser.ID)),
+		FId: f_id,
 	}
 	errs := validates.ValidateSendFriendRequestFrom(_send)
 
