@@ -16,22 +16,40 @@ import (
 
 var appClusterModel = config.GetBool("core.app_cluster_model")
 
+//type Msg struct {
+//	Code        int    `json:"code,omitempty"`
+//	FromId      int    `json:"from_id,omitempty"`
+//	Msg         string `json:"msg,omitempty"`
+//	ToId        int    `json:"to_id,omitempty"`
+//	Status      int    `json:"status,omitempty"`
+//	MsgType     int    `json:"msg_type,omitempty"`
+//	ChannelType int    `json:"channel_type"`
+//}
+
+// 外部消息消息投递
+func (manager *ImClientManager) SystemMessageDelivery(id int64, msg *Msg) {
+	messageByte, _ := json.Marshal(&Message{Sender: id, Mes: msg})
+	manager.Broadcast <- messageByte
+}
+
 // 消息投递下发
 func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 	// 消息传输协议可以优化 可以使用自定义二进制协议
 	// json传输协议 格式转换比较消耗性能
-	// 当然这个方法也可以优惠避免多次转换
+	// 当然这个方法也可以优化避免多次转换消耗
 	message := EnMessage(msg_byte)
-	message.Mes.Code = 200
+
+	//
+	//message.Mes.Code = 200
 	msg := DeMessage(message.Mes)
-	if message.Mes.ChannelType == 1 {
+	// 私聊和系统单独通知消息
+	if message.Mes.ChannelType == 1 || message.Mes.ChannelType == 3 {
 		if conn, ok := manager.ImClientMap[int64(message.Mes.ToId)]; ok {
-			AddUserMessage(message.Mes, 1, 1)
+			AddUserMessage(message.Mes, 1, message.Mes.ChannelType)
 			conn.Send <- msg
 		} else {
 			// 支持集群
 			if appClusterModel == true {
-
 				boolNumber := pushNodeMessage(int64(message.Mes.ToId), msg)
 				if !boolNumber {
 					// 离线消息入库

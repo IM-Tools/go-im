@@ -162,6 +162,10 @@ func MqGroupConsumption(conn *ImClient, user_id int64) {
 // The private chat insert db
 func AddUserMessage(msg *Msg, is_read int, channel_type int) {
 
+	if channel_type != 1 {
+		return
+	}
+
 	channel_a, _ := helpler.ProduceChannelName(int64(msg.FromId), int64(msg.ToId))
 	fid := int64(msg.FromId)
 	tid := int64(msg.ToId)

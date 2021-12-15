@@ -6,11 +6,14 @@
 package im
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"im_app/core/enum"
 	"im_app/core/http/models/friend"
 	"im_app/core/http/models/friend_record"
 	userModel "im_app/core/http/models/user"
 	"im_app/core/http/validates"
+	"im_app/core/service"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
 	"im_app/pkg/zaplog"
@@ -112,6 +115,10 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 			response.FailResponse(500, "添加失败").ToJson(c)
 			return
 		}
+
+		service.SendMessage(enum.ADD_FRIEND_REQUEST, int(userModel.AuthUser.ID), FId,
+			fmt.Sprintf("系统:%s请求添加你为好友", userModel.AuthUser.Name))
+
 		response.SuccessResponse().ToJson(c)
 		return
 	} else {
@@ -160,6 +167,8 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 		friends.Status = 2
 		model.DB.Save(&friends)
 		// 投递一条消息
+		service.SendMessage(enum.ADD_FRIEDN_ERROR, int(userModel.AuthUser.ID), int(friends.UserId),
+			fmt.Sprintf("%s已拒绝添加你为好友", userModel.AuthUser.Name))
 		response.FailResponse(500, "已经拒绝了~").ToJson(c)
 		return
 	} else {
@@ -167,7 +176,8 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 		friend.AddFriends(friends.FId, friends.UserId)
 		friends.Status = 1
 		model.DB.Save(&friends)
-
+		service.SendMessage(enum.ADD_FRIEDN_SUCCESS, int(userModel.AuthUser.ID), int(friends.UserId),
+			fmt.Sprintf("%s已通过添加你为好友,一起聊天吧～", userModel.AuthUser.Name))
 		// 投递一条消息
 		response.SuccessResponse().ToJson(c)
 		return
@@ -198,6 +208,12 @@ func (*FriendController) RemoveFriend(c *gin.Context) {
 	user := userModel.AuthUser
 
 	model.DB.Where("m_id=? and f_id=?", user.ID, user_id).Delete(&friend.ImFriends{})
+	model.DB.Where("m_id=? and f_id=?", user_id, user.ID).Delete(&friend.ImFriends{})
+
+	f_id, _ := strconv.Atoi(user_id)
+
+	service.SendMessage(enum.DELETE_FRIEND, int(user.ID), f_id, fmt.Sprintf("系统:%s已将你删除", user.Name))
+
 	response.FailResponse(200, "删除成功~").ToJson(c)
 	return
 }
