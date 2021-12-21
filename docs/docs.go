@@ -31,6 +31,46 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/AddSession": {
+            "post": {
+                "description": "添加会话信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "添加会话信息"
+                ],
+                "summary": "添加会话信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "好友id或者群聊id",
+                        "name": "f_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "会话类型",
+                        "name": "channel_type",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/ByFriendRequest": {
             "post": {
                 "description": "同意好友请求接口",
@@ -110,6 +150,39 @@ var doc = `{
                         "type": "array",
                         "description": "群聊用户",
                         "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/DelSession": {
+            "post": {
+                "description": "删除会话信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "删除会话信息"
+                ],
+                "summary": "删除会话信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "好友id或者群聊id",
+                        "name": "f_id",
                         "in": "formData",
                         "required": true
                     }
@@ -265,6 +338,32 @@ var doc = `{
                         "description": "群聊id",
                         "name": "group_id",
                         "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/GetSessionList": {
+            "post": {
+                "description": "获取会话列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "获取会话列表"
+                ],
+                "summary": "获取会话列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],

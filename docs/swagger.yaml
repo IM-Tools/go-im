@@ -11,6 +11,33 @@ info:
   title: go-im  接口文档
   version: "2.0"
 paths:
+  /AddSession:
+    post:
+      description: 添加会话信息
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id或者群聊id
+        in: formData
+        name: f_id
+        required: true
+        type: string
+      - description: 会话类型
+        in: formData
+        name: channel_type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 添加会话信息
+      tags:
+      - 添加会话信息
   /ByFriendRequest:
     post:
       consumes:
@@ -72,6 +99,28 @@ paths:
       summary: 创建群聊
       tags:
       - 创建群聊
+  /DelSession:
+    post:
+      description: 删除会话信息
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 好友id或者群聊id
+        in: formData
+        name: f_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除会话信息
+      tags:
+      - 删除会话信息
   /FriendList:
     get:
       description: 获取好友列表
@@ -174,6 +223,23 @@ paths:
       summary: 获取群聊历史消息
       tags:
       - 获取群聊历史消息
+  /GetSessionList:
+    post:
+      description: 获取会话列表
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取会话列表
+      tags:
+      - 获取会话列表
   /InformationHistory:
     get:
       description: 获取用户历史消息

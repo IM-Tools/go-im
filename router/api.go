@@ -34,6 +34,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 	message := new(im.MessageController)
 	friends := new(im.FriendController)
 	maps := new(im.MapController)
+	session := new(im.SessionController)
 
 	docs.SwaggerInfo.BasePath = "/api"
 
@@ -78,6 +79,11 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.POST("/RemoveFriend", friends.RemoveFriend)
 			apiRouter.POST("/FriendPlacedTop", friends.FriendPlacedTop)
 			apiRouter.POST("/UpdateFriendNote", friends.UpdateFriendNote)
+
+			apiRouter.POST("/AddSession", session.Create)
+			apiRouter.GET("/GetSessionList", session.GetSessionList)
+			apiRouter.POST("/DelSession", session.DelSession)
+			apiRouter.POST("/SetSessionTop", session.SetSessionTop)
 
 		}
 
