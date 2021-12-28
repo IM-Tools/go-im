@@ -79,7 +79,7 @@ func (*SessionController) Create(c *gin.Context) {
 	f_id, _ := strconv.Atoi(user_id)
 	c_type, _ := strconv.Atoi(channel_type)
 
-	if c_type == 0 {
+	if c_type == 1 {
 		var user user2.Users
 
 		fmt.Println(2)

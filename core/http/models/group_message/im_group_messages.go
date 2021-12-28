@@ -13,7 +13,7 @@ import (
 
 type ImGroupMessages struct {
 	ID        int64           `json:"id"`
-	MsgType   int             `json:"msgType"`
+	MsgType   int             `json:"msg_type"`
 	Msg       string          `json:"msg"`
 	GroupId   int64           `json:"groupId"`
 	FromId    int64           `json:"fromId"`
