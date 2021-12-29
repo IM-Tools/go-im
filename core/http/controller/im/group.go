@@ -64,10 +64,36 @@ func (*GroupController) List(c *gin.Context) {
 
 	if err != nil {
 		zaplog.Error("----获取群聊列表异常", err)
-		response.FailResponse(http.StatusInternalServerError, "服务器错误")
+		response.FailResponse(http.StatusInternalServerError, "服务器错误").ToJson(c)
 		return
 	}
 	response.SuccessResponse(list).ToJson(c)
+	return
+}
+
+// @BasePath /api
+
+// @Summary 获取群聊详情
+// @Description 获取群聊详情
+// @Tags 获取群聊详情
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Param group_id query string true "群聊id"
+// @Produce json
+// @Success 200
+// @Router /GetGroupDetails [get]
+func (*GroupController) Show(c *gin.Context) {
+	var groups group.ImGroups
+	group_id := c.Query("group_id")
+	err := model.DB.Preload("Users").Where("id=?", group_id).First(&groups).Error
+	if err != nil {
+		zaplog.Error("----获取群聊详情异常", err)
+		response.FailResponse(http.StatusInternalServerError, "服务器错误").ToJson(c)
+		return
+	}
+	response.SuccessResponse(groups).ToJson(c)
 	return
 }
 

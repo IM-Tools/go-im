@@ -58,7 +58,7 @@ var doc = `{
                     },
                     {
                         "type": "string",
-                        "description": "会话类型",
+                        "description": "会话类型 1.单聊 2.群聊",
                         "name": "channel_type",
                         "in": "formData",
                         "required": true
@@ -289,6 +289,39 @@ var doc = `{
                 }
             }
         },
+        "/GetGroupDetails": {
+            "get": {
+                "description": "获取群聊详情",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "获取群聊详情"
+                ],
+                "summary": "获取群聊详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "群聊id",
+                        "name": "group_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/GetGroupList": {
             "get": {
                 "description": "获取群聊列表",
@@ -349,7 +382,7 @@ var doc = `{
             }
         },
         "/GetSessionList": {
-            "post": {
+            "get": {
                 "description": "获取会话列表",
                 "produces": [
                     "application/json"

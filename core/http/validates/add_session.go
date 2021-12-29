@@ -7,8 +7,6 @@ package validates
 
 import (
 	"github.com/thedevsaddam/govalidator"
-	"im_app/core/http/models/user"
-	"im_app/pkg/model"
 )
 
 type AddSessionFrom struct {
@@ -29,7 +27,7 @@ func ValidateAddSession(data AddSessionFrom) map[string][]string {
 			"required:好友id为必填项",
 		},
 	}
-
+	
 	// 3. 配置初始化
 	opts := govalidator.Options{
 		Data:          &data,
@@ -38,14 +36,7 @@ func ValidateAddSession(data AddSessionFrom) map[string][]string {
 		Messages:      messages,
 	}
 	errs := govalidator.New(opts).ValidateStruct()
-	var count int64
-	model.DB.Table("im_sessions").
-		Where("m_id=? and f_id=? and status=0 and channel_type=?", user.AuthUser.ID, data.UserId, data.ChannelType).
-		Count(&count)
-	if count != 0 {
-		errs["code"] = append(errs["m_id"], "会话已存在")
-		return errs
-	}
+
 	return errs
 
 }

@@ -25,7 +25,7 @@ paths:
         name: f_id
         required: true
         type: string
-      - description: 会话类型
+      - description: 会话类型 1.单聊 2.群聊
         in: formData
         name: channel_type
         required: true
@@ -184,6 +184,28 @@ paths:
       summary: 获取好友申请记录
       tags:
       - 获取好友申请记录
+  /GetGroupDetails:
+    get:
+      description: 获取群聊详情
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 群聊id
+        in: query
+        name: group_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 获取群聊详情
+      tags:
+      - 获取群聊详情
   /GetGroupList:
     get:
       description: 获取群聊列表
@@ -224,7 +246,7 @@ paths:
       tags:
       - 获取群聊历史消息
   /GetSessionList:
-    post:
+    get:
       description: 获取会话列表
       parameters:
       - description: Bearer 31a165baebe6dec616b1f8f3207b4273

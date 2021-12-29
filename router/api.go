@@ -67,6 +67,7 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.GET("/GetLongitude", maps.GetLongitude) //read message
 
 			apiRouter.GET("/GetGroupList", group.List)                          //get group list
+			apiRouter.GET("/GetGroupDetails", group.Show)                       //get group list
 			apiRouter.POST("/CreateGroup", group.Create)                        //add group
 			apiRouter.POST("/RemoveGroup", group.RemoveGroup)                   //add group
 			apiRouter.POST("/RemovedUserFromGroup", group.RemovedUserFromGroup) //remove user  group

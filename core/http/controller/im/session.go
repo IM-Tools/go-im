@@ -6,7 +6,6 @@
 package im
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"im_app/core/http/models/group"
 	"im_app/core/http/models/session"
@@ -32,18 +31,22 @@ type SessionController struct {
 // @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
 // @Produce json
 // @Success 200
-// @Router /GetSessionList [post]
+// @Router /GetSessionList [get]
 func (*SessionController) GetSessionList(c *gin.Context) {
 	var list []session.ImSessions
 	err := model.DB.Table("im_sessions").Where("m_id=?", user2.AuthUser.ID).
 		Order("top_status desc").
 		Order("top_time desc").
 		Find(&list).Error
+
 	if err != nil {
 		response.ErrorResponse(500, "error").ToJson(c)
 		return
 	}
 	response.SuccessResponse(list).ToJson(c)
+	//for _, value := range list {
+	//
+	//}
 	return
 }
 
@@ -57,7 +60,7 @@ func (*SessionController) GetSessionList(c *gin.Context) {
 // @Name Authorization
 // @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
 // @Param f_id formData string true "好友id或者群聊id"
-// @Param channel_type formData string true "会话类型"
+// @Param channel_type formData string true "会话类型 1.单聊 2.群聊"
 // @Produce json
 // @Success 200
 // @Router /AddSession [post]
@@ -70,25 +73,46 @@ func (*SessionController) Create(c *gin.Context) {
 		ChannelType: channel_type,
 	}
 	errs := validates.ValidateAddSession(_user)
-	fmt.Println(_user)
+
 	if len(errs) > 0 {
 		response.FailResponse(401, "error", errs).ToJson(c)
 		return
 	}
 
+	var count int64
+	model.DB.Table("im_sessions").
+		Where("m_id=? and f_id=? and status=0 and channel_type=?", user2.AuthUser.ID, user_id, channel_type).
+		Count(&count)
+	if count > 0 {
+		var sessions session.ImSessions
+		err := model.DB.Table("im_sessions").
+			Where("m_id=? and f_id=? and status=0 and channel_type=?", user2.AuthUser.ID, user_id, channel_type).
+			First(&sessions).Error
+		if err != nil {
+			response.ErrorResponse(500, "查询异常").ToJson(c)
+			return
+		}
+		response.SuccessResponse(sessions).ToJson(c)
+		return
+
+	}
+
 	f_id, _ := strconv.Atoi(user_id)
 	c_type, _ := strconv.Atoi(channel_type)
+
+	if int64(f_id) == user2.AuthUser.ID {
+		response.ErrorResponse(500, "请勿对自己添加会话").ToJson(c)
+		return
+	}
 
 	if c_type == 1 {
 		var user user2.Users
 
-		fmt.Println(2)
 		err := model.DB.Table("im_users").Where("id=?", user_id).First(&user).Error
 		if err != nil {
 			response.FailResponse(500, "用户数据不存在")
 			return
 		}
-		fmt.Println(user)
 		sessionData := session.ImSessions{
 			Name:        user.Name,
 			MId:         user2.AuthUser.ID,
