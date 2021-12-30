@@ -57,7 +57,7 @@ func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 				}
 
 			} else {
-				AddUserMessage(message.Mes, 0, 1)
+				AddUserMessage(message.Mes, 0, message.Mes.ChannelType)
 				MqPersonalPublish(msg, message.Mes.ToId)
 			}
 

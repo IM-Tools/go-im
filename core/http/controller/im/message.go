@@ -14,7 +14,6 @@ import (
 	"github.com/golang-module/carbon"
 	"im_app/core/http/models/group_user"
 	userModel "im_app/core/http/models/user"
-	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
 )
@@ -58,9 +57,9 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	to_id := c.Query("to_id")
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "40"))
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	channel_type := c.DefaultQuery("channel_type", "1")
+
 	user := userModel.AuthUser
-	from_id := user.ID
+
 	if len(to_id) < 0 {
 		response.FailResponse(500, "用户id不能为空").ToJson(c)
 	}
@@ -69,13 +68,10 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	model.DB.Where("id=?", to_id).First(&Users)
 
 	var MsgList []ImMessage
-	// 生成频道标识符号 用户查询用户信息
-	toid, _ := strconv.Atoi(to_id)
-	channel_a, channel_b := helpler.ProduceChannelName(int64(from_id), int64(toid))
 
 	query := model.DB.
 		Table("im_messages").
-		Where("(channel = ?  or channel= ?) and channel_type=?    order by created_at desc", channel_a, channel_b, channel_type)
+		Where("from_id = ? and to_id =? and  channel_type=1    order by created_at desc", user.ID, to_id)
 
 	query.Count(&total)
 

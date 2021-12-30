@@ -13,7 +13,6 @@ import (
 	"im_app/core/http/models/group_message"
 	messageModel "im_app/core/http/models/msg"
 	"im_app/core/http/models/user"
-	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"im_app/pkg/mq"
 	"im_app/pkg/zaplog"
@@ -124,7 +123,6 @@ func MqPersonalConsumption(conn *ImClient, user_id int64) {
 		nil,    // args
 	)
 	for msg := range msgs {
-		log.Printf("Received a message: %s", msg.Body)
 		conn.Send <- msg.Body
 	}
 	return
@@ -154,7 +152,6 @@ func MqGroupConsumption(conn *ImClient, user_id int64) {
 		nil,    // args
 	)
 	for msg := range msgs {
-		log.Printf("Received a message: %s", msg.Body)
 		conn.Send <- msg.Body
 	}
 }
@@ -166,14 +163,13 @@ func AddUserMessage(msg *Msg, is_read int, channel_type int) {
 		return
 	}
 
-	channel_a, _ := helpler.ProduceChannelName(int64(msg.FromId), int64(msg.ToId))
 	fid := int64(msg.FromId)
 	tid := int64(msg.ToId)
 	message := messageModel.ImMessage{FromId: fid,
 		ToId:      tid,
 		Msg:       msg.Msg,
 		CreatedAt: time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
-		Channel:   channel_a, IsRead: is_read, MsgType: msg.MsgType, ChannelType: channel_type}
+		IsRead:    is_read, MsgType: msg.MsgType, ChannelType: channel_type}
 	result := model.DB.Create(&message)
 	if result.Error != nil {
 		zaplog.Error("数据拆入异常")
