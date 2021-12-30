@@ -15,8 +15,8 @@ type ImGroupMessages struct {
 	ID        int64           `json:"id"`
 	MsgType   int             `json:"msg_type"`
 	Msg       string          `json:"msg"`
-	GroupId   int64           `json:"groupId"`
-	FromId    int64           `json:"fromId"`
+	GroupId   int64           `json:"group_id"`
+	FromId    int64           `json:"user_id"`
 	Status    int             `json:"status" gorm:"-" valid:"status"` //忽略一下该字段写入
 	CreatedAt string          `json:"created_at"`
 	Users     userModel.Users `json:"users,omitempty" gorm:"foreignKey:FromId;references:ID"`
