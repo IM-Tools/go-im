@@ -38,6 +38,44 @@
 ![](docs/架构实例图.png)
 
 
+#### 安装使用
+
+#### 安装redis
+```shell
+docker pull redis
+
+docker run -p 6379:6379 --name redis
+-v /data/redis/redis.conf:/etc/redis/redis.conf
+-v /data/redis/data:/data
+-d redis redis-server /etc/redis/redis.conf --appendonly yes
+```
+
+#### 安装mysql
+```shell
+docker pull mysql
+docker run --name mysqlserver -v $PWD/conf:/etc/mysql/conf.d -v $PWD/logs:/logs -v $PWD/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d -i -p 3306:3306 mysql:latest
+```
+#### 安装rabbitmq
+```shell
+docker pull rabbitmq
+docker run -d --hostname my-rabbit --name rabbit -p 15672:15672 -p 5672:5672 rabbitmq
+
+```
+#### 安装项目
+```shell
+git close https://github.com/IM-Tools/go-im.git
+cd go-im
+```
+
+#### 配置.env 调整.env文件配置
+```shell
+cp .env.example .env
+```
+#### 启动
+```shell
+go run main.go
+```
+
 #### 桌面端
 
 ![软图](docs/WechatIMG670.png)
