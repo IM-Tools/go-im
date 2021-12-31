@@ -15,4 +15,5 @@ const (
 	ADD_FRIEND_REQUEST = 1002 //添加好友
 	ADD_FRIEDN_ERROR   = 1003 //拒绝好友
 	ADD_FRIEDN_SUCCESS = 1004 //添加好友成功
+	SYSTEM_MESSAGE     = 2000 //系统消息
 )

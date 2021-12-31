@@ -71,7 +71,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 
 	query := model.DB.
 		Table("im_messages").
-		Where("from_id = ? and to_id =? and  channel_type=1    order by created_at desc", user.ID, to_id)
+		Where("from_id = ? and to_id =? or (from_id = ? and to_id =?) and  channel_type=1   order by created_at desc", user.ID, to_id, to_id, user.ID)
 
 	query.Count(&total)
 
