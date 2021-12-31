@@ -35,7 +35,7 @@
 
 
 
-![](docs/架构实例图.png)
+![](https://img-blog.csdnimg.cn/622dd0dcb8de42d3bd2abb6e4a583c92.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5r2c6Juw,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
 
 
 #### 安装使用
