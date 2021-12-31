@@ -78,9 +78,9 @@ go run main.go
 
 #### 桌面端
 
-![软图](docs/WechatIMG670.png)
-![软图](docs/WechatIMG671.png)
-![软图](docs/WechatIMG672.png)
+![软图](https://img-blog.csdnimg.cn/280378527ad34e0caac69f6e696c21c0.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5r2c6Juw,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![软图](https://img-blog.csdnimg.cn/b04c1fb7ec244a0ea5923199ef4743c5.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5r2c6Juw,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+![软图](https://img-blog.csdnimg.cn/446c7f1cb8384d2a8f34ff053e43f201.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5r2c6Juw,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
 
 #### web登录 效果图
 ![golang+vue3开发的一个im应用](https://cdn.learnku.com/uploads/images/202108/14/32593/aajXTvR3GF.png!large)
