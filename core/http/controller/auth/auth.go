@@ -352,6 +352,40 @@ func (*AuthController) BindingEmail(c *gin.Context) {
 
 // @BasePath /api
 
+// @Summary 根据id获取用户详情
+// @Description 根据id获取用户详情
+// @Tags 根据id获取用户详情
+// @SecurityDefinitions.apikey ApiKeyAuth
+// @In header
+// @Name Authorization
+// @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
+// @Accept multipart/form-data
+// @Produce json
+// @Param user_id query string true "邮箱"
+// @Success 200
+// @Router /userDetails [get]
+func (*UsersController) Show(c *gin.Context) {
+	user_id := c.Query("user_id")
+	if len(user_id) < 1 {
+		response.FailResponse(500, "user_id不能为空").ToJson(c)
+		return
+	}
+	var users userModel.Users
+
+	err := model.DB.Table("im_users").Where("id=?", user_id).First(&users).Error
+	if err != nil {
+		response.FailResponse(500, "查询异常").ToJson(c)
+		return
+	}
+
+	response.SuccessResponse(users).ToJson(c)
+
+	return
+
+}
+
+// @BasePath /api
+
 // @Summary 更新密码
 // @Description 更新密码
 // @Tags 更新密码

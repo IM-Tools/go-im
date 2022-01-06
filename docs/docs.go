@@ -1068,6 +1068,42 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/userDetails": {
+            "get": {
+                "description": "根据id获取用户详情",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "根据id获取用户详情"
+                ],
+                "summary": "根据id获取用户详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "邮箱",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
         }
     }
 }`

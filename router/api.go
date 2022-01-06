@@ -52,7 +52,8 @@ func RegisterApiRoutes(router *gin.Engine) {
 		{
 			apiRouter.POST("/me", auth.Me)                     // get user info
 			apiRouter.POST("/UpdatePwd", auth.UpdatePwd)       // update Pwd
-			apiRouter.PUT("/user", auth.Update)                // get user info
+			apiRouter.PUT("/user", auth.Update)                // update user info
+			apiRouter.GET("/userDetails", users.Show)          // get user info
 			apiRouter.GET("/UsersList", users.GetUsersList)    // get user list
 			apiRouter.POST("/bindingEmail", auth.BindingEmail) //binding email
 
@@ -67,13 +68,13 @@ func RegisterApiRoutes(router *gin.Engine) {
 			apiRouter.GET("/GetLongitude", maps.GetLongitude) //read message
 
 			apiRouter.GET("/GetGroupList", group.List)                          //get group list
-			apiRouter.GET("/GetGroupDetails", group.Show)                       //get group list
+			apiRouter.GET("/GetGroupDetails", group.Show)                       //get group details
 			apiRouter.POST("/CreateGroup", group.Create)                        //add group
-			apiRouter.POST("/RemoveGroup", group.RemoveGroup)                   //add group
+			apiRouter.POST("/RemoveGroup", group.RemoveGroup)                   //delete group
 			apiRouter.POST("/RemovedUserFromGroup", group.RemovedUserFromGroup) //remove user  group
-			apiRouter.POST("/JoinGroup", group.JoinGroup)                       //remove user  group
+			apiRouter.POST("/JoinGroup", group.JoinGroup)                       //add user  group
 
-			apiRouter.GET("/FriendList", friends.GetList) // get user list
+			apiRouter.GET("/FriendList", friends.GetList)
 			apiRouter.GET("/GetFriendForRecord", friends.GetFriendForRecord)
 			apiRouter.POST("/SendFriendRequest", friends.SendFriendRequest)
 			apiRouter.POST("/ByFriendRequest", friends.ByFriendRequest)

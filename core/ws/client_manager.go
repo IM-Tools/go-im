@@ -16,9 +16,9 @@ var node = new(cache.ServiceNode)
 
 type ImClientManager struct {
 	ImClientMap map[int64]*ImClient // 存放在线用户连接
-	Broadcast   chan []byte          // 收集消息分发到客户端
-	Register    chan *ImClient       // 新注册的长连接
-	Unregister  chan *ImClient       // 已注销的长连接
+	Broadcast   chan []byte         // 收集消息分发到客户端
+	Register    chan *ImClient      // 新注册的长连接
+	Unregister  chan *ImClient      // 已注销的长连接
 }
 
 var mutexKey sync.Mutex
@@ -60,7 +60,6 @@ func (manager *ImClientManager) SetClientInfo(conn *ImClient) {
 
 }
 
-
 func (manager *ImClientManager) DelClient(conn *ImClient) {
 	close(conn.Send)
 	mutexKey.Lock()
@@ -78,13 +77,12 @@ func (manager *ImClientManager) Start() {
 			manager.LaunchOnlineMsg(conn.ID) // 用户在线下发通知
 			node.SetUserServiceNode(conn.ID) // 设置用户节点
 			pool.AntsPool.Submit(func() {
-				MqPersonalConsumption(conn,conn.ID) //离线消息同步
+				MqPersonalConsumption(conn, conn.ID) //离线消息同步
 			})
 		case conn := <-ImManager.Unregister:
 			PushUserOfflineNotification(manager, conn) // 设置用户离线状态
-			node.DelUserServiceNode(conn.ID)          // 删除用户节点
+			node.DelUserServiceNode(conn.ID)           // 删除用户节点
 		case message := <-ImManager.Broadcast:
-
 			pool.AntsPool.Submit(func() {
 				manager.LaunchMessage(message) // 协程池任务调度 抢占式消息下发
 			})

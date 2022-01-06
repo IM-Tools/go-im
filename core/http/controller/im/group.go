@@ -152,7 +152,9 @@ func (*GroupController) Create(c *gin.Context) {
 		response.ErrorResponse(http.StatusInternalServerError, "创建异常").ToJson(c)
 		return
 	}
-	response.SuccessResponse().ToJson(c)
+	response.SuccessResponse(map[string]interface{}{
+		"group_id": id,
+	}).ToJson(c)
 	return
 }
 

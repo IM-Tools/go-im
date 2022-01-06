@@ -704,4 +704,28 @@ paths:
       summary: 发送注册邮箱验证码
       tags:
       - 发送注册邮箱验证码接口
+  /userDetails:
+    get:
+      consumes:
+      - multipart/form-data
+      description: 根据id获取用户详情
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 邮箱
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 根据id获取用户详情
+      tags:
+      - 根据id获取用户详情
 swagger: "2.0"
