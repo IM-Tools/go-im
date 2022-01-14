@@ -164,17 +164,17 @@ func (*SessionController) Create(c *gin.Context) {
 // @In header
 // @Name Authorization
 // @Param Authorization	header string true "Bearer 31a165baebe6dec616b1f8f3207b4273"
-// @Param f_id formData string true "好友id或者群聊id"
+// @Param session_id formData string true "会话id"
 // @Param top_status formData string true "0 正常 1置顶"
 // @Produce json
 // @Success 200
 // @Router /DelSession [post]
 func (*SessionController) SetSessionTop(c *gin.Context) {
 
-	user_id := c.PostForm("f_id")
+	session_id := c.PostForm("session_id")
 	top_status := c.PostForm("top_status")
 	_status, _ := strconv.Atoi(top_status)
-	model.DB.Model(&session.ImSessions{}).Where("m_id=? and f_id=? ", user2.AuthUser.ID, user_id).
+	model.DB.Model(&session.ImSessions{}).Where("id=?", session_id).
 		Updates(map[string]interface{}{
 			"top_status": _status, "TopTime": time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
 		})
