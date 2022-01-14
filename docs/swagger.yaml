@@ -447,6 +447,33 @@ paths:
       summary: 发送好友请求
       tags:
       - 发送好友请求接口
+  /SetSessionTop:
+    post:
+      description: 会话置顶
+      parameters:
+      - description: Bearer 31a165baebe6dec616b1f8f3207b4273
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 会话id
+        in: formData
+        name: session_id
+        required: true
+        type: string
+      - description: 0 正常 1置顶
+        in: formData
+        name: top_status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 会话置顶
+      tags:
+      - 会话置顶
   /Update:
     put:
       produces:

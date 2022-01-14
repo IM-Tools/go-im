@@ -668,6 +668,46 @@
                 }
             }
         },
+        "/SetSessionTop": {
+            "post": {
+                "description": "会话置顶",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "会话置顶"
+                ],
+                "summary": "会话置顶",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 31a165baebe6dec616b1f8f3207b4273",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "会话id",
+                        "name": "session_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "0 正常 1置顶",
+                        "name": "top_status",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/Update": {
             "put": {
                 "produces": [

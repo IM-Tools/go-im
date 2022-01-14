@@ -168,7 +168,7 @@ func (*SessionController) Create(c *gin.Context) {
 // @Param top_status formData string true "0 正常 1置顶"
 // @Produce json
 // @Success 200
-// @Router /DelSession [post]
+// @Router /SetSessionTop [post]
 func (*SessionController) SetSessionTop(c *gin.Context) {
 
 	session_id := c.PostForm("session_id")
