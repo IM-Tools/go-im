@@ -252,6 +252,7 @@ func (*AuthController) SeedRegisteredEmail(c *gin.Context) {
 		response.FailResponse(500, "邮件发送失败,请检查是否是可用邮箱").ToJson(c)
 		return
 	}
+
 	redis.RedisDB.Set(_email.Email, code, time.Minute*5)
 
 	response.SuccessResponse().ToJson(c)

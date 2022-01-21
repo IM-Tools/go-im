@@ -8,6 +8,7 @@ package validates
 import (
 	"github.com/thedevsaddam/govalidator"
 	"im_app/pkg/redis"
+	"im_app/pkg/zaplog"
 )
 
 type UserRegisteredForm struct {
@@ -61,7 +62,7 @@ func ValidateRegisteredForm(data UserRegisteredForm) map[string][]string {
 	}
 	StringCmd := redis.RedisDB.Get(data.Email)
 	code := StringCmd.Val()
-
+	zaplog.Info(data, code)
 	if code != data.Code {
 		errs["code"] = append(errs["code"], "邮箱验证码不正确！")
 	}
