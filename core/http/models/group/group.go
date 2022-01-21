@@ -39,7 +39,7 @@ func Created(user_id int64, group_name string) (id int64, err error) {
 		GroupName:   group_name,
 		Info:        "暂无",
 		CreatedAt:   time.Unix(time.Now().Unix(), 0).Format("2006-01-02 15:04:05"),
-		GroupAvatar: "https://api.pltrue.top/400x400.png",
+		GroupAvatar: "https://api.prodless.com/avatar.png",
 	}
 	result := model.DB.Create(&group)
 
