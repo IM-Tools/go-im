@@ -44,7 +44,7 @@ func (*FriendController) GetList(c *gin.Context) {
 	}
 	response.SuccessResponse(map[string]interface{}{
 		"list": list,
-	}, 200).ToJson(c)
+	}, http.StatusOK).ToJson(c)
 	return
 }
 
@@ -62,7 +62,7 @@ func (*FriendController) GetFriendForRecord(c *gin.Context) {
 
 	list, err := friend_record.GetFriendRecordList(userModel.AuthUser.ID)
 	if err != nil {
-		response.FailResponse(500, "获取好友申请记录异常").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "获取好友申请记录异常").ToJson(c)
 		return
 	}
 	response.SuccessResponse(list).ToJson(c)
@@ -97,7 +97,7 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 	errs := validates.ValidateSendFriendRequestFrom(_send)
 
 	if len(errs) > 0 {
-		response.FailResponse(500, "error", errs).ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "error", errs).ToJson(c)
 		return
 	}
 
@@ -112,7 +112,7 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 	if friend.ID == 0 {
 		err := friend_record.AddRecords(userModel.AuthUser.ID, f_id, information)
 		if err != nil {
-			response.FailResponse(500, "添加失败").ToJson(c)
+			response.FailResponse(http.StatusInternalServerError, "添加失败").ToJson(c)
 			return
 		}
 
@@ -159,7 +159,7 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 	err := model.DB.Where("id=?", id).
 		First(&friends).Error
 	if err != nil {
-		response.FailResponse(500, "添加失败").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "添加失败").ToJson(c)
 		return
 	}
 
@@ -169,7 +169,7 @@ func (*FriendController) ByFriendRequest(c *gin.Context) {
 		// 投递一条消息
 		service.SendMessage(enum.ADD_FRIEDN_ERROR, int(userModel.AuthUser.ID), int(friends.UserId),
 			fmt.Sprintf("%s已拒绝添加你为好友", userModel.AuthUser.Name))
-		response.FailResponse(500, "已经拒绝了~").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "已经拒绝了~").ToJson(c)
 		return
 	} else {
 		friend.AddFriends(friends.UserId, friends.FId)
@@ -202,7 +202,7 @@ func (*FriendController) RemoveFriend(c *gin.Context) {
 	user_id := c.PostForm("user_id")
 
 	if len(user_id) == 0 {
-		response.FailResponse(500, "user_id不能为空~").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "user_id不能为空~").ToJson(c)
 		return
 	}
 	user := userModel.AuthUser
@@ -214,7 +214,7 @@ func (*FriendController) RemoveFriend(c *gin.Context) {
 
 	service.SendMessage(enum.DELETE_FRIEND, int(user.ID), f_id, fmt.Sprintf("系统:%s已将你删除", user.Name))
 
-	response.FailResponse(200, "删除成功~").ToJson(c)
+	response.FailResponse(http.StatusOK, "删除成功~").ToJson(c)
 	return
 }
 
@@ -235,7 +235,7 @@ func (*FriendController) FriendPlacedTop(c *gin.Context) {
 
 	user_id := c.PostForm("user_id")
 	if len(user_id) < 1 {
-		response.ErrorResponse(500, "用户id不能为空").ToJson(c)
+		response.ErrorResponse(http.StatusInternalServerError, "用户id不能为空").ToJson(c)
 		return
 	}
 
@@ -273,7 +273,7 @@ func (*FriendController) UpdateFriendNote(c *gin.Context) {
 	user_id := c.PostForm("user_id")
 	note := c.PostForm("note")
 	if len(user_id) < 1 || len(note) > 20 || len(note) < 2 {
-		response.ErrorResponse(500, "参数不合格").ToJson(c)
+		response.ErrorResponse(http.StatusInternalServerError, "参数不合格").ToJson(c)
 		return
 	}
 	id := userModel.AuthUser.ID

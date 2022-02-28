@@ -14,6 +14,7 @@ import (
 	"im_app/pkg/zaplog"
 	"log"
 	"net"
+	"net/http"
 )
 
 var RpcServer = grpc.NewServer()
@@ -49,5 +50,5 @@ func (ps *ImRpcServer) SendMessage(ctx context.Context, request *rpc.MessageRequ
 	} else {
 		MqPersonalPublish(jsonMessage_from, int(request.ToId))
 	}
-	return &rpc.MessageResponse{Code: 200}, nil
+	return &rpc.MessageResponse{Code: http.StatusOK}, nil
 }

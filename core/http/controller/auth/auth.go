@@ -21,6 +21,7 @@ import (
 	"im_app/pkg/model"
 	"im_app/pkg/redis"
 	"im_app/pkg/response"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -65,7 +66,7 @@ var avatar = [...]string{
 // @Router /me [post]
 func (*AuthController) Me(c *gin.Context) {
 	user := userModel.AuthUser
-	response.SuccessResponse(user, 200).ToJson(c)
+	response.SuccessResponse(user, http.StatusOK).ToJson(c)
 }
 
 // @BasePath /api
@@ -123,7 +124,7 @@ func (that *AuthController) Login(c *gin.Context) {
 
 	errs := validates.ValidateLoginForm(_user)
 	if len(errs) > 0 {
-		response.ErrorResponse(500, "参数错误", errs).WriteTo(c)
+		response.ErrorResponse(http.StatusInternalServerError, "参数错误", errs).WriteTo(c)
 		return
 	}
 	var users userModel.Users
@@ -147,7 +148,7 @@ func (that *AuthController) Login(c *gin.Context) {
 	}
 	token := jwt.GenerateToken(users.ID, users.Name, users.Avatar, users.Email, ClientType)
 	data := getMe(token, &users)
-	response.SuccessResponse(data, 200).ToJson(c)
+	response.SuccessResponse(data, http.StatusOK).ToJson(c)
 }
 
 func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
@@ -175,18 +176,18 @@ func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 		result := model.DB.Create(&userData)
 
 		if result.Error != nil {
-			response.FailResponse(500, "用户微博授权失败").ToJson(c)
+			response.FailResponse(http.StatusInternalServerError, "用户微博授权失败").ToJson(c)
 		} else {
 			// 执行默认添加好友逻辑
 			friend.AddDefaultFriend(userData.ID)
 			token := jwt.GenerateToken(userData.ID, userData.Name, userData.Avatar, userData.Email, 0)
 			data := getMe(token, &userData)
-			response.SuccessResponse(data, 200).ToJson(c)
+			response.SuccessResponse(data, http.StatusOK).ToJson(c)
 		}
 	} else {
 		token := jwt.GenerateToken(users.ID, users.Name, users.Avatar, users.Email, 0)
 		data := getMe(token, &users)
-		response.SuccessResponse(data, 200).ToJson(c)
+		response.SuccessResponse(data, http.StatusOK).ToJson(c)
 
 	}
 }
@@ -207,7 +208,7 @@ func (*AuthController) SeedRegisteredEmail(c *gin.Context) {
 	errs := validates.ValidateEmailForm(_email)
 
 	if len(errs) > 0 {
-		response.FailResponse(500, "error", errs).ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "error", errs).ToJson(c)
 		return
 	}
 
@@ -249,7 +250,7 @@ func (*AuthController) SeedRegisteredEmail(c *gin.Context) {
 
 	err := emailService.SendEmail(_email.Email, "欢迎👏注册IM账号,这是一封邮箱验证码的邮件!🎉🎉🎉", html)
 	if err != nil {
-		response.FailResponse(500, "邮件发送失败,请检查是否是可用邮箱").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "邮件发送失败,请检查是否是可用邮箱").ToJson(c)
 		return
 	}
 
@@ -285,7 +286,7 @@ func (*AuthController) Registered(c *gin.Context) {
 	errs := validates.ValidateRegisteredForm(_user)
 
 	if len(errs) > 0 {
-		response.FailResponse(500, "error", errs).ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "error", errs).ToJson(c)
 		return
 	}
 
@@ -303,7 +304,7 @@ func (*AuthController) Registered(c *gin.Context) {
 	result := model.DB.Create(&userData)
 
 	if result.Error != nil {
-		response.FailResponse(500, "用户账号注册失败,请联系管理员").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "用户账号注册失败,请联系管理员").ToJson(c)
 		return
 	}
 	//添加好友逻辑
@@ -335,7 +336,7 @@ func (*AuthController) BindingEmail(c *gin.Context) {
 	errs := validates.ValidateEmailForm(_email)
 
 	if len(errs) > 0 {
-		response.FailResponse(500, "error", errs).ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "error", errs).ToJson(c)
 		return
 	}
 
@@ -368,14 +369,14 @@ func (*AuthController) BindingEmail(c *gin.Context) {
 func (*UsersController) Show(c *gin.Context) {
 	user_id := c.Query("user_id")
 	if len(user_id) < 1 {
-		response.FailResponse(500, "user_id不能为空").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "user_id不能为空").ToJson(c)
 		return
 	}
 	var users userModel.Users
 
 	err := model.DB.Table("im_users").Where("id=?", user_id).First(&users).Error
 	if err != nil {
-		response.FailResponse(500, "查询异常").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "查询异常").ToJson(c)
 		return
 	}
 
@@ -414,7 +415,7 @@ func (*AuthController) UpdatePwd(c *gin.Context) {
 	errs := validates.ValidatePwdFrom(_user)
 
 	if len(errs) > 0 {
-		response.FailResponse(500, "error", errs).ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "error", errs).ToJson(c)
 		return
 	}
 	var users userModel.Users
@@ -425,7 +426,7 @@ func (*AuthController) UpdatePwd(c *gin.Context) {
 	}
 
 	if helpler.ComparePasswords(users.Password, _user.Password) == false {
-		response.FailResponse(500, "旧密码错误--").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "旧密码错误--").ToJson(c)
 		return
 	}
 

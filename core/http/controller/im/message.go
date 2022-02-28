@@ -7,6 +7,7 @@ package im
 
 import (
 	"im_app/core/http/models/group_message"
+	"net/http"
 	"sort"
 	"strconv"
 
@@ -61,7 +62,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 	user := userModel.AuthUser
 
 	if len(to_id) < 0 {
-		response.FailResponse(500, "用户id不能为空").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "用户id不能为空").ToJson(c)
 	}
 
 	var Users []userModel.Users
@@ -100,7 +101,7 @@ func (*MessageController) InformationHistory(c *gin.Context) {
 			"pageSize": pageSize,
 			"page":     page,
 			"total":    total,
-		}}, 200).ToJson(c)
+		}}, http.StatusOK).ToJson(c)
 }
 
 func SortByAge(list []ImMessage) {
@@ -146,7 +147,7 @@ func (*MessageController) GetGroupMessageList(c *gin.Context) {
 		Find(&MsgList)
 
 	if list.Error != nil {
-		response.FailResponse(500, "数据查询错误").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "数据查询错误").ToJson(c)
 		return
 	}
 	for key, value := range MsgList {
@@ -158,7 +159,7 @@ func (*MessageController) GetGroupMessageList(c *gin.Context) {
 		}
 	}
 	SortGroupByAge(MsgList)
-	response.SuccessResponse(MsgList, 200).ToJson(c)
+	response.SuccessResponse(MsgList, http.StatusOK).ToJson(c)
 }
 
 func (*MessageController) GetList(c *gin.Context) {
@@ -169,6 +170,6 @@ func (*MessageController) GetList(c *gin.Context) {
 		Order("created_at").
 		Find(&MsgList)
 
-	response.SuccessResponse(MsgList, 200).ToJson(c)
+	response.SuccessResponse(MsgList, http.StatusOK).ToJson(c)
 	return
 }

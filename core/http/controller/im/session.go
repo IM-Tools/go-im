@@ -13,6 +13,7 @@ import (
 	"im_app/core/http/validates"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -40,7 +41,7 @@ func (*SessionController) GetSessionList(c *gin.Context) {
 		Find(&list).Error
 
 	if err != nil {
-		response.ErrorResponse(500, "error").ToJson(c)
+		response.ErrorResponse(http.StatusInternalServerError, "error").ToJson(c)
 		return
 	}
 	response.SuccessResponse(list).ToJson(c)
@@ -89,7 +90,7 @@ func (*SessionController) Create(c *gin.Context) {
 			Where("m_id=? and f_id=? and status=0 and channel_type=?", user2.AuthUser.ID, user_id, channel_type).
 			First(&sessions).Error
 		if err != nil {
-			response.ErrorResponse(500, "查询异常").ToJson(c)
+			response.ErrorResponse(http.StatusInternalServerError, "查询异常").ToJson(c)
 			return
 		}
 		response.SuccessResponse(sessions).ToJson(c)
@@ -101,7 +102,7 @@ func (*SessionController) Create(c *gin.Context) {
 	c_type, _ := strconv.Atoi(channel_type)
 
 	if int64(f_id) == user2.AuthUser.ID {
-		response.ErrorResponse(500, "请勿对自己添加会话").ToJson(c)
+		response.ErrorResponse(http.StatusInternalServerError, "请勿对自己添加会话").ToJson(c)
 		return
 	}
 
@@ -110,7 +111,7 @@ func (*SessionController) Create(c *gin.Context) {
 
 		err := model.DB.Table("im_users").Where("id=?", user_id).First(&user).Error
 		if err != nil {
-			response.FailResponse(500, "用户数据不存在")
+			response.FailResponse(http.StatusInternalServerError, "用户数据不存在")
 			return
 		}
 		sessionData := session.ImSessions{
@@ -133,7 +134,7 @@ func (*SessionController) Create(c *gin.Context) {
 		var groups group.ImGroups
 		err := model.DB.Table("im_groups").Where("id=?", user_id).First(&groups).Error
 		if err != nil {
-			response.FailResponse(500, "群聊数据不存在")
+			response.FailResponse(http.StatusInternalServerError, "群聊数据不存在")
 			return
 		}
 		sessionData := session.ImSessions{
@@ -204,7 +205,7 @@ func (*SessionController) DelSession(c *gin.Context) {
 	err := model.DB.Table("im_sessions").Where("m_id=? and f_id=?",
 		user2.AuthUser.ID, user_id).Delete(&session.ImSessions{}).Error
 	if err != nil {
-		response.FailResponse(500, "删除失败").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "删除失败").ToJson(c)
 		return
 	}
 	response.SuccessResponse().ToJson(c)

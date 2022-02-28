@@ -81,7 +81,7 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 	resp := new(ResponseData)
 	json.Unmarshal(bodyC, resp)
 	if resp.Success {
-		response.FailResponse(500, resp.Message)
+		response.FailResponse(http.StatusInternalServerError, resp.Message)
 		return
 	}
 	redis.RedisDB.Set("sm_token", resp.Data.Token, time.Hour*1)

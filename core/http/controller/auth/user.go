@@ -13,6 +13,7 @@ import (
 	"im_app/pkg/helpler"
 	"im_app/pkg/model"
 	"im_app/pkg/response"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -70,12 +71,12 @@ func (*UsersController) GetUsersList(c *gin.Context) {
 
 	userList, err := userModel.GetNotFriendList(subQuery, userModel.AuthUser.ID, name)
 	if err != nil {
-		response.FailResponse(500, "接口查询异常").ToJson(c)
+		response.FailResponse(http.StatusInternalServerError, "接口查询异常").ToJson(c)
 		return
 	}
 	response.SuccessResponse(map[string]interface{}{
 		"list": userList,
-	}, 200).ToJson(c)
+	}, http.StatusOK).ToJson(c)
 	return
 }
 

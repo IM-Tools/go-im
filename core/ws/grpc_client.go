@@ -13,6 +13,7 @@ import (
 	"im_app/core/ws/rpc"
 	"im_app/pkg/zaplog"
 	"log"
+	"net/http"
 )
 
 //
@@ -36,8 +37,7 @@ type RpcMsg struct {
 	ChannelType int    `json:"channel_type"`
 }
 
-
-func  SendRpcMsg(message []byte, node string) {
+func SendRpcMsg(message []byte, node string) {
 
 	var msg RpcMsg
 	err := json.Unmarshal(message, &msg)
@@ -54,7 +54,7 @@ func  SendRpcMsg(message []byte, node string) {
 
 	resp, err := ImRpcServiceClient.
 		SendMessage(context.Background(),
-			&rpc.MessageRequest{Code: 200,
+			&rpc.MessageRequest{Code: http.StatusOK,
 				FromId:      int32(msg.FromId),
 				Msg:         msg.Msg,
 				ToId:        int32(msg.ToId),
@@ -62,9 +62,9 @@ func  SendRpcMsg(message []byte, node string) {
 				MsgType:     int32(msg.MsgType),
 				ChannelType: int32(msg.ChannelType)})
 	if err != nil {
-		zaplog.Info("异常",err)
+		zaplog.Info("异常", err)
 		return
 	}
-	zaplog.Info("调用gRPC方法成功",resp)
+	zaplog.Info("调用gRPC方法成功", resp)
 	return
 }
