@@ -39,7 +39,6 @@ func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 	// 当然这个方法也可以优化避免多次转换消耗
 	message := EnMessage(msg_byte)
 
-	//
 	//message.Mes.Code = 200
 	msg := DeMessage(message.Mes)
 	// 私聊和系统单独通知消息
@@ -55,12 +54,10 @@ func (manager *ImClientManager) LaunchMessage(msg_byte []byte) {
 					// 离线消息入库
 					MqPersonalPublish(msg, message.Mes.ToId)
 				}
-
 			} else {
 				AddUserMessage(message.Mes, 0, message.Mes.ChannelType)
 				MqPersonalPublish(msg, message.Mes.ToId)
 			}
-
 		}
 		return
 	}

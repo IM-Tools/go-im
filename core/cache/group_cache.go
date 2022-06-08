@@ -16,7 +16,7 @@ func getGroupIdsStr(group_id int) string {
 	return "core:group:" + strconv.Itoa(group_id)
 }
 
-// 让我在想想这个方法怎么写 对go还不是很熟练
+// todo
 func getGroup(group_id int) map[int]int {
 	groupId := make(map[int]int)
 	str := getGroupIdsStr(group_id)

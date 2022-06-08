@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
+	"im_app/core/http/controller"
 	"im_app/core/http/models/friend"
 	userModel "im_app/core/http/models/user"
 	"im_app/core/http/services"
@@ -120,7 +121,7 @@ func (that *AuthController) Login(c *gin.Context) {
 		Password: c.PostForm("password"),
 	}
 
-	ClientType, _ := strconv.Atoi(c.DefaultPostForm("client_type", "0"))
+	ClientType := controller.StringToInt(c.DefaultPostForm("client_type", "0"))
 
 	errs := validates.ValidateLoginForm(_user)
 	if len(errs) > 0 {
@@ -132,11 +133,11 @@ func (that *AuthController) Login(c *gin.Context) {
 		Where("name = ? or email = ?", _user.Name, _user.Name).
 		Find(&users)
 	if users.ID == 0 {
-		response.FailResponse(403, "用户不存在").ToJson(c)
+		response.FailResponse(http.StatusForbidden, "用户不存在").ToJson(c)
 		return
 	}
 	if !helpler.ComparePasswords(users.Password, _user.Password) {
-		response.FailResponse(403, "账号或者密码错误").ToJson(c)
+		response.FailResponse(http.StatusForbidden, "账号或者密码错误").ToJson(c)
 		return
 	}
 
@@ -154,7 +155,7 @@ func (that *AuthController) Login(c *gin.Context) {
 func (*WeiBoController) WeiBoCallBack(c *gin.Context) {
 	code := c.Query("code")
 	if len(code) == 0 {
-		response.FailResponse(403, "参数不正确~").ToJson(c)
+		response.FailResponse(http.StatusForbidden, "参数不正确~").ToJson(c)
 	}
 	access_token := utils.GetWeiBoAccessToken(&code)
 	UserInfo := utils.GetWeiBoUserInfo(&access_token)

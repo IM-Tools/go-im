@@ -7,19 +7,16 @@ package im
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"net/url"
-	"time"
-
 	"github.com/gin-gonic/gin"
-
 	"im_app/core/utils"
 	"im_app/pkg/config"
 	"im_app/pkg/redis"
 	"im_app/pkg/response"
 	log2 "im_app/pkg/zaplog"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"time"
 )
 
 type (
@@ -61,7 +58,7 @@ var username = config.GetString("core.sm_name")
 var password = config.GetString("core.sm_password")
 var sm_token = config.GetString("core.sm_token")
 
-func (*SmApiController) GetApiToken(c *gin.Context) {
+func (*SmApiController) GetApiToken(cxt *gin.Context) {
 	stringCmd := redis.RedisDB.Get("sm_token")
 	if len(stringCmd.Val()) != 0 {
 
@@ -69,8 +66,8 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 		resp.Code = "success"
 		resp.Data.Token = stringCmd.Val()
 		resp.Success = true
-		fmt.Println(resp)
-		c.JSON(200, resp)
+
+		response.SuccessResponse(resp).ToJson(cxt)
 		return
 	}
 	data := url.Values{"username": {username}, "password": {password}}
@@ -85,7 +82,9 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 		return
 	}
 	redis.RedisDB.Set("sm_token", resp.Data.Token, time.Hour*1)
-	c.JSON(200, resp)
+
+	response.SuccessResponse(resp).ToJson(cxt)
+	return
 }
 
 // @BasePath /api
@@ -101,11 +100,12 @@ func (*SmApiController) GetApiToken(c *gin.Context) {
 // @Produce json
 // @Success 200
 // @Router /UploadImg [post]
-func (*SmApiController) UploadImg(c *gin.Context) {
-	file, _ := c.FormFile("Smfile")
+func (*SmApiController) UploadImg(cxt *gin.Context) {
+
+	file, _ := cxt.FormFile("Smfile")
 	dir := utils.GetCurrentDirectory()
 	path := dir + "/docs/" + file.Filename
-	err := c.SaveUploadedFile(file, path)
+	err := cxt.SaveUploadedFile(file, path)
 	log2.LogError(err)
 	header := new(utils.Header)
 	header.Authorization = "Authorization"
@@ -115,5 +115,7 @@ func (*SmApiController) UploadImg(c *gin.Context) {
 	bodyC, _ := ioutil.ReadAll(resp.Body)
 	data := new(ResponseUploadData)
 	json.Unmarshal(bodyC, data)
-	c.JSON(200, data)
+
+	response.SuccessResponse(data).ToJson(cxt)
+	return
 }

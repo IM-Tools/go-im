@@ -6,11 +6,9 @@
 package router
 
 import (
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	swaggerfiles "github.com/swaggo/files"
+	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-
 	Auth "im_app/core/http/controller/auth"
 	"im_app/core/http/controller/im"
 	"im_app/core/http/middleware"
@@ -19,11 +17,7 @@ import (
 
 func RegisterApiRoutes(router *gin.Engine) {
 
-	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true
-	config.AllowMethods = []string{"GET", "POST", "OPTIONS"}
-	config.AllowHeaders = []string{"tus-resumable", "upload-length", "upload-metadata", "cache-control", "x-requested-with", "*"}
-	router.Use(cors.New(config))
+	startCors(router)
 
 	weibo := new(Auth.WeiBoController)
 	auth := new(Auth.AuthController)
@@ -90,6 +84,6 @@ func RegisterApiRoutes(router *gin.Engine) {
 		}
 
 	}
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/GetLongitude", maps.GetLongitude) //read message
 }

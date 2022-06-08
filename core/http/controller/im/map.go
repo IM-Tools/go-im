@@ -18,11 +18,11 @@ type MapController struct {
 
 //获取经纬度位置信息
 
-func (*MapController) GetLongitude(c *gin.Context) {
+func (*MapController) GetLongitude(cxt *gin.Context) {
 	ip := helpler.GetLocalIP()
 	fmt.Println(ip)
 	service := new(services.MapService)
 	result := service.GetLongitude(ip)
-	response.SuccessResponse(result).ToJson(c)
+	response.SuccessResponse(result).ToJson(cxt)
 	return
 }

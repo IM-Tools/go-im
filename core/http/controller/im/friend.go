@@ -87,7 +87,7 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 	f_id := c.PostForm("f_id")
 	FId, _ := strconv.Atoi(f_id)
 	if int64(FId) == userModel.AuthUser.ID {
-		response.FailResponse(401, "请勿添加自己为好友").ToJson(c)
+		response.FailResponse(http.StatusUnauthorized, "请勿添加自己为好友").ToJson(c)
 		return
 	}
 	_send := validates.SendFriendRequestFrom{
@@ -122,7 +122,7 @@ func (*FriendController) SendFriendRequest(c *gin.Context) {
 		response.SuccessResponse().ToJson(c)
 		return
 	} else {
-		response.FailResponse(401, "已经是好友关系了，请勿重复添加")
+		response.FailResponse(http.StatusUnauthorized, "已经是好友关系了，请勿重复添加")
 		return
 	}
 

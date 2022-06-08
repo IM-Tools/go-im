@@ -76,7 +76,7 @@ func (*SessionController) Create(c *gin.Context) {
 	errs := validates.ValidateAddSession(_user)
 
 	if len(errs) > 0 {
-		response.FailResponse(401, "error", errs).ToJson(c)
+		response.FailResponse(http.StatusUnauthorized, "error", errs).ToJson(c)
 		return
 	}
 

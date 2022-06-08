@@ -1,10 +1,13 @@
 ## GO-IM
 
+
 <p align="center">
 <img src="https://img.shields.io/badge/license-MIT-green" />
 </p>
 <br/>
 <br/>
+
+<a  href="https://github.com/IM-Tools/Im-Services">旧版本停止维护⚠️ 新版本地址：https://github.com/IM-Tools/Im-Services</a>
 
 > 这是一个由golang编写的高性能IM服务器 📦📦📦
 

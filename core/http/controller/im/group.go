@@ -171,15 +171,16 @@ func (*GroupController) Create(c *gin.Context) {
 // @Produce json
 // @Success 200
 // @Router /RemoveGroup [post]
-func (*GroupController) RemoveGroup(c *gin.Context) {
-	group_id := c.PostForm("group_id")
+func (*GroupController) RemoveGroup(cxt *gin.Context) {
+	group_id := cxt.PostForm("group_id")
 	if len(group_id) == 0 {
-		response.ErrorResponse(http.StatusInternalServerError, "参数不合格").ToJson(c)
+		response.ErrorResponse(http.StatusInternalServerError, "参数不合格").ToJson(cxt)
 		return
 	}
 	model.DB.Where("id=?", group_id).Delete(&group.ImGroups{})
 	model.DB.Where("group_id=?", group_id).Delete(&group_user.ImGroupUsers{})
-	response.SuccessResponse().ToJson(c)
+
+	response.SuccessResponse().ToJson(cxt)
 	return
 }
 
@@ -206,12 +207,12 @@ func (*GroupController) RemovedUserFromGroup(c *gin.Context) {
 	errs := validates.ValidateGroupForm(_group)
 
 	if len(errs) > 0 {
-		response.FailResponse(401, "error", errs)
+		response.FailResponse(http.StatusUnauthorized, "error", errs)
 	}
 	g_id, _ := group.GetGroupUserId(_group.GroupId)
 
 	if userModel.AuthUser.ID != g_id {
-		response.FailResponse(401, "没有权限删除群成员！").ToJson(c)
+		response.FailResponse(http.StatusUnauthorized, "没有权限删除群成员！").ToJson(c)
 		return
 	}
 
@@ -246,21 +247,21 @@ func (*GroupController) JoinGroup(c *gin.Context) {
 	errs := validates.ValidateGroupForm(_group)
 
 	if len(errs) > 0 {
-		response.FailResponse(401, "error", errs).ToJson(c)
+		response.FailResponse(http.StatusUnauthorized, "error", errs).ToJson(c)
 		return
 	}
 
 	u_id, _ := group.GetGroupUserId(_group.GroupId)
 
 	if userModel.AuthUser.ID != u_id {
-		response.FailResponse(401, "没有资格邀群群成员！").ToJson(c)
+		response.FailResponse(http.StatusUnauthorized, "没有资格邀请群成员！").ToJson(c)
 		return
 	}
 
-	bools := group_user.GetGroupUser(_group.GroupId, _group.UserId)
+	isExist := group_user.GetGroupUser(_group.GroupId, _group.UserId)
 
-	if bools == true {
-		response.FailResponse(401, "已经在群聊里面了！").ToJson(c)
+	if isExist == true {
+		response.FailResponse(http.StatusUnauthorized, "已经在群聊里面了！").ToJson(c)
 		return
 	}
 

@@ -97,5 +97,5 @@ func (*UsersController) ReadMessage(c *gin.Context) {
 	toid, _ := strconv.Atoi(to_id)
 	channel_a, channel_b := helpler.ProduceChannelName(int64(user.ID), int64(toid))
 	messageModel.ReadMsg(channel_a, channel_b)
-	response.SuccessResponse(gin.H{}, 200).ToJson(c)
+	response.SuccessResponse(gin.H{}).ToJson(c)
 }

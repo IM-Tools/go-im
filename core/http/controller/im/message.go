@@ -135,7 +135,7 @@ func (*MessageController) GetGroupMessageList(c *gin.Context) {
 
 	user := userModel.AuthUser
 	if len(group_id) < 0 {
-		response.FailResponse(401, "group_id不能为空").ToJson(c)
+		response.FailResponse(http.StatusUnauthorized, "group_id不能为空").ToJson(c)
 		return
 	}
 	var MsgList []group_message.ImGroupMessages
