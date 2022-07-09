@@ -1,0 +1,19 @@
+name: go-im
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: go-im
+        uses: actions/go-im@master
+
+      - name: Build and Deploy
+        uses: IM-Tools/go-im@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.IM_KEY }}
+          BRANCH: gh-pages
+          FOLDER: build
+          BUILD_SCRIPT: go build main.go
