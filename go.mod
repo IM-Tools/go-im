@@ -32,7 +32,7 @@ require (
 	github.com/swaggo/swag v1.7.3
 	github.com/syyongx/go-wordsfilter v0.0.0-20190622081656-74232c786041
 	github.com/thedevsaddam/govalidator v1.9.10
-	github.com/tidwall/gjson v1.8.0
+	github.com/tidwall/gjson v1.9.3
 	github.com/ugorji/go v1.2.6 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
